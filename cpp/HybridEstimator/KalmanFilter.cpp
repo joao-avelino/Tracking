@@ -73,10 +73,27 @@ void KalmanFilter::predict(VectorXd &controlVector)
     int n = statePost.size();
     int r = processNoiseCov.cols();
 
-    MatrixXd G_;
+	VectorXd diagQ = processNoiseCov.diagonal();
+
+    MatrixXd G_ = MatrixXd::Identity(n, n);
     MatrixXd U_ = MatrixXd::Identity(n,n);
     MatrixXd PhiU_ = stateTransitionModel*U_post;
 
+	for (int i = n - 1; i >= 0; i--)
+	{
+		double sigma = 0;
+
+		VectorXd PhiU_row_square = PhiU_.row(i).array().square();
+
+		sigma = PhiU_row_square.transpose()*diagQ;
+
+		VectorXd G_row_squared = G_.row(i).array().square;
+		sigma = sigma + G_row_squared.transpose()*diagQ;
+
+
+
+	}
+	
 }
 
 /**

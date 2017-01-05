@@ -86,6 +86,9 @@ int main()
 
     kf.update(meas);
 
+
+	getchar();
+
     return 0;
 }
 
