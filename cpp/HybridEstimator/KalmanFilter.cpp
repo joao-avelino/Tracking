@@ -90,7 +90,20 @@ void KalmanFilter::predict(VectorXd &controlVector)
 		VectorXd G_row_squared = G_.row(i).array().square;
 		sigma = sigma + G_row_squared.transpose()*diagQ;
 
+		D_pred(i, i) = sigma;
 
+		for (int j = 0; j < i; j++)
+		{
+			sigma = 0;
+			VectorXd aux = PhiU_.row(j).array()*D_post.array();
+			sigma = aux.transpose()*PhiU_.row(j).transpose();
+
+			VectorXd aux2 = G_.row(i).array()*diagQ.array();
+			sigma = sigma + aux2.transpose()*G_.row(j).transpose();
+
+			U_(j, i) = sigma / D_post(i, i);
+
+		}
 
 	}
 	
