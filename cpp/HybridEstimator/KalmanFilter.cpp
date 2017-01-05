@@ -103,9 +103,14 @@ void KalmanFilter::predict(VectorXd &controlVector)
 
 			U_(j, i) = sigma / D_post(i, i);
 
+			PhiU_.row(j) = PhiU_.row(j) - U_(j, i)*PhiU_.row(i);
+
+			G_.row(j) = G_.row(j) - U_(j, i)*G_.row(i);
 		}
 
 	}
+
+	U_pred = U_;
 	
 }
 
