@@ -1,6 +1,5 @@
 #include "Kfutils.hpp"
 #include <eigen3/Eigen/QR>
-
 #include <iostream>
 
 /**

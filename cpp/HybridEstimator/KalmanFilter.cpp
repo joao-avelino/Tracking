@@ -1,5 +1,6 @@
 #include "KalmanFilter.hpp"
 #include "Kfutils.hpp"
+#include <eigen3/Eigen/Eigenvalues>
 #include <iostream>
 
 /**
@@ -16,8 +17,10 @@
  *      algorithms: Orbit determination case study. Automatica, 13:23–35
  *  [2] Gibbs, B. P. (2011). Advanced Kalman filtering, least-squares and modeling:
  *      a practical handbook. John Wiley & Sons.
- *  [3] Grewal, M. S., Weill, L. R., & Andrews, A. P. (2007). Global positioning systems,
- *      inertial navigation, and integration. John Wiley & Sons.
+ *  [3] Grewal, M. S. (2011). Kalman filtering theory and practice using MATLAB.
+ *      Springer Berlin Heidelberg.
+ *
+ *
  *
  *  License stuff
  */
@@ -54,7 +57,7 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
 /**
  * @brief KalmanFilter::predict
  *
- *  Performs the Kalman Filter predict step using the Modified weighted Gram—Schrnidt method (MWGS)
+ *  Performs the Kalman Filter predict step using the Modified weighted Gram—Schmidt method (MWGS)
  *  proposed by Thornton and Bierman (based on Matlab code provided by [3]).
  *
  *  Predict when a control signal is available
@@ -68,49 +71,97 @@ void KalmanFilter::predict(VectorXd &controlVector)
 
 
     //MWGS
-    covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
+    //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
+    //this is just the usual
+    //kf equation. not using it anymore
 
     int n = statePost.size();
-    int r = processNoiseCov.cols();
 
-	VectorXd diagQ = processNoiseCov.diagonal();
+    SelfAdjointEigenSolver<MatrixXd> selfSolver;
+    selfSolver.compute(processNoiseCov);
 
-    MatrixXd G_ = MatrixXd::Identity(n, n);
+    //Get a diagonal matrix
+    VectorXd diagQ = selfSolver.eigenvalues();
+    MatrixXd G_ = selfSolver.eigenvectors().transpose();
+
     MatrixXd U_ = MatrixXd::Identity(n,n);
+
+    std::cout << "Here 0" << std::endl;
+
     MatrixXd PhiU_ = stateTransitionModel*U_post;
 
-	for (int i = n - 1; i >= 0; i--)
-	{
-		double sigma = 0;
+    std::cout << "Here 0.5" << std::endl;
 
-		VectorXd PhiU_row_square = PhiU_.row(i).array().square();
+    for (int i = n - 1; i >= 0; i--)
+    {
+        double sigma = 0;
 
-		sigma = PhiU_row_square.transpose()*diagQ;
+        std::cout << "Here 1" << std::endl;
 
-		VectorXd G_row_squared = G_.row(i).array().square;
-		sigma = sigma + G_row_squared.transpose()*diagQ;
+        VectorXd PhiU_row_square = PhiU_.row(i).array().square();
 
-		D_pred(i, i) = sigma;
+        std::cout << "Here 2" << std::endl;
 
-		for (int j = 0; j < i; j++)
-		{
-			sigma = 0;
-			VectorXd aux = PhiU_.row(j).array()*D_post.array();
-			sigma = aux.transpose()*PhiU_.row(j).transpose();
+        sigma = PhiU_row_square.transpose()*diagQ;
 
-			VectorXd aux2 = G_.row(i).array()*diagQ.array();
-			sigma = sigma + aux2.transpose()*G_.row(j).transpose();
+        std::cout << "Here 3" << std::endl;
 
-			U_(j, i) = sigma / D_post(i, i);
 
-			PhiU_.row(j) = PhiU_.row(j) - U_(j, i)*PhiU_.row(i);
+        VectorXd G_row_squared = G_.row(i).array().square();
 
-			G_.row(j) = G_.row(j) - U_(j, i)*G_.row(i);
-		}
+        std::cout << "Here 4" << std::endl;
 
-	}
+        sigma = sigma + G_row_squared.transpose()*diagQ;
 
-	U_pred = U_;
+        std::cout << "Here 5" << std::endl;
+
+        D_pred(i, i) = sigma;
+
+        std::cout << "Here 6" << std::endl;
+
+
+        for (int j = 0; j < i; j++)
+        {
+            sigma = 0;
+            std::cout << "Here 7" << std::endl;
+
+            VectorXd aux = PhiU_.row(j).array()*D_post.array();
+
+            std::cout << "Here 8" << std::endl;
+
+            sigma = aux.transpose()*PhiU_.row(j).transpose();
+
+            std::cout << "Here 9" << std::endl;
+
+
+            VectorXd aux2 = G_.row(i).array()*diagQ.array();
+
+            std::cout << "Here 10" << std::endl;
+
+            sigma = sigma + aux2.transpose()*G_.row(j).transpose();
+
+            std::cout << "Here 11" << std::endl;
+
+
+            U_(j, i) = sigma / D_post(i, i);
+
+            std::cout << "Here 12" << std::endl;
+
+
+            PhiU_.row(j) = PhiU_.row(j) - U_(j, i)*PhiU_.row(i);
+
+            std::cout << "Here 13" << std::endl;
+
+
+            G_.row(j) = G_.row(j) - U_(j, i)*G_.row(i);
+
+            std::cout << "Here 14" << std::endl;
+
+        }
+
+    }
+
+    U_pred = U_;
 	
 }
 
@@ -131,11 +182,66 @@ void KalmanFilter::predict()
     statePred = stateTransitionModel*statePost;
 
     //MWGS
-    covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
+    //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
+    //this is just the usual
+    //kf equation. not using it anymore
+
+    int n = statePost.size();
+
+    SelfAdjointEigenSolver<MatrixXd> selfSolver;
+    selfSolver.compute(processNoiseCov);
+
+    std::cout << "processNoiseCov: " << processNoiseCov << std::endl;
+
+    //Get a diagonal matrix
+    VectorXd diagQ = selfSolver.eigenvalues();
+    MatrixXd G_ = selfSolver.eigenvectors().transpose();
+
+    std::cout << "G: " << G_ << std::endl;
+    std::cout << "invG: " << G_.transpose() << std::endl;
+
+    std::cout << "Test: " << processNoiseCov - G_*diagQ.asDiagonal()*G_.transpose();
+
+    G_ << -0.9701, 0, 0.2425, 0,
+            0, 0.9701, 0, -0.2425,
+            0, 0.2425, 0, 0.9701,
+            -0.2425, 0, -0.9701, 0;
+
+    diagQ << 0, 0, 0.2656, 0.2656;
+
+    MatrixXd U_ = MatrixXd::Identity(n,n);
+
+
+    D_pred = VectorXd::Zero(n);
+
+    MatrixXd PhiU_ = stateTransitionModel*U_post;
+
+    VectorXd PhiU_row_square = VectorXd::Zero(PhiU_.cols());
+    VectorXd G_row_squared = VectorXd::Zero(G_.cols());
+
+    for i=n:-1:1,
+       sigma = 0;
+
+       sigma = PhiU(i,:).^2*diag(Din);
+       sigma = sigma+G(i,:).^2*diag(Q);
+
+       D(i,i) = sigma;
+       for j=1:i-1,
+          sigma = 0;
+          sigma = PhiU(i,:).*diag(Din)'*PhiU(j,:)';
+          sigma = sigma+G(i,:).*diag(Q)'*G(j,:)';
+
+          U(j,i) = sigma/D(i,i);
+          PhiU(j,:) = PhiU(j,:)-U(j,i)*PhiU(i,:);
+          %
+          G(j,:)=G(j,:)-U(j,i)*G(i,:);
+       end;
+    end;
 
 
 
 }
+
 
 /**
  * Performs the Kalman Filter update step using Bierman's method.

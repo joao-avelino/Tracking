@@ -1,5 +1,6 @@
 #include <iostream>
 #include "KalmanFilter.hpp"
+#include <eigen3/Eigen/Eigenvalues>
 
 #include "Kfutils.hpp"
 
@@ -8,7 +9,7 @@ using namespace std;
 int main()
 {
 
-
+/*
     MatrixXd P;
     MatrixXd U;
     VectorXd D;
@@ -43,7 +44,7 @@ int main()
                                   H_normal,H_uncorr,
                                   R,uncorrR);
 
-
+*/
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MatrixXd stateTransitionModel(4,4);
@@ -77,7 +78,17 @@ int main()
     KalmanFilter kf(stateTransitionModel, observationModel, processNoiseCovariance, observationNoiseCov,
                     initial_state, initial_cov);
 
+    std::cout << "Gonna predict" << std::endl;
+
+    KFUtils::uduFactorization(initial_cov, kf.U_post, kf.D_post);
+
     kf.predict();
+
+    std::cout << "x_pred: " << kf.getStatePred() << std::endl;
+    std::cout << "U_pred " << kf.U_pred << std::endl;
+    std::cout << "D_pred: " << kf.D_pred << std::endl;
+
+    std::cout << "P_pred =  " << kf.U_pred*kf.D_pred.asDiagonal()*kf.U_pred.transpose() << std::endl;
 
     std::cout << "Check" << std::endl;
 
@@ -87,7 +98,6 @@ int main()
     kf.update(meas);
 
 
-	getchar();
 
     return 0;
 }

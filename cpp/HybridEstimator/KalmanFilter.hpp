@@ -37,6 +37,11 @@ public:
     void predict();
     void update(VectorXd &measureVector);
 
+    MatrixXd U_pred;
+    VectorXd D_pred;
+    MatrixXd U_post;
+    VectorXd D_post;
+
 protected:
 
     MatrixXd stateTransitionModel;
@@ -46,10 +51,10 @@ protected:
 
 private:
 
-    MatrixXd U_pred;
-    VectorXd D_pred;
-    MatrixXd U_post;
-    VectorXd D_post;
+//    MatrixXd U_pred;
+//    VectorXd D_pred;
+//    MatrixXd U_post;
+//    VectorXd D_post;
 
     void update_single_meas(const VectorXd &h, const double Ri, VectorXd &k);
 
