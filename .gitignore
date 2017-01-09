@@ -1,3 +1,4 @@
 cpp/HybridEstimator/_build/*
 *.VC.db
 *.VC.opendb
+matlab/_mex/KalmanMex/x64/*
