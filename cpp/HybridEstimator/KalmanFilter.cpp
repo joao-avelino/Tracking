@@ -216,9 +216,20 @@ void KalmanFilter::update(VectorXd &measureVector)
         statePred = statePred +k*(uncorrData(i)-h.transpose()*statePred);
     }
 
-    covPost = U_post*D_post.asDiagonal()*U_post.transpose();
     statePost = statePred;
 
+}
+
+MatrixXd KalmanFilter::getCovPost()
+{
+	covPost = U_post*D_post.asDiagonal()*U_post.transpose();
+	return covPost;
+}
+
+MatrixXd KalmanFilter::getCovPred()
+{
+	covPred = U_pred*D_pred.asDiagonal()*U_pred.transpose();
+	return covPred;
 }
 
 /**
