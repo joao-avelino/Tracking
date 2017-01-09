@@ -1,6 +1,6 @@
 #include "mex.h"
 #include "OpenCvKF_handle.hpp"
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
 #include <vector>
 #include <deque>
 #include <iostream>
@@ -8,7 +8,7 @@
 
 // The class that we are interfacing t
 
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+/*void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {	
     // Get the command string
     char cmd[64];
@@ -207,8 +207,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	    }
 
 	  return;
-	}
+	} 
     
     // Got here, so command not recognized
     mexErrMsgTxt("Command not recognized.");
-}
+}*/
