@@ -2,3 +2,4 @@ cpp/HybridEstimator/_build/*
 *.VC.db
 *.VC.opendb
 matlab/_mex/KalmanMex/x64/*
+matlab/_mex/KalmanMex/ipch/*
