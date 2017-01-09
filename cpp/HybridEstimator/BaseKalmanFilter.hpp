@@ -19,13 +19,12 @@ public:
 
     //Getters
     VectorXd getStatePred();
-    VectorXd getCovPred();
+    MatrixXd getCovPred();
     VectorXd getMeasurementResidual();
     MatrixXd getResidualCovariance();
     MatrixXd getKalmanGain();
     VectorXd getStatePost();
     MatrixXd getCovPost();
-
 
     //Setters
     void setDeltaT(double deltaT);

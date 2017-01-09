@@ -34,7 +34,8 @@ public:
 
 
     void predict(VectorXd &controlVector);
-    void predict();
+	void mwgs();
+	void predict();
     void update(VectorXd &measureVector);
 
     MatrixXd U_pred;

@@ -80,23 +80,25 @@ int main()
 
     std::cout << "Gonna predict" << std::endl;
 
-    KFUtils::uduFactorization(initial_cov, kf.U_post, kf.D_post);
-
     kf.predict();
 
     std::cout << "x_pred: " << kf.getStatePred() << std::endl;
-    std::cout << "U_pred " << kf.U_pred << std::endl;
-    std::cout << "D_pred: " << kf.D_pred << std::endl;
-
-    std::cout << "P_pred =  " << kf.U_pred*kf.D_pred.asDiagonal()*kf.U_pred.transpose() << std::endl;
+	
+    std::cout << "P_pred =  " << kf.getCovPred() << std::endl;
 
     std::cout << "Check" << std::endl;
+
+	getchar();
 
     VectorXd meas(2);
     meas << 10, 5;
 
     kf.update(meas);
 
+	std::cout << "x_post: " << kf.getStatePost() << std::endl;
+	std::cout << "P_post: " << kf.getCovPost() << std::endl;
+
+	getchar();
 
 
     return 0;

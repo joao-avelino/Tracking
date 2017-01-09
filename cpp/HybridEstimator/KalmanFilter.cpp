@@ -36,6 +36,9 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationMo
     this->observationNoiseCov = observationNoiseCov;
     this->statePost = initialState;
     this->covPost = initialCov;
+
+	KFUtils::uduFactorization(initialCov, U_post, D_post);
+
 }
 
 KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputModel, MatrixXd observationModel,
@@ -51,6 +54,7 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
     this->statePost = initialState;
     this->covPost = initialCov;
 
+	KFUtils::uduFactorization(initialCov, U_post, D_post);
 }
 
 
@@ -69,99 +73,13 @@ void KalmanFilter::predict(VectorXd &controlVector)
     //Normal Kalman predict with control
     statePred = stateTransitionModel*statePost+controlInputModel*controlVector;
 
-
-    //MWGS
     //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
     //this is just the usual
     //kf equation. not using it anymore
 
-    int n = statePost.size();
+	//MWGS
+	mwgs();
 
-    SelfAdjointEigenSolver<MatrixXd> selfSolver;
-    selfSolver.compute(processNoiseCov);
-
-    //Get a diagonal matrix
-    VectorXd diagQ = selfSolver.eigenvalues();
-    MatrixXd G_ = selfSolver.eigenvectors().transpose();
-
-    MatrixXd U_ = MatrixXd::Identity(n,n);
-
-    std::cout << "Here 0" << std::endl;
-
-    MatrixXd PhiU_ = stateTransitionModel*U_post;
-
-    std::cout << "Here 0.5" << std::endl;
-
-    for (int i = n - 1; i >= 0; i--)
-    {
-        double sigma = 0;
-
-        std::cout << "Here 1" << std::endl;
-
-        VectorXd PhiU_row_square = PhiU_.row(i).array().square();
-
-        std::cout << "Here 2" << std::endl;
-
-        sigma = PhiU_row_square.transpose()*diagQ;
-
-        std::cout << "Here 3" << std::endl;
-
-
-        VectorXd G_row_squared = G_.row(i).array().square();
-
-        std::cout << "Here 4" << std::endl;
-
-        sigma = sigma + G_row_squared.transpose()*diagQ;
-
-        std::cout << "Here 5" << std::endl;
-
-        D_pred(i, i) = sigma;
-
-        std::cout << "Here 6" << std::endl;
-
-
-        for (int j = 0; j < i; j++)
-        {
-            sigma = 0;
-            std::cout << "Here 7" << std::endl;
-
-            VectorXd aux = PhiU_.row(j).array()*D_post.array();
-
-            std::cout << "Here 8" << std::endl;
-
-            sigma = aux.transpose()*PhiU_.row(j).transpose();
-
-            std::cout << "Here 9" << std::endl;
-
-
-            VectorXd aux2 = G_.row(i).array()*diagQ.array();
-
-            std::cout << "Here 10" << std::endl;
-
-            sigma = sigma + aux2.transpose()*G_.row(j).transpose();
-
-            std::cout << "Here 11" << std::endl;
-
-
-            U_(j, i) = sigma / D_post(i, i);
-
-            std::cout << "Here 12" << std::endl;
-
-
-            PhiU_.row(j) = PhiU_.row(j) - U_(j, i)*PhiU_.row(i);
-
-            std::cout << "Here 13" << std::endl;
-
-
-            G_.row(j) = G_.row(j) - U_(j, i)*G_.row(i);
-
-            std::cout << "Here 14" << std::endl;
-
-        }
-
-    }
-
-    U_pred = U_;
 	
 }
 
@@ -174,71 +92,73 @@ void KalmanFilter::predict(VectorXd &controlVector)
  *  Predict when NO control signal is available
  */
 
+void KalmanFilter::mwgs()
+{
 
+	int n = statePost.size();
+
+	SelfAdjointEigenSolver<MatrixXd> selfSolver;
+	selfSolver.compute(processNoiseCov);
+
+	//Get a diagonal matrix
+	VectorXd diagQ = selfSolver.eigenvalues();
+	MatrixXd G_ = selfSolver.eigenvectors().transpose();
+
+	U_pred = MatrixXd::Identity(n, n);
+	D_pred = VectorXd::Zero(n);
+
+	MatrixXd PhiU_ = stateTransitionModel*U_post;
+
+	VectorXd PhiU_row_square = VectorXd::Zero(PhiU_.cols());
+	VectorXd G_row_squared = VectorXd::Zero(G_.cols());
+	VectorXd PhiU_dot_Din = VectorXd::Zero(PhiU_.cols());
+	VectorXd D_dot_Q = VectorXd::Zero(D_post.cols());
+
+	for (int i = n - 1; i >= 0; i--)
+	{
+		double sigma = 0;
+
+		PhiU_row_square = PhiU_.row(i).array().square();
+
+		sigma = PhiU_row_square.transpose()*D_post;
+
+		G_row_squared = G_.row(i).array().square();
+		sigma = sigma + G_row_squared.transpose()*diagQ;
+
+		D_pred(i) = sigma;
+		for (int j = 0; j <i; j++)
+		{
+			sigma = 0;
+
+			PhiU_dot_Din = PhiU_.row(i).cwiseProduct(D_post.transpose());
+			sigma = PhiU_dot_Din.transpose()*PhiU_.row(j).transpose();
+
+			D_dot_Q = G_.row(i).cwiseProduct(diagQ.transpose());
+			sigma = sigma + D_dot_Q.transpose()*G_.row(j).transpose();
+
+			U_pred(j, i) = sigma / D_pred(i);
+			PhiU_.row(j) = PhiU_.row(j) - U_pred(j, i)*PhiU_.row(i);
+
+			G_.row(j) = G_.row(j) - U_pred(j, i)*G_.row(i);
+		}
+	}
+
+	covPred = U_pred*D_pred.asDiagonal()*U_pred.transpose();
+
+}
 
 void KalmanFilter::predict()
 {
     //Normal Kalman predict without control
     statePred = stateTransitionModel*statePost;
 
-    //MWGS
+
     //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
     //this is just the usual
     //kf equation. not using it anymore
 
-    int n = statePost.size();
-
-    SelfAdjointEigenSolver<MatrixXd> selfSolver;
-    selfSolver.compute(processNoiseCov);
-
-    std::cout << "processNoiseCov: " << processNoiseCov << std::endl;
-
-    //Get a diagonal matrix
-    VectorXd diagQ = selfSolver.eigenvalues();
-    MatrixXd G_ = selfSolver.eigenvectors().transpose();
-
-    std::cout << "G: " << G_ << std::endl;
-    std::cout << "invG: " << G_.transpose() << std::endl;
-
-    std::cout << "Test: " << processNoiseCov - G_*diagQ.asDiagonal()*G_.transpose();
-
-    G_ << -0.9701, 0, 0.2425, 0,
-            0, 0.9701, 0, -0.2425,
-            0, 0.2425, 0, 0.9701,
-            -0.2425, 0, -0.9701, 0;
-
-    diagQ << 0, 0, 0.2656, 0.2656;
-
-    MatrixXd U_ = MatrixXd::Identity(n,n);
-
-
-    D_pred = VectorXd::Zero(n);
-
-    MatrixXd PhiU_ = stateTransitionModel*U_post;
-
-    VectorXd PhiU_row_square = VectorXd::Zero(PhiU_.cols());
-    VectorXd G_row_squared = VectorXd::Zero(G_.cols());
-
-    for i=n:-1:1,
-       sigma = 0;
-
-       sigma = PhiU(i,:).^2*diag(Din);
-       sigma = sigma+G(i,:).^2*diag(Q);
-
-       D(i,i) = sigma;
-       for j=1:i-1,
-          sigma = 0;
-          sigma = PhiU(i,:).*diag(Din)'*PhiU(j,:)';
-          sigma = sigma+G(i,:).*diag(Q)'*G(j,:)';
-
-          U(j,i) = sigma/D(i,i);
-          PhiU(j,:) = PhiU(j,:)-U(j,i)*PhiU(i,:);
-          %
-          G(j,:)=G(j,:)-U(j,i)*G(i,:);
-       end;
-    end;
-
-
+	//Perform MWGS
+	mwgs();
 
 }
 
@@ -267,14 +187,6 @@ void KalmanFilter::predict()
 
 void KalmanFilter::update(VectorXd &measureVector)
 {
-
-
-    //JUST FOR TESTING
-
-
-    KFUtils::uduFactorization(covPred, U_pred, D_pred);
-
-    // -----------------------------
 
     //Decorrelate data
     MatrixXd uncorrH;

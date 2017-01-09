@@ -14,7 +14,7 @@ VectorXd BaseKalmanFilter::getStatePred()
     return statePred;
 }
 
-VectorXd BaseKalmanFilter::getCovPred()
+MatrixXd BaseKalmanFilter::getCovPred()
 {
     return covPred;
 }
