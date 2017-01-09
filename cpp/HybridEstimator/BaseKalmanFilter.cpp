@@ -47,6 +47,9 @@ MatrixXd BaseKalmanFilter::getCovPost()
 void BaseKalmanFilter::setDeltaT(double deltaT)
 {
     this->deltaT = deltaT;
+
+	//TODO
+
 }
 
 void BaseKalmanFilter::setObservationNoiseCov(MatrixXd observationNoiseCov)

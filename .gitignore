@@ -1,1 +1,3 @@
 cpp/HybridEstimator/_build/*
+*.VC.db
+*.VC.opendb
