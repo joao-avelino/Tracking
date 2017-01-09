@@ -25,11 +25,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if(nrhs != 2)
 	    mexErrMsgTxt("Wrong inputs");
 
-	
-	
-	MatrixXd initial_cov;
-
-
 
 	//Get the State Transition Matrix
 	double *stateTransitionPTR = mxGetPr(prhs[1]);
@@ -114,20 +109,33 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 		for (int n = 0; n < initialStateN; n++)
 		{
-			observationNoiseCov(n) = observationNoisePTR[0 + observationNoiseM*n];
+			initial_state(n) = initialStatePTR[0 + initialStateM*n];
 		}
 	}
 	else {
 
 		for (int m = 0; m < initialStateM; m++)
 		{
-			observationNoiseCov(m) = observationNoisePTR[m + observationNoiseM*0];
+			initial_state(m) = initialStatePTR[m + initialStateM *0];
 		}
 
 	}
 
+	//Get the Initial State Covariance Matrix
+	double *initialStateCovPTR = mxGetPr(prhs[6]);
+	int stateCovM = mxGetM(prhs[6]);
+	int stateCovN = mxGetN(prhs[6]);
 
-    
+	MatrixXd initial_cov(stateCovM, stateCovN);
+
+
+	for (int m = 0; m < stateCovM; m++)
+	{
+		for (int n = 0; n < stateCovN; n++)
+		{
+			initial_cov(m, n) = initialStateCovPTR[m + stateCovM*n];
+		}
+	}    
         plhs[0] = convertPtr2Mat<KalmanFilter>(new KalmanFilter(stateTransitionModel, observationModel, processNoiseCovariance, observationNoiseCov,
 			initial_state, initial_cov));
         return;
