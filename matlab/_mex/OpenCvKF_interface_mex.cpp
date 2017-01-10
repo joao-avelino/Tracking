@@ -245,7 +245,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 		int dimsState = std::max(measureM, measureN);
 
-		cv::Mat measure(dimsState, 0, CV_64F);
+		cv::Mat measure(dimsState, 1, CV_64F);
 
 		if (measureN >= measureM)
 		{

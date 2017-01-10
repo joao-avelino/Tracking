@@ -9,8 +9,17 @@ Q = [T^4/4 0 T^3/2 0; 0 T^4/4 0 T^3/2; T^3/2 0 T^2 0; 0 T^3/2 0 T^2];
 x = [10; 10; 10; 10];
 P = [2000 10 10 10; 10 2000 10 10; 10 10 2000 10; 10 10 10 2000];
 
-kf = BiermanKF('new', PHI, H, Q, R, x, P);
+kfOCV = OCvKF('new', PHI, H, Q, R, x, P);
+kfBIERMAN = BiermanKF('new', PHI, H, Q, R, x, P);
 
+[stateBier, stateCovBier] = BiermanKF('predict', kfBIERMAN);
+[stateOCv, stateCovOCv] = OCvKF('predict', kfOCV);
 
-[state, stateCov] = KalmanMex('predict', kf)
-[state, stateCov] = KalmanMex('update', kf, meas)
+errorCovPre = stateCovBier-stateCovOCv
+errorStatePre = stateBier-stateOCv
+
+[stateBier, stateCovBier] = BiermanKF('update', kfBIERMAN, meas);
+[state, stateCov] = OCvKF('update', kfOCV, meas);
+
+errorCovPos = stateCovBier-stateCov
+errorStatePos = stateBier-state
