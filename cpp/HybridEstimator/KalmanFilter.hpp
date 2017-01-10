@@ -36,6 +36,7 @@ public:
     void predict(VectorXd &controlVector);
 	void mwgs();
 	void predict();
+	void update();
     void update(VectorXd &measureVector);
 	MatrixXd getCovPost();
 	MatrixXd getCovPred();

@@ -162,6 +162,14 @@ void KalmanFilter::predict()
 
 }
 
+void KalmanFilter::update()
+{
+
+	U_post = U_pred;
+	D_post = D_pred;
+	statePost = statePred;
+
+}
 
 /**
  * Performs the Kalman Filter update step using Bierman's method.
