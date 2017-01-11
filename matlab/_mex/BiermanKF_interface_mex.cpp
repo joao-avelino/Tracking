@@ -9,7 +9,7 @@
 
 // The class that we are interfacing t
 
-void teste(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	// Get the command string
 	char cmd[64];
@@ -276,6 +276,33 @@ void teste(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 		return;
 
+	}
+
+	if (!strcmp("update_empty", cmd))
+	{
+		KalmanFilter_instance->update();
+		//Return the predicted state
+		VectorXd post_state = KalmanFilter_instance->getStatePost();
+		plhs[0] = mxCreateDoubleMatrix(post_state.size(), 1, mxREAL);
+
+		double *state = mxGetPr(plhs[0]);
+
+		for (int m = 0; m < post_state.size(); m++)
+			state[m] = post_state(m);
+
+
+		//Return the State Covariance Matrix
+		MatrixXd covMat = KalmanFilter_instance->getCovPost();
+		plhs[1] = mxCreateDoubleMatrix(covMat.rows(), covMat.cols(), mxREAL);
+
+		double *covMatPostPTR = mxGetPr(plhs[1]);
+
+
+		for (int m = 0; m < covMat.rows(); m++)
+			for (int n = 0; n < covMat.cols(); n++)
+				covMatPostPTR[m + covMat.rows()*n] = covMat(m, n);
+
+		return;
 	}
 
 

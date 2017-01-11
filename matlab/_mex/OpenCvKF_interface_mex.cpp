@@ -8,7 +8,7 @@
 
 // The class that we are interfacing t
 
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+void teste(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	// Get the command string
 	char cmd[64];
@@ -135,7 +135,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 				initial_cov.at<double>(m, n) = initialStateCovPTR[m + stateCovM*n];
 			}
 		}
-		
+		/*
 		std::stringstream ss;
 		ss << "stateTransitionModel: " << stateTransitionModel << std::endl;
 		mexPrintf(ss.str().c_str());
@@ -159,8 +159,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		std::stringstream ss6;
 		ss6 << "initial_cov_: " << initial_cov << std::endl;
 		mexPrintf(ss6.str().c_str());
+		*/
 
-		
 		cv::KalmanFilter *openCvKF = new cv::KalmanFilter(initial_state.rows, observationNoiseM, 0, CV_64F);
 
 		openCvKF->transitionMatrix = stateTransitionModel;
@@ -232,46 +232,50 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		if (nrhs != 3)
 			mexErrMsgTxt("Test: Unexpected arguments.");
 
-		//Get the measurement
-		double *measurePTR = mxGetPr(prhs[2]);
-		int measureM = mxGetM(prhs[2]);
-		int measureN = mxGetN(prhs[2]);
 
-		if (measureM > 1 && measureN > 1)
-		{
-			mexErrMsgTxt("Expecting the state vector but received a matrix");
-			exit(-1);
-		}
+			//Get the measurement
+			double *measurePTR = mxGetPr(prhs[2]);
+			int measureM = mxGetM(prhs[2]);
+			int measureN = mxGetN(prhs[2]);
 
-		int dimsState = std::max(measureM, measureN);
-
-		cv::Mat measure(dimsState, 1, CV_64F);
-
-		if (measureN >= measureM)
-		{
-			for (int n = 0; n < measureN; n++)
+			if (measureM > 1 && measureN > 1)
 			{
-				measure.at<double>(n, 0) = measurePTR[0 + measureM*n];
-			}
-		}
-		else {
-
-			for (int m = 0; m < measureM; m++)
-			{
-				measure.at<double>(m, 0) = measurePTR[m + measureM * 0];
+				mexErrMsgTxt("Expecting the state vector but received a matrix");
+				exit(-1);
 			}
 
-		}
+			int dimsState = std::max(measureM, measureN);
 
-		KalmanFilter_instance->correct(measure);
-		//Return the predicted state
-		cv::Mat post_state = KalmanFilter_instance->statePost;
-		plhs[0] = mxCreateDoubleMatrix(post_state.rows, post_state.cols, mxREAL);
+			cv::Mat measure(dimsState, 1, CV_64F);
 
-		double *state = mxGetPr(plhs[0]);
+			if (measureN >= measureM)
+			{
+				for (int n = 0; n < measureN; n++)
+				{
+					measure.at<double>(n, 0) = measurePTR[0 + measureM*n];
+				}
+			}
+			else {
 
-		for (int m = 0; m < post_state.rows; m++)
-			state[m] = post_state.at<double>(m, 0);
+				for (int m = 0; m < measureM; m++)
+				{
+					measure.at<double>(m, 0) = measurePTR[m + measureM * 0];
+				}
+
+			}
+
+			KalmanFilter_instance->correct(measure);
+			//Return the updated state
+			cv::Mat post_state = KalmanFilter_instance->statePost;
+			plhs[0] = mxCreateDoubleMatrix(post_state.rows, post_state.cols, mxREAL);
+
+			double *state = mxGetPr(plhs[0]);
+
+			for (int m = 0; m < post_state.rows; m++)
+				state[m] = post_state.at<double>(m, 0);
+
+		
+
 
 
 		//Return the State Covariance Matrix
@@ -287,6 +291,33 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 		return;
 
+	}
+
+	if (!strcmp("update_empty", cmd))
+	{
+		KalmanFilter_instance->correct(cv::Mat());
+
+		//Return the updated state
+		cv::Mat post_state = KalmanFilter_instance->statePost;
+		plhs[0] = mxCreateDoubleMatrix(post_state.rows, post_state.cols, mxREAL);
+
+		double *state = mxGetPr(plhs[0]);
+
+		for (int m = 0; m < post_state.rows; m++)
+			state[m] = post_state.at<double>(m, 0);
+
+		//Return the State Covariance Matrix
+		cv::Mat covMat = KalmanFilter_instance->errorCovPost;
+		plhs[1] = mxCreateDoubleMatrix(covMat.rows, covMat.cols, mxREAL);
+
+		double *covMatPostPTR = mxGetPr(plhs[1]);
+
+
+		for (int m = 0; m < covMat.rows; m++)
+			for (int n = 0; n < covMat.cols; n++)
+				covMatPostPTR[m + covMat.rows*n] = covMat.at<double>(m, n);
+
+		return;
 	}
 
 

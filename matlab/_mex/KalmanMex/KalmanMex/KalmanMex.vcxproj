@@ -98,9 +98,12 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;KALMANMEX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(MATLAB_BASE)\extern\include;$(MATLAB_BASE)\toolbox\distcomp\gpu\extern\include;%(AdditionalIncludeDirectories);$(OPENCV_DIR)\..\..\include;$(EIGEN_DIR)\include;$(HOMEPATH)\Documents\Workspace\Tracking\cpp\HybridEstimator</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

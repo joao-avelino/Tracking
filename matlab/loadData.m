@@ -71,7 +71,7 @@ noisyPerson1XY(:, 2) = sampledPerson1XY(:, 2)+0.5*randn(size(sampledPerson1XY(:,
 spnoise = zeros(size(sampledPerson1XY(:, 1), 1), 1); 
 p = randperm(size(sampledPerson1XY(:, 1), 1));
 sppoints = p(1:round(length(p)/5));
-spnoise(sppoints) = 1*sign(sampledPerson1XY(sppoints, 1));
+spnoise(sppoints) = 2*sign(sampledPerson1XY(sppoints, 1));
 sppoints = p(1:round(length(p)/5));
 
 
@@ -86,7 +86,7 @@ noisyPerson1XY(:, 1) = aux;
 spnoise = zeros(size(sampledPerson1XY(:, 1), 1), 1); 
 p = randperm(size(sampledPerson1XY(:, 1), 1));
 sppoints = p(1:round(length(p)/5));
-spnoise(sppoints) = 1*sign(sampledPerson1XY(sppoints, 1));
+spnoise(sppoints) = 2*sign(sampledPerson1XY(sppoints, 1));
 
 noisyPerson1XY(:, 2) = noisyPerson1XY(:, 2) + spnoise;
 
