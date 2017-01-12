@@ -64,14 +64,16 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
  *  Performs the Kalman Filter predict step using the Modified weighted Gram—Schmidt method (MWGS)
  *  proposed by Thornton and Bierman (based on Matlab code provided by [3]).
  *
- *  Predict when a control signal is available
  */
 
 
 void KalmanFilter::predict(VectorXd &controlVector)
 {
     //Normal Kalman predict with control
-    statePred = stateTransitionModel*statePost+controlInputModel*controlVector;
+	if (controlVector.size() > 0)
+		statePred = stateTransitionModel*statePost + controlInputModel*controlVector;
+	else
+		statePred = stateTransitionModel*statePost;
 
     //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
     //this is just the usual
@@ -86,14 +88,7 @@ void KalmanFilter::predict(VectorXd &controlVector)
 	
 }
 
-/**
- * @brief KalmanFilter::predict
- *
- *  Performs the Kalman Filter predict step using the Modified weighted Gram—Schrnidt method (MWGS)
- *  proposed by Thornton and Bierman (based on Matlab code provided by [3]).
- *
- *  Predict when NO control signal is available
- */
+
 
 void KalmanFilter::mwgs()
 {
@@ -150,39 +145,6 @@ void KalmanFilter::mwgs()
 
 }
 
-void KalmanFilter::predict()
-{
-    //Normal Kalman predict without control
-    statePred = stateTransitionModel*statePost;
-
-
-    //covPred = stateTransitionModel*covPost*stateTransitionModel.transpose()+processNoiseCov;
-    //this is just the usual
-    //kf equation. not using it anymore
-
-	//Perform MWGS
-	mwgs();
-
-	U_post = U_pred;
-	D_post = D_pred;
-	statePost = statePred;
-
-}
-
-/**
-*
-*	Calling the update method without any measurement does NOTHING at all.
-*
-*/
-
-void KalmanFilter::update()
-{
-
-	U_post = U_pred;
-	D_post = D_pred;
-	statePost = statePred;
-
-}
 
 /**
  * Performs the Kalman Filter update step using Bierman's method.
@@ -200,6 +162,7 @@ void KalmanFilter::update()
  *
  * x_post = x_pred
  *
+ * If no measurement is available it does nothing.
  *
  * @param[in] measureVector The measurement vector
  */
@@ -220,7 +183,9 @@ void KalmanFilter::update(VectorXd &measureVector)
 
 	if (obsDim < 1)
 	{
-		update();
+		U_post = U_pred;
+		D_post = D_pred;
+		statePost = statePred;
 		return;
 	}
 		

@@ -34,12 +34,11 @@ public:
     virtual void runEstimator() = 0;
     virtual void updateDeltaT(double deltaT) = 0;
     virtual std::vector<double> getAllModelProbabilities() = 0;
-    HybridEstimator(double deltaT, std::vector<BaseKalmanFilter> modelList);
+    HybridEstimator();
 
 protected:
 
-    std::vector<BaseKalmanFilter> modelList;
-    double deltaT;
+    std::vector<BaseKalmanFilter*> modelList;
 };
 
 #endif // HYBRIDESTIMATOR_HPP
