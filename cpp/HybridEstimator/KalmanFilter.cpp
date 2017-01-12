@@ -80,6 +80,9 @@ void KalmanFilter::predict(VectorXd &controlVector)
 	//MWGS
 	mwgs();
 
+	U_post = U_pred;
+	D_post = D_pred;
+	statePost = statePred;
 	
 }
 
@@ -160,7 +163,17 @@ void KalmanFilter::predict()
 	//Perform MWGS
 	mwgs();
 
+	U_post = U_pred;
+	D_post = D_pred;
+	statePost = statePred;
+
 }
+
+/**
+*
+*	Calling the update method without any measurement does NOTHING at all.
+*
+*/
 
 void KalmanFilter::update()
 {
@@ -204,6 +217,14 @@ void KalmanFilter::update(VectorXd &measureVector)
     KFUtils::decorrelateData(measureVector, uncorrData, observationModel, uncorrH, observationNoiseCov, uncorrR);
 
     int obsDim = measureVector.size();
+
+	if (obsDim < 1)
+	{
+		update();
+		return;
+	}
+		
+
     int stateDims = statePost.size();
 
     kalmanGain = MatrixXd::Zero(stateDims, obsDim);
