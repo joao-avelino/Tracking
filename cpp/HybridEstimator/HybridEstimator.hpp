@@ -4,6 +4,8 @@
 #include <eigen3/Eigen/Core>
 #include "BaseKalmanFilter.hpp"
 #include <vector>
+#include <memory>
+
 using namespace Eigen;
 
 /**
@@ -13,11 +15,14 @@ using namespace Eigen;
  *
  * This abstract class defines a Hybrid Estimator. It can be used to implement algorithms
  * that rely on multiple models and fuses their estimations on a probabilistic way, like
- * the Multiple Models Adaptive Estimator [1] or the Interactiv Multiple Models [2].
+ * the Multiple Models Adaptive Estimator [1] or the Interactive Multiple Models [2].
  *
  *  Refs:
- *  [1] 
- *  [2] 
+ *  [1] Hanlon, P. D., & Maybeck, P. S. (2000). Multiple-model adaptive estimation 
+ *	   using a residual correlation Kalman filter bank. IEEE Transactions on Aerospace 
+ *	   and Electronic Systems, 36(2), 393-406.
+ *  [2] Mazor, Efim, et al. "Interacting multiple model methods in target tracking: a survey." 
+ *		IEEE transactions on aerospace and electronic systems 34.1 (1998): 103-123.
  *
  *
  *
@@ -36,9 +41,11 @@ public:
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();
 
+	
+
 protected:
 
-    std::vector<BaseKalmanFilter*> modelList;
+    std::vector< std::shared_ptr<BaseKalmanFilter> > kalmanBank;
 };
 
 #endif // HYBRIDESTIMATOR_HPP
