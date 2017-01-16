@@ -12,9 +12,14 @@ public:
 	VectorXd getStateCovariancePrediction();
 	VectorXd getStateEstimate();
 	VectorXd getStateCovariance();
-	void runEstimator();
+	virtual void predict();
+	virtual void update();
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();
+
+private:
+	void computeProbabilities();
+
 };
 
 #endif // MMAE_HPP

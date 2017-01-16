@@ -59,12 +59,17 @@ VectorXd MMAE::getStateCovariance()
 }
 
 
-void MMAE::runEstimator()
+void MMAE::predict()
 {
 
-	return;
+
 }
 
+void MMAE::update()
+{
+
+
+}
 
 void MMAE::updateDeltaT(double deltaT)
 {
@@ -78,4 +83,9 @@ std::vector<double> MMAE::getAllModelProbabilities()
 
 	std::vector<double> ret;
 	return ret;
+}
+
+void MMAE::computeProbabilities()
+{
+
 }

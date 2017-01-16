@@ -36,7 +36,8 @@ public:
     virtual VectorXd getStateCovariancePrediction() = 0;
     virtual VectorXd getStateEstimate() = 0;
     virtual VectorXd getStateCovariance() = 0;
-    virtual void runEstimator() = 0;
+    virtual void predict() = 0;
+	virtual void update() = 0;
     virtual void updateDeltaT(double deltaT) = 0;
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();
