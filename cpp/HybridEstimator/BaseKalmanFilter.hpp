@@ -2,10 +2,11 @@
 #define BASEKALMANFILTER_HPP
 
 #include <eigen3/Eigen/Core> //Not sure about dense.
+#include "BaseBayesianFilter.hpp"
 
 using namespace Eigen;
 
-class BaseKalmanFilter
+class BaseKalmanFilter : public BaseBayesianFilter
 {
 public:
 
@@ -21,9 +22,10 @@ public:
     MatrixXd getCovPred();
     VectorXd getMeasurementResidual();
     MatrixXd getResidualCovariance();
-    MatrixXd getKalmanGain();
     VectorXd getStatePost();
     MatrixXd getCovPost();
+
+	MatrixXd getKalmanGain();
 
     //Setters
     void setDeltaT(double deltaT);

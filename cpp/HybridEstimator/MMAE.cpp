@@ -24,9 +24,9 @@
 *
 */
 
-MMAE::MMAE(std::vector<std::shared_ptr<BaseKalmanFilter> > kalmanBank)
+MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank)
 {
-	this->kalmanBank = kalmanBank;
+	this->filterBank = filterBank;
 }
 
 
@@ -58,18 +58,20 @@ VectorXd MMAE::getStateCovariance()
 	return VectorXd();
 }
 
-
-void MMAE::predict()
+void MMAE::predict(VectorXd & control)
 {
 
+	//DO THE MMAE PREDICTION STEPS!
 
 }
 
-void MMAE::update()
+void MMAE::update(VectorXd & measure)
 {
 
+	//Perform the MMAE measurement updates
 
 }
+
 
 void MMAE::updateDeltaT(double deltaT)
 {

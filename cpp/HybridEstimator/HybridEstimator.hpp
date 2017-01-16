@@ -2,7 +2,8 @@
 #define HYBRIDESTIMATOR_HPP
 
 #include <eigen3/Eigen/Core>
-#include "BaseKalmanFilter.hpp"
+#include "MMBankItem.hpp"
+#include "MMBankItem.hpp"
 #include <vector>
 #include <memory>
 
@@ -42,11 +43,6 @@ public:
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();
 
-	
-
-protected:
-
-    std::vector< std::shared_ptr<BaseKalmanFilter> > kalmanBank;
 };
 
 #endif // HYBRIDESTIMATOR_HPP
