@@ -42,6 +42,9 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Kfutils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAE.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -66,6 +69,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\Kfutils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MMAE_interface_mex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -152,6 +152,7 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\HybridEstimator.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\KalmanFilter.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Kfutils.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAE.hpp" />
     <ClInclude Include="..\..\BiermanKF_handle.hpp" />
     <ClInclude Include="..\..\OpenCvKF_handle.hpp" />
     <ClInclude Include="stdafx.h" />
@@ -164,9 +165,11 @@
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\HybridEstimator.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\KalmanFilter.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\Kfutils.cpp" />
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAE.cpp" />
     <ClCompile Include="..\..\BiermanKF_interface_mex.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\MMAE_interface_mex.cpp" />
     <ClCompile Include="..\..\OpenCvKF_interface_mex.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

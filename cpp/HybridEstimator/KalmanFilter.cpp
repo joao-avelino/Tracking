@@ -84,6 +84,8 @@ void KalmanFilter::predict(VectorXd &controlVector)
 	//MWGS
 	mwgs();
 
+    //For safety. When no measurement is available the behaviour should be the same by either
+    //not calling the update method or calling it with an empty measurement
 	U_post = U_pred;
 	D_post = D_pred;
 	statePost = statePred;
