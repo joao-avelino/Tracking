@@ -25,15 +25,28 @@
 *
 */
 
-MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank)
+MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumProbability, bool initializeProbs)
 {
 	this->filterBank = filterBank;
+
+	this->minimumProbability = minimumProbability;
 
 	stateDim = 0;
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
 	{
 		if (stateDim < ptr->getStateDim())
 			stateDim = ptr->getStateDim();
+	}
+
+	if (initializeProbs)
+	{
+		int nModels = filterBank.size();
+		double prob = 1.0 / nModels;
+
+		for (std::shared_ptr<MMAEItem> ptr : filterBank)
+		{
+			ptr->setProbabiliy(prob);
+		}
 	}
 
 
@@ -217,10 +230,36 @@ void MMAE::computeProbabilities(VectorXd & measure)
 	}
 
 
+	double sumOfProbabilities = 0;
+	bool needToRenormalize = false;
+
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
 	{
 		double prob = ptr->getProbDensity()* ptr->getProbability() / sumOfDensities;
+
+
+		if (prob < minimumProbability)
+		{
+			prob = minimumProbability+pow(minimumProbability, 2);
+			needToRenormalize = true;
+			sumOfProbabilities += prob;
+		}
+
 		ptr->setProbabiliy(prob);
+
+		
+
 	}
+
+	//Renormalize probabilities if needed
+	if (needToRenormalize)
+	{
+		for (std::shared_ptr<MMAEItem> ptr : filterBank)
+		{
+			ptr->setProbabiliy(ptr->getProbability() / sumOfProbabilities);
+		}
+	}
+
+
 
 }

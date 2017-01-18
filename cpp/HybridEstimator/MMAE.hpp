@@ -8,7 +8,7 @@ class MMAE :
 	HybridEstimator
 {
 public:
-	MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank);
+	MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumProbability=0.05, bool initializeProbs=true);
 	~MMAE();
 	VectorXd getStatePrediction();
 	MatrixXd getStateCovariancePrediction();
@@ -23,6 +23,7 @@ private:
 	void computeProbabilities(VectorXd & measure);
 	std::vector< std::shared_ptr<MMAEItem> > filterBank;
 	double stateDim;
+	double minimumProbability;
 
 };
 
