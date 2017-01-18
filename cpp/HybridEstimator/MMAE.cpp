@@ -67,14 +67,30 @@ MatrixXd MMAE::getStateCovariancePrediction()
 
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
 	{
-		MatrixXd auxMatrix = MatrixXd::Zero(stateDim, stateDim);
+
+		MatrixXd filterCovPred = ptr->getCovPred();
+		VectorXd filterStatePred = ptr->getStatePred();
+
+		MatrixXd augmentedMat = MatrixXd::Zero(stateDim, stateDim);
+		VectorXd augmentedState = VectorXd::Zero(stateDim);
+
+
+		int rows = filterCovPred.rows();
+		int cols = filterCovPred.cols();
+
+		int modelStateDim = filterStatePred.size();
+
+		augmentedMat.block(0, 0, rows, cols) = filterCovPred;
+		augmentedState.head(modelStateDim) = filterStatePred;
+
+		VectorXd diffState = augmentedState - getStatePrediction();
+
+		covMat += ptr->getProbability()*(augmentedMat-diffState*diffState.transpose());
 
 
 
 	}
 
-	//(x-x_mmae)
-	VectorXd 
 
 	return VectorXd();
 }

@@ -21,6 +21,16 @@ VectorXd MMBankItem::getStatePost()
 	return filter->getStatePost();
 }
 
+MatrixXd MMBankItem::getCovPred()
+{
+	return this->filter->getCovPred();
+}
+
+MatrixXd MMBankItem::getCovPost()
+{
+	return this->filter->getCovPost();
+}
+
 void MMBankItem::predict(VectorXd &control)
 {
 	this->filter->predict(control);
@@ -29,4 +39,9 @@ void MMBankItem::predict(VectorXd &control)
 void MMBankItem::update(VectorXd & measure)
 {
 	this->filter->update(measure);
+}
+
+std::string MMBankItem::getModelName()
+{
+	return this->filter->getModelName();
 }

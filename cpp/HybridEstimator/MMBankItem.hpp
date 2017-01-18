@@ -13,8 +13,14 @@ public:
 	~MMBankItem();
 	VectorXd getStatePred();
 	VectorXd getStatePost();
+	MatrixXd getCovPred();
+	MatrixXd getCovPost();
+
 	void predict(VectorXd &control=VectorXd());
 	void update(VectorXd &measure = VectorXd());
+
+	std::string getModelName();
+
 
 protected:
 	std::shared_ptr<BaseBayesianFilter> filter;
