@@ -13,7 +13,7 @@ public:
 	VectorXd getStatePrediction();
 	MatrixXd getStateCovariancePrediction();
 	VectorXd getStatePosterior();
-	MatrixXd getStateCovariance();
+	MatrixXd getStateCovariancePosterior();
 	void predict(VectorXd &control=VectorXd());
 	void update(VectorXd &measure=VectorXd());
 	void updateDeltaT(double deltaT);

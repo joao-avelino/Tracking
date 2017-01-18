@@ -86,26 +86,60 @@ MatrixXd MMAE::getStateCovariancePrediction()
 		VectorXd diffState = augmentedState - getStatePrediction();
 
 		covMat += ptr->getProbability()*(augmentedMat-diffState*diffState.transpose());
-
-
-
 	}
 
 
-	return VectorXd();
+	return covMat;
 }
 
 VectorXd MMAE::getStatePosterior()
 {
 
-	return VectorXd();
+	//Set up a vector for the states
+	VectorXd stateMixture = VectorXd::Zero(stateDim);
+
+
+	//Get the mixture of states
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		stateMixture += ptr->getStatePost()*ptr->getProbability();
+	}
+
+	return stateMixture;
+
 }
 
-VectorXd MMAE::getStateCovariance()
+MatrixXd MMAE::getStateCovariancePosterior()
 {
+	MatrixXd covMat = MatrixXd::Zero(stateDim, stateDim);
 
-	return VectorXd();
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+
+		MatrixXd filterCovPost = ptr->getCovPost();
+		VectorXd filterStatePost = ptr->getStatePost();
+
+		MatrixXd augmentedMat = MatrixXd::Zero(stateDim, stateDim);
+		VectorXd augmentedState = VectorXd::Zero(stateDim);
+
+
+		int rows = filterCovPost.rows();
+		int cols = filterCovPost.cols();
+
+		int modelStateDim = filterStatePost.size();
+
+		augmentedMat.block(0, 0, rows, cols) = filterCovPost;
+		augmentedState.head(modelStateDim) = filterStatePost;
+
+		VectorXd diffState = augmentedState - getStatePosterior();
+
+		covMat += ptr->getProbability()*(augmentedMat - diffState*diffState.transpose());
+	}
+
+
+	return covMat;
 }
+
 
 void MMAE::predict(VectorXd & control)
 {
@@ -140,6 +174,7 @@ void MMAE::update(VectorXd & measure)
 void MMAE::updateDeltaT(double deltaT)
 {
 
+	//THIS IS IMPORTANT! VERY IMPORTANT
 
 	return;
 }
@@ -149,11 +184,22 @@ std::vector<double> MMAE::getAllModelProbabilities()
 {
 
 	std::vector<double> ret;
+
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		ret.push_back(ptr->getProbability());
+	}
+	
+
 	return ret;
 }
 
 void MMAE::computeProbabilities(VectorXd & measure)
 {
+	//If no measurement available, keep the probabilities
+	if (measure.size() < 1)
+		return;
+
 	double sumOfDensities = 0;
 
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
