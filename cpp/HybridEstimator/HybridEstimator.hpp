@@ -34,9 +34,9 @@ class HybridEstimator
 {
 public:
     virtual VectorXd getStatePrediction() = 0;
-    virtual VectorXd getStateCovariancePrediction() = 0;
+    virtual MatrixXd getStateCovariancePrediction() = 0;
     virtual VectorXd getStateEstimate() = 0;
-    virtual VectorXd getStateCovariance() = 0;
+    virtual MatrixXd getStateCovariance() = 0;
     virtual void predict() = 0;
 	virtual void update() = 0;
     virtual void updateDeltaT(double deltaT) = 0;

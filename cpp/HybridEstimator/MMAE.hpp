@@ -11,17 +11,18 @@ public:
 	MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank);
 	~MMAE();
 	VectorXd getStatePrediction();
-	VectorXd getStateCovariancePrediction();
-	VectorXd getStateEstimate();
-	VectorXd getStateCovariance();
+	MatrixXd getStateCovariancePrediction();
+	VectorXd getStatePosterior();
+	MatrixXd getStateCovariance();
 	void predict(VectorXd &control=VectorXd());
 	void update(VectorXd &measure=VectorXd());
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();
 
 private:
-	void computeProbabilities();
+	void computeProbabilities(VectorXd & measure);
 	std::vector< std::shared_ptr<MMAEItem> > filterBank;
+	double stateDim;
 
 };
 

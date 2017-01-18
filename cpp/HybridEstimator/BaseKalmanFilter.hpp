@@ -20,12 +20,12 @@ public:
     //Getters
     VectorXd getStatePred();
     MatrixXd getCovPred();
-    VectorXd getMeasurementResidual();
-    MatrixXd getResidualCovariance();
+    virtual VectorXd getMeasurementResidual(VectorXd &measure) = 0;
+    virtual MatrixXd getResidualCovariance() = 0;
     VectorXd getStatePost();
     MatrixXd getCovPost();
 
-	MatrixXd getKalmanGain();
+    MatrixXd getKalmanGain();
 
     //Setters
     void setDeltaT(double deltaT);
@@ -35,8 +35,6 @@ protected:
 
     VectorXd statePred;
     MatrixXd covPred;
-    VectorXd measurementResidual;
-    MatrixXd residualCovariance;
     MatrixXd kalmanGain;
     VectorXd statePost;
     MatrixXd covPost;

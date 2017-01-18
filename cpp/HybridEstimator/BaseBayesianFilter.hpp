@@ -20,7 +20,7 @@ public:
 
 	virtual VectorXd getStatePred() = 0;
 	virtual MatrixXd getCovPred() = 0;
-	virtual VectorXd getMeasurementResidual() = 0;
+	virtual VectorXd getMeasurementResidual(VectorXd &measure) = 0;
 	virtual MatrixXd getResidualCovariance() = 0;
 	virtual VectorXd getStatePost() = 0;
 	virtual MatrixXd getCovPost() = 0;

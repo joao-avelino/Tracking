@@ -35,7 +35,9 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationMo
     this->processNoiseCov = processNoiseCov;
     this->observationNoiseCov = observationNoiseCov;
     this->statePost = initialState;
+	this->statePred = initialState;
     this->covPost = initialCov;
+	this->covPred = initialCov;
 
 	KFUtils::uduFactorization(initialCov, U_post, D_post);
 
@@ -224,6 +226,16 @@ MatrixXd KalmanFilter::getCovPred()
 {
 	covPred = U_pred*D_pred.asDiagonal()*U_pred.transpose();
 	return covPred;
+}
+
+VectorXd KalmanFilter::getMeasurementResidual(VectorXd & measure)
+{
+	return measure-observationModel*statePred;
+}
+
+MatrixXd KalmanFilter::getResidualCovariance()
+{
+	return observationModel*U_pred*D_pred*U_pred.transpose()*observationModel.transpose()+observationNoiseCov;
 }
 
 /**

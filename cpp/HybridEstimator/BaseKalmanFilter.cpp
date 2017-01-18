@@ -19,20 +19,6 @@ MatrixXd BaseKalmanFilter::getCovPred()
     return covPred;
 }
 
-VectorXd BaseKalmanFilter::getMeasurementResidual()
-{
-    return measurementResidual;
-}
-
-MatrixXd BaseKalmanFilter::getResidualCovariance()
-{
-    return residualCovariance;
-}
-
-MatrixXd BaseKalmanFilter::getKalmanGain()
-{
-    return kalmanGain;
-}
 
 VectorXd BaseKalmanFilter::getStatePost()
 {
@@ -42,6 +28,11 @@ VectorXd BaseKalmanFilter::getStatePost()
 MatrixXd BaseKalmanFilter::getCovPost()
 {
     return covPost;
+}
+
+MatrixXd BaseKalmanFilter::getKalmanGain()
+{
+	return kalmanGain;
 }
 
 void BaseKalmanFilter::setDeltaT(double deltaT)

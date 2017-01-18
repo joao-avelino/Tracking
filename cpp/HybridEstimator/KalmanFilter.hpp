@@ -39,6 +39,9 @@ public:
 	MatrixXd getCovPost();
 	MatrixXd getCovPred();
 
+	VectorXd getMeasurementResidual(VectorXd &measure);
+	MatrixXd getResidualCovariance();
+
 protected:
 
     MatrixXd stateTransitionModel;

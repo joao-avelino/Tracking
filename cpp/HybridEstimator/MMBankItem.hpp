@@ -11,7 +11,8 @@ class MMBankItem
 public:
 	MMBankItem();
 	~MMBankItem();
-	virtual VectorXd getStateEstimate() = 0;
+	VectorXd getStatePred();
+	VectorXd getStatePost();
 	void predict(VectorXd &control=VectorXd());
 	void update(VectorXd &measure = VectorXd());
 

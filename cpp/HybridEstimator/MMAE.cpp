@@ -1,4 +1,5 @@
 #include "MMAE.hpp"
+#include <iostream>
 
 /**
 * @file MMAE.cpp
@@ -27,6 +28,15 @@
 MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank)
 {
 	this->filterBank = filterBank;
+
+	stateDim = 0;
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		if (stateDim < ptr->getStateDim())
+			stateDim = ptr->getStateDim();
+	}
+
+
 }
 
 
@@ -37,16 +47,39 @@ MMAE::~MMAE()
 VectorXd MMAE::getStatePrediction()
 {
 
-	return VectorXd();
+	//Set up a vector for the states
+	VectorXd stateMixture = VectorXd::Zero(stateDim);
+
+
+	//Get the mixture of states
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		stateMixture += ptr->getStatePred()*ptr->getProbability();
+	}
+
+	return stateMixture;
 }
 
-VectorXd MMAE::getStateCovariancePrediction()
+MatrixXd MMAE::getStateCovariancePrediction()
 {
 
+	MatrixXd covMat = MatrixXd::Zero(stateDim, stateDim);
+
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		MatrixXd auxMatrix = MatrixXd::Zero(stateDim, stateDim);
+
+
+
+	}
+
+	//(x-x_mmae)
+	VectorXd 
+
 	return VectorXd();
 }
 
-VectorXd MMAE::getStateEstimate()
+VectorXd MMAE::getStatePosterior()
 {
 
 	return VectorXd();
@@ -61,7 +94,13 @@ VectorXd MMAE::getStateCovariance()
 void MMAE::predict(VectorXd & control)
 {
 
-	//DO THE MMAE PREDICTION STEPS!
+	//Make prediction for each element on the model bank
+	for (std::shared_ptr<MMAEItem> ptr: filterBank)
+	{
+
+		ptr->predict(control);
+
+	}
 
 }
 
@@ -69,12 +108,22 @@ void MMAE::update(VectorXd & measure)
 {
 
 	//Perform the MMAE measurement updates
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+
+		ptr->update(measure);
+
+	}
+
+	computeProbabilities(measure);
 
 }
 
 
+
 void MMAE::updateDeltaT(double deltaT)
 {
+
 
 	return;
 }
@@ -87,7 +136,29 @@ std::vector<double> MMAE::getAllModelProbabilities()
 	return ret;
 }
 
-void MMAE::computeProbabilities()
+void MMAE::computeProbabilities(VectorXd & measure)
 {
+	double sumOfDensities = 0;
+
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+
+		ptr->computeProbabilityDensity(measure);
+		sumOfDensities += ptr->getProbDensity()*ptr->getProbability();
+	}
+
+ 
+	if (sumOfDensities == 0)
+	{
+		std::cerr << "WARN: The sum of probability densities equals zero. Previous probabilities will be used." << std::endl;
+		return;
+	}
+
+
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+		double prob = ptr->getProbDensity()* ptr->getProbability() / sumOfDensities;
+		ptr->setProbabiliy(prob);
+	}
 
 }
