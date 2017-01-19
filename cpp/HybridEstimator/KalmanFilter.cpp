@@ -41,7 +41,7 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationMo
              MatrixXd processNoiseCov, MatrixXd observationNoiseCov, VectorXd initialState, MatrixXd initialCov)
 {
     this->stateTransitionModel = stateTransitionModel;
-    this->controlInputModel = MatrixXd::Zero(statePost.size(), 1);
+    this->controlInputModel = MatrixXd::Zero(initialState.size(), 1);
     this->observationModel = observationModel;
     this->processNoiseCov = processNoiseCov;
     this->observationNoiseCov = observationNoiseCov;
@@ -51,6 +51,9 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationMo
 	this->covPred = initialCov;
 
 	KFUtils::uduFactorization(initialCov, U_post, D_post);
+
+	U_pred = U_post;
+	D_pred = D_post;
 
 }
 

@@ -8,7 +8,7 @@
 
 // The class that we are interfacing t
 
-void teste(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+void teste3(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	// Get the command string
 	char cmd[64];

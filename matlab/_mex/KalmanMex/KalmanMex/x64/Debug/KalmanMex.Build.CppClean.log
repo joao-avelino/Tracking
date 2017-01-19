@@ -2,11 +2,16 @@ c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalman
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\vc140.pdb
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\vc140.idb
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\stdafx.obj
+c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\basebayesianfilter.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\basekalmanfilter.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\hybridestimator.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\kalmanfilter.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\kfutils.obj
+c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\mmae.obj
+c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\mmaeitem.obj
+c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\mmbankitem.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\biermankf_interface_mex.obj
+c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\mmae_interface_mex.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\opencvkf_interface_mex.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\kalmanmex\x64\debug\dllmain.obj
 c:\users\joão avelino\documents\workspace\tracking\matlab\_mex\kalmanmex\x64\debug\kalmanmex.lib

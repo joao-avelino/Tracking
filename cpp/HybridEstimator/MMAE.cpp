@@ -67,7 +67,14 @@ VectorXd MMAE::getStatePrediction()
 	//Get the mixture of states
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
 	{
-		stateMixture += ptr->getStatePred()*ptr->getProbability();
+
+		VectorXd augmentedState = VectorXd::Zero(stateDim);
+		VectorXd partialVector = ptr->getStatePred()*ptr->getProbability();
+		
+		int modelStateDim = partialVector.size();
+		augmentedState.head(modelStateDim) = partialVector;
+
+		stateMixture += augmentedState;
 	}
 
 	return stateMixture;
@@ -115,7 +122,13 @@ VectorXd MMAE::getStatePosterior()
 	//Get the mixture of states
 	for (std::shared_ptr<MMAEItem> ptr : filterBank)
 	{
-		stateMixture += ptr->getStatePost()*ptr->getProbability();
+		VectorXd augmentedState = VectorXd::Zero(stateDim);
+		VectorXd partialVector = ptr->getStatePost()*ptr->getProbability();
+
+		int modelStateDim = partialVector.size();
+		augmentedState.head(modelStateDim) = partialVector;
+
+		stateMixture += augmentedState;
 	}
 
 	return stateMixture;

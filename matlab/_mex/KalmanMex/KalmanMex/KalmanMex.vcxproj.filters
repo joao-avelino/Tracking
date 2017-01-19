@@ -45,6 +45,15 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAE.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseBayesianFilter.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +84,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\MMAE_interface_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\BaseBayesianFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

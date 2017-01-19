@@ -98,7 +98,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Full</Optimization>
+      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;KALMANMEX_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(MATLAB_BASE)\extern\include;$(MATLAB_BASE)\toolbox\distcomp\gpu\extern\include;%(AdditionalIncludeDirectories);$(OPENCV_DIR)\..\..\include;$(EIGEN_DIR)\include;$(HOMEPATH)\Documents\Workspace\Tracking\cpp\HybridEstimator</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
@@ -148,17 +148,21 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseBayesianFilter.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseKalmanFilter.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\HybridEstimator.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\KalmanFilter.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Kfutils.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAE.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.hpp" />
     <ClInclude Include="..\..\BiermanKF_handle.hpp" />
     <ClInclude Include="..\..\OpenCvKF_handle.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\BaseBayesianFilter.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\BaseKalmanFilter.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -166,6 +170,8 @@
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\KalmanFilter.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\Kfutils.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAE.cpp" />
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.cpp" />
+    <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.cpp" />
     <ClCompile Include="..\..\BiermanKF_interface_mex.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
