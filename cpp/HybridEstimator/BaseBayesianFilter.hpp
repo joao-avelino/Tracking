@@ -6,6 +6,7 @@
 
 using namespace Eigen;
 
+
 class BaseBayesianFilter
 {
 public:

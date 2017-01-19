@@ -25,6 +25,17 @@
  *  License stuff
  */
 
+/**
+ * @brief KalmanFilter Constructor
+ * @details Constructs a Bierman-Thornton classical Kalman Filter object
+ * 
+ * @param[in] stateTransitionModel The state transition matrix, usually denoted by $\mathbf{\Phi}$
+ * @param[in] observationModel The observation matrix usually denoted by $\mathbf{H}$
+ * @param[in] processNoiseCov The process noise covariance matrix, usually denoted by $\mathbf{Q}$
+ * @param[in] observationNoiseCov The observation noise covariance matrix, usually denoted by $\mathbf{R}$
+ * @param[in] initialState The initial state of the Kalman Filter
+ * @param[in] initialCov The initial covariance matrix $\mathbf{P}_0$. This matrix should have big numbers
+ */
 
 KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationModel,
              MatrixXd processNoiseCov, MatrixXd observationNoiseCov, VectorXd initialState, MatrixXd initialCov)
@@ -60,12 +71,15 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
 }
 
 
+
 /**
  * @brief KalmanFilter::predict
- *
- *  Performs the Kalman Filter predict step using the Modified weighted Gram—Schmidt method (MWGS)
- *  proposed by Thornton and Bierman (based on Matlab code provided by [3]).
- *
+ *  
+ * @details Performs the Kalman Filter predict step using the Modified weighted Gram—Schmidt 
+ *  method (MWGS) proposed by Thornton and Bierman (based on Matlab code provided by [3]).
+ * 
+ * @param[in] controlVector The control vector. If no control signal
+ *  exits this method can be called with no arguments.
  */
 
 
@@ -92,7 +106,12 @@ void KalmanFilter::predict(VectorXd &controlVector)
 	
 }
 
-
+/**
+ * @brief KalmanFilter::mwgs
+ *  
+ * @details Performs the Modified weighted Gram—Schmidt method (MWGS) proposed by Thornton 
+ *  and Bierman (based on Matlab code provided by [3]).
+ */
 
 void KalmanFilter::mwgs()
 {
@@ -168,10 +187,8 @@ void KalmanFilter::mwgs()
  *
  * If no measurement is available it does nothing.
  *
- * @param[in] measureVector The measurement vector
+ * @param[in] measureVector The measurement vector. Can be called with no arguments
  */
-
-
 
 void KalmanFilter::update(VectorXd &measureVector)
 {
@@ -218,17 +235,41 @@ void KalmanFilter::update(VectorXd &measureVector)
 
 }
 
+/**
+ * @brief KalmanFilter::getCovPost
+ * @details Gets the state covariance matrix after
+ * the update step
+ * 
+ * @return The state covariance matrix $\mathbf{P}_{k|k}$
+ */
+
 MatrixXd KalmanFilter::getCovPost()
 {
 	covPost = U_post*D_post.asDiagonal()*U_post.transpose();
 	return covPost;
 }
 
+/**
+ * @brief KalmanFilter::getCovPred
+ * @details Gets the state covariance matrix after the
+ *  prediction set
+ * 
+ * @return The state covariance matrix $\mathbf{P}_{k|k-1}$
+ */
+
 MatrixXd KalmanFilter::getCovPred()
 {
 	covPred = U_pred*D_pred.asDiagonal()*U_pred.transpose();
 	return covPred;
 }
+
+/**
+ * @brief KalmanFilter::getMeasurementResidual
+ * @details Computes the measurement residual
+ * 
+ * @param measure A vector with a measurement
+ * @return The residue $\mathbf{r}_k = \mathbf{z} - \mathbf{H}*\mathbf{x}_{k|k-1}
+ */
 
 VectorXd KalmanFilter::getMeasurementResidual(VectorXd & measure)
 {
