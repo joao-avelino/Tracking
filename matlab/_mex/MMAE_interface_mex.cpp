@@ -7,6 +7,82 @@
 #include <iostream>
 
 
+VectorXd matlabVectorToEigen(const mxArray *vectorArray)
+{
+	int vectorM = mxGetM(vectorArray);
+	int vectorN = mxGetN(vectorArray);
+	double *vectorPTR = mxGetPr(vectorArray);
+
+	VectorXd vec;
+
+	//Column vector
+	if (vectorM >= vectorN)
+	{
+		vec = VectorXd(vectorM);
+	}//Row vector
+	else
+	{
+		vec = RowVectorXd(vectorN);
+	}
+
+	for (int m = 0; m < vec.size(); m++)
+	{
+		vec(m) = vectorPTR[m];
+	}
+
+	return vec;
+}
+
+MatrixXd matlabMatrixToEigen(const mxArray *matrixArray)
+{
+	int matrixM = mxGetM(matrixArray);
+	int matrixN = mxGetN(matrixArray);
+
+	double *matrixPTR = mxGetPr(matrixArray);
+	MatrixXd matrix(matrixM, matrixN);
+
+
+	for (int m = 0; m < matrixM; m++)
+	{
+		for (int n = 0; n < matrixN; n++)
+		{
+			matrix(m, n) = matrixPTR[m + matrixM*n];
+		}
+	}
+
+	return matrix;
+}
+
+mxArray * eigenVectorToMatlab(const VectorXd &vector)
+{
+	
+	mxArray *matlabVectorArray = mxCreateDoubleMatrix(vector.rows(), vector.cols(), mxREAL);
+
+	double *matlabVectorPTR = mxGetPr(matlabVectorArray);
+
+	for (int m = 0; m < vector.size(); m++)
+		matlabVectorPTR[m] = vector(m);
+
+	return matlabVectorArray;
+
+}
+
+mxArray * eigenMatrixToMatlab(const MatrixXd &matrix)
+{
+
+	mxArray *matlabMatrixArray = mxCreateDoubleMatrix(matrix.rows(), matrix.cols(), mxREAL);
+
+	double *matrixPTR = mxGetPr(matlabMatrixArray);
+
+
+	for (int m = 0; m < matrix.rows(); m++)
+		for (int n = 0; n < matrix.cols(); n++)
+			matrixPTR[m + matrix.rows()*n] = matrix(m, n);
+
+	return matlabMatrixArray;
+}
+
+
 // The class that we are interfacing t
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
@@ -50,118 +126,27 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 			//Get the state transition model
 			mxArray *stateTransitionModel_mxArray = mxGetField(prhs[1], i, "stateTransitionModel");
-			int stateTransM = mxGetM(stateTransitionModel_mxArray);
-			int stateTransN = mxGetN(stateTransitionModel_mxArray);
-
-			double *stateTransitionPTR = mxGetPr(stateTransitionModel_mxArray);
-			MatrixXd stateTransitionModel(stateTransM, stateTransN);
-
-
-			for (int m = 0; m < stateTransM; m++)
-			{
-				for (int n = 0; n < stateTransN; n++)
-				{
-					stateTransitionModel(m, n) = stateTransitionPTR[m + stateTransM*n];
-				}
-			}
-
-
-
-			//Get the observation model matrix
+			MatrixXd stateTransitionModel = matlabMatrixToEigen(stateTransitionModel_mxArray);
 			
+			//Get the observation model matrix
 			mxArray *observationModel_mxArray = mxGetField(prhs[1], i, "observationModel");
-			int obsModelM = mxGetM(observationModel_mxArray);
-			int obsModelN = mxGetN(observationModel_mxArray);
-			double *obervationModelPTR = mxGetPr(observationModel_mxArray);
-			MatrixXd observationModel(obsModelM, obsModelN);
-
-			for (int m = 0; m < obsModelM; m++)
-			{
-				for (int n = 0; n < obsModelN; n++)
-				{
-					observationModel(m, n) = obervationModelPTR[m + obsModelM*n];
-				}
-			}
-
+			MatrixXd observationModel = matlabMatrixToEigen(observationModel_mxArray);
 
 			//Get the processNoiseCovariance matrix
 			mxArray *processNoiseCov_mxArray = mxGetField(prhs[1], i, "processNoiseCov");
-			int processNoiseCovM = mxGetM(processNoiseCov_mxArray);
-			int processNoiseCovN = mxGetN(processNoiseCov_mxArray);
-			double *processNoiseCovPTR = mxGetPr(processNoiseCov_mxArray);
-			MatrixXd processNoiseCov(processNoiseCovM, processNoiseCovN);
-
-			for (int m = 0; m < processNoiseCovM; m++)
-			{
-				for (int n = 0; n < processNoiseCovN; n++)
-				{
-					processNoiseCov(m, n) = processNoiseCovPTR[m + processNoiseCovM*n];
-				}
-			}
-
+			MatrixXd processNoiseCov = matlabMatrixToEigen(processNoiseCov_mxArray);
 
 			//Get the observation noise covariance
 			mxArray *observationNoiseCov_mxArray = mxGetField(prhs[1], i, "observationNoiseCov");
-			int observationNoiseCovM = mxGetM(observationNoiseCov_mxArray);
-			int observationNoiseCovN = mxGetN(observationNoiseCov_mxArray);
-			double *observationNoiseCovPTR = mxGetPr(observationNoiseCov_mxArray);
-			MatrixXd observationNoiseCov(observationNoiseCovM, observationNoiseCovN);
-
-			for (int m = 0; m < observationNoiseCovM; m++)
-			{
-				for (int n = 0; n < observationNoiseCovN; n++)
-				{
-					observationNoiseCov(m, n) = observationNoiseCovPTR[m + observationNoiseCovM*n];
-				}
-			}
-
-
-
+			MatrixXd observationNoiseCov = matlabMatrixToEigen(observationNoiseCov_mxArray);
 
 			//Get the initial state
 			mxArray *initialState_mxArray = mxGetField(prhs[1], i, "initialState");
-			int initialStateM = mxGetM(initialState_mxArray);
-			int initialStateN = mxGetN(initialState_mxArray);
-			double *initialStatePTR = mxGetPr(initialState_mxArray);
-
-			int vectorSize = 0;
-
-			if (initialStateM > initialStateN)
-			{
-				vectorSize = initialStateM;
-			}
-			else
-			{
-				vectorSize = initialStateN;
-			}
-
-			VectorXd initialState(vectorSize);
-
-
-			for (int m = 0; m < vectorSize; m++)
-			{
-				initialState(m) = initialStatePTR[m];
-			}
-
-
+			VectorXd initialState = matlabVectorToEigen(initialState_mxArray);
 
 			//Get the initial cov
 			mxArray *initialCov_mxArray = mxGetField(prhs[1], i, "initialCov");
-			int initialCovM = mxGetM(initialCov_mxArray);
-			int initialCovN = mxGetN(initialCov_mxArray);
-			double *initialCovPTR = mxGetPr(initialCov_mxArray);
-			MatrixXd initialCov(initialCovM, initialCovN);
-
-			for (int m = 0; m < initialCovM; m++)
-			{
-				for (int n = 0; n < initialCovN; n++)
-				{
-					initialCov(m, n) = initialCovPTR[m + initialCovM*n];
-				}
-			}
-
-
-
+			MatrixXd initialCov = matlabMatrixToEigen(initialCov_mxArray);
 
 			std::shared_ptr<BaseBayesianFilter> model(new KalmanFilter(stateTransitionModel, observationModel,
 				processNoiseCov, observationNoiseCov, initialState, initialCov));
@@ -206,12 +191,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 		VectorXd statePred = MMAE_instance->getStatePrediction();
 
-		plhs[0] = mxCreateDoubleMatrix(statePred.size(), 1, mxREAL);
-
-		double *state = mxGetPr(plhs[0]);
-
-		for (int m = 0; m < statePred.size(); m++)
-			state[m] = statePred(m);
+		plhs[0] = eigenVectorToMatlab(statePred);
 
 		return;
 	}                                 
@@ -220,14 +200,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 
 		MatrixXd covMat = MMAE_instance->getStateCovariancePrediction();
-		plhs[0] = mxCreateDoubleMatrix(covMat.rows(), covMat.cols(), mxREAL);
-
-		double *covMatPredPTR = mxGetPr(plhs[0]);
-
-
-		for (int m = 0; m < covMat.rows(); m++)
-			for (int n = 0; n < covMat.cols(); n++)
-				covMatPredPTR[m + covMat.rows()*n] = covMat(m, n);
+		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
 	}
@@ -236,12 +209,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 		VectorXd statePost = MMAE_instance->getStatePosterior();
 
-		plhs[0] = mxCreateDoubleMatrix(statePost.size(), 1, mxREAL);
-
-		double *state = mxGetPr(plhs[0]);
-
-		for (int m = 0; m < statePost.size(); m++)
-			state[m] = statePost(m);
+		plhs[0] = eigenVectorToMatlab(statePost);
 
 		return;
 	}
@@ -250,14 +218,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 
 		MatrixXd covMat = MMAE_instance->getStateCovariancePosterior();
-		plhs[0] = mxCreateDoubleMatrix(covMat.rows(), covMat.cols(), mxREAL);
-
-		double *covMatPostPTR = mxGetPr(plhs[0]);
-
-
-		for (int m = 0; m < covMat.rows(); m++)
-			for (int n = 0; n < covMat.cols(); n++)
-				covMatPostPTR[m + covMat.rows()*n] = covMat(m, n);
+		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
 	}
@@ -274,8 +235,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		//Predict with control signal
 		else if (nrhs == 3)
 		{
-
-
+			//Get the control signal
+			VectorXd controlVec = matlabVectorToEigen(prhs[2]);
+			MMAE_instance->predict(controlVec);
 		}
 		else
 		{
@@ -287,7 +249,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	if (!strcmp("update", cmd))
 	{
-
+		//Get the measurement vector
+		VectorXd meas = matlabVectorToEigen(prhs[2]);
+		MMAE_instance->update(meas);
 		return;
 	}
 
