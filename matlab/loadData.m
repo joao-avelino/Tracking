@@ -53,11 +53,11 @@ sampledPerson1XY(:, 2) = ones(1, 2150);
 sampledPerson1XY(500:2150, 1) = linspace(1, 1651, 1651)';
 sampledPerson1XY(500:2150, 2) = linspace(1, 1651, 1651)';
 
- sampledPerson1XY(400:699, 1) = (sampledPerson1XY(400:699, 1)-sampledPerson1XY(400:699, 1)).^2+sampledPerson1XY(400:699, 1);
- sampledPerson1XY(400:699, 2) = (sampledPerson1XY(400:699, 2)-sampledPerson1XY(400:699, 2)).^2+sampledPerson1XY(400:699, 2);
+ sampledPerson1XY(1500:2150, 1) = sampledPerson1XY(1499, 1) + 1/2*0.001*linspace(1, 651, 651)'.^2;
+ sampledPerson1XY(1500:2150, 2) = sampledPerson1XY(1499, 2) + 1/2*0.001*linspace(1, 651, 651)'.^2;
  
-sampledPerson1XY(700:2150, 1) = sampledPerson1XY(699, 1);
-sampledPerson1XY(700:2150, 2) = sampledPerson1XY(699, 2);
+% sampledPerson1XY(700:2150, 1) = sampledPerson1XY(699, 1);
+% sampledPerson1XY(700:2150, 2) = sampledPerson1XY(699, 2);
 
 %% Add noise to the person position
 %

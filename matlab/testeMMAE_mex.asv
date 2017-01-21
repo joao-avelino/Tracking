@@ -79,7 +79,7 @@ for k=1:numel(noisyPerson1XY(:, 1))
     probsVect = MMAE_kalman('getAllModelProbabilities', mmaEstimator);
     
     probPos2(k) = probsVect(1);
-    probVel2(k) = probsVect(2);
+    probVel1(k) = probsVect(2);
     probAccel1(k) = probsVect(3);
     
 end
