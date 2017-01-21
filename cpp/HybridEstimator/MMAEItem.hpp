@@ -25,7 +25,6 @@ protected:
 	double probDensity;
 	double probability;
 	double stateDim;
-	std::string modelName;
 
 
 };

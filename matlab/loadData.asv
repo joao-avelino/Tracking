@@ -47,11 +47,11 @@ sampledPerson1XY_after(:, 2) = sampledPerson1XY(299:1550, 2);
 %Debug!
 % 
 
-sampledPerson1XY(:, 1) = ones(1, 2150);
-sampledPerson1XY(:, 2) = ones(1, 2150);
+sampledPerson1XY(:, 1) =
+sampledPerson1XY(:, 2) = 
 
-sampledPerson1XY(500:2150, 1) = linspace(1, 1651, 1651)';
-sampledPerson1XY(500:2150, 2) = linspace(1, 1651, 1651)';
+sampledPerson1XY(:, 1) = linspace(1, 2150, 2150);
+sampledPerson1XY(:, 2) = linspace(1, 2150, 2150);
 
  sampledPerson1XY(400:699, 1) = (sampledPerson1XY(400:699, 1)-sampledPerson1XY(400:699, 1)).^2+sampledPerson1XY(400:699, 1);
  sampledPerson1XY(400:699, 2) = (sampledPerson1XY(400:699, 2)-sampledPerson1XY(400:699, 2)).^2+sampledPerson1XY(400:699, 2);

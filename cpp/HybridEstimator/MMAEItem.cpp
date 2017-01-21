@@ -3,13 +3,17 @@
 #include <eigen3/Eigen/LU>
 #include <cmath>
 
+//Delete this
+#include <iostream>
+#include "mex.h"
+
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 
 MMAEItem::MMAEItem(std::shared_ptr<BaseBayesianFilter> model, std::string modelName)
 {
 	this->filter = model;
-	this->modelName = modelName;
+	this->filter->setModelName(modelName);
 	this->stateDim = model->getStatePost().size();
 }
 
@@ -51,7 +55,8 @@ void MMAEItem::computeProbabilityDensity(VectorXd & measurement)
 		double scalarLikelihood = rk.transpose()*(Ak.colPivHouseholderQr().solve(rk));
 		
 		//pdf(measurement)
-		double probDensity = beta*exp((-1.0 / 2.0)*scalarLikelihood);
+		this->probDensity = beta*exp((-1.0 / 2.0)*scalarLikelihood);
+		
 
 	}
 

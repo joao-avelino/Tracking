@@ -278,4 +278,3 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	// Got here, so command not recognized
 	mexErrMsgTxt("Command not recognized.");
 }
-

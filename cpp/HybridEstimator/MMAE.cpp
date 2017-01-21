@@ -255,8 +255,9 @@ void MMAE::computeProbabilities(VectorXd & measure)
 		{
 			prob = minimumProbability+pow(minimumProbability, 2);
 			needToRenormalize = true;
-			sumOfProbabilities += prob;
+			
 		}
+		sumOfProbabilities += prob;
 
 		ptr->setProbabiliy(prob);
 
