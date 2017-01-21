@@ -216,6 +216,8 @@ for k=1:numel(noisyPerson1XY(:, 1))
     conditionNumberMMAE(k) = cond(stateCov);
 end
 toc
+MMAE_kalman('delete', mmaEstimator);
+
 disp('-----------------------------------------')
 
 window = figure(1);

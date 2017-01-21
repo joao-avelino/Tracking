@@ -1,4 +1,9 @@
-T = 1/1
+loadData;
+%Transform the -1 into Inf
+
+noisyPerson1XY(noisyPerson1XY==-1) = Inf;
+
+T = 1/15;
 
 %% Constant position model
 
@@ -6,7 +11,7 @@ filterBank(1).modelName='Constant Position';
 filterBank(1).stateTransitionModel = [1 0; 0 1];
 filterBank(1).observationModel = [1 0; 0 1];
 filterBank(1).processNoiseCov = [T^2 0; 0 T^2];
-filterBank(1).observationNoiseCov = [0.4421 0.3476; 0.3476 0.2747];
+filterBank(1).observationNoiseCov = [0.9299 0; 0 0.9299];
 filterBank(1).initialState = [1; 1];
 filterBank(1).initialCov = 1000*eye(2);
 
@@ -16,7 +21,7 @@ filterBank(2).modelName='Constant Velocity';
 filterBank(2).stateTransitionModel = [1 0 T 0; 0 1 0 T; 0 0 1 0; 0 0 0 1];
 filterBank(2).observationModel = [1 0 0 0; 0 1 0 0];
 filterBank(2).processNoiseCov = [T^4/4 0 T^3/2 0; 0 T^4/4 0 T^3/2; T^3/2 0 T^2 0; 0 T^3/2 0 T^2];
-filterBank(2).observationNoiseCov = [0.4421 0.3476; 0.3476 0.2747];
+filterBank(2).observationNoiseCov = [0.9299 0; 0 0.9299];
 filterBank(2).initialState = [1; 1; 0; 0];
 filterBank(2).initialCov = 1000*eye(4);
 
@@ -37,30 +42,48 @@ filterBank(3).processNoiseCov = [T^5/20 0 T^4/8 0 T^3/6 0;
                                 0 T^4/8 0 T^3/3 0 T^2/2;
                                 T^3/6 0 T^2/2 0 T 0;
                                 0 T^3/6 0 T^2/2 0 T];
-filterBank(3).observationNoiseCov = [0.4421 0.3476; 0.3476 0.2747];
+filterBank(3).observationNoiseCov = [0.9299 0; 0 0.9299];
 filterBank(3).initialState = [1; 1; 0; 0; 1; 2];
 filterBank(3).initialCov = 1000*eye(6);
 
 
-mmae_instance = MMAE_kalman('new', filterBank);
-MMAE_kalman('predict', mmae_instance);
-statePred = MMAE_kalman('getStatePrediction', mmae_instance);
-covPred = MMAE_kalman('getStateCovariancePrediction', mmae_instance);
-MMAE_kalman('update', mmae_instance, [1 2]);
-statePost = MMAE_kalman('getStatePrediction', mmae_instance);
-covPost = MMAE_kalman('getStateCovariancePrediction', mmae_instance);
-MMAE_kalman('delete', mmae_instance)
+mmaEstimator = MMAE_kalman('new', filterBank);
 
-%Handmade for testing
-% cpPred = filterBank(1).stateTransitionModel*1000*eye(2)*filterBank(1).stateTransitionModel'+filterBank(1).processNoiseCov;
-% cpPredAug = zeros(6);
-% cpPredAug(1:2,1:2) = cpPred;
-% 
-% cvPred = filterBank(2).stateTransitionModel*filterBank(2).initialCov*filterBank(2).stateTransitionModel'+filterBank(2).processNoiseCov;
-% cvPredAug = zeros(6);
-% cvPredAug(1:4,1:4) = cvPred;
-% 
-% caPred = filterBank(3).stateTransitionModel*1000*eye(6)*filterBank(3).stateTransitionModel'+filterBank(3).processNoiseCov;
-% 
-% 
-% mixCov = 1/3*(cpPredAug+([1 1 0 0 0 0]'-statePred)*([1 1 0 0 0 0]'-statePred)')+1/3*(cvPredAug+([1 1 0 0 0 0]'-statePred)*([1 1 0 0 0 0]'-statePred)')+1/3*(caPred+([1.5 2 1 2 1 2]'-statePred)*([1.5 2 1 2 1 2]'-statePred)')
+
+disp('-------- MMAE ----------')
+tic
+for k=1:numel(noisyPerson1XY(:, 1))
+    
+    location = [noisyPerson1XY(k, 1) noisyPerson1XY(k, 2)];
+    
+    MMAE_kalman('predict', mmaEstimator);
+    state = MMAE_kalman('getStatePrediction', mmaEstimator);
+    stateCov = MMAE_kalman('getStateCovariancePrediction', mmaEstimator);
+
+    covHistoryPred{k} = stateCov;
+    
+    if location(1) == Inf || location(2) == Inf
+    %[state, stateCov] = BiermanKF('update_empty', kfBIERMAN);
+    else
+    MMAE_kalman('update', mmaEstimator, location);
+    end
+    state = MMAE_kalman('getStatePosterior', mmaEstimator);
+    stateCov = MMAE_kalman('getStateCovariancePosterior', mmaEstimator);
+    
+    stateMMAEHist{k} = state;
+    trackedLocationMMAE(k,1) = state(1);
+    trackedLocationMMAE(k,2) = state(2);
+    covHistoryPostMMAE{k} = stateCov;
+    conditionNumberMMAE(k) = cond(stateCov);
+    
+    probsVect = MMAE_kalman('getAllModelProbabilities', mmaEstimator);
+    
+    probPos(k) = probsVect(1);
+    probVel(k) = probsVect(2);
+    probAccel(k) = probsVect(3);
+    
+end
+toc
+MMAE_kalman('delete', mmaEstimator);
+
+disp('-----------------------------------------')

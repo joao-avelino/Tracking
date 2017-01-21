@@ -281,7 +281,7 @@ VectorXd KalmanFilter::getMeasurementResidual(VectorXd & measure)
 
 MatrixXd KalmanFilter::getResidualCovariance()
 {
-	return observationModel*U_pred*D_pred*U_pred.transpose()*observationModel.transpose()+observationNoiseCov;
+	return observationModel*U_pred*D_pred.asDiagonal()*U_pred.transpose()*observationModel.transpose()+observationNoiseCov;
 }
 
 /**
