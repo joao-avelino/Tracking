@@ -3,9 +3,6 @@
 #include <eigen3/Eigen/LU>
 #include <cmath>
 
-//Delete this
-#include <iostream>
-#include "mex.h"
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 

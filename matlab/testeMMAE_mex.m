@@ -1,6 +1,7 @@
 %loadData;
 %Transform the -1 into Inf
 
+load('data.mat')
 noisyPerson1XY(noisyPerson1XY==-1) = Inf;
 
 T = 1/15;
@@ -80,7 +81,7 @@ for k=1:numel(noisyPerson1XY(:, 1))
     
     probPos2(k) = probsVect(1);
     probVel2(k) = probsVect(2);
-    probAccel1(k) = probsVect(3);
+    probAccel2(k) = probsVect(3);
     
 end
 toc
@@ -101,8 +102,8 @@ title(win.sub1, 'x position');
 
 hold(win.sub2, 'on');
 plot(win.sub2, probPos2, 'b');
-plot(win.sub2, probVel1, 'r');
-plot(win.sub2, probAccel1, 'g');
+plot(win.sub2, probVel2, 'r');
+plot(win.sub2, probAccel2, 'g');
 legend(win.sub2, 'Constant Position', 'Constant Velocity', 'Constant Acceleration');
 title(win.sub2, 'Probabilities');
 
