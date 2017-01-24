@@ -1,1 +1,1 @@
-# VisTrack - A general purpose tracking toolbox
+# VisTracking - A general purpose tracking toolbox
