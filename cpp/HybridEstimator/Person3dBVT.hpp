@@ -2,6 +2,7 @@
 #define PERSON3DBVT_HPP
 
 #include "Object.hpp"
+#include "Comparator.hpp"
 #include <eigen3/Eigen/Core>
 
 using namespace Eigen;
@@ -16,6 +17,8 @@ public:
 	void setPosition(VectorXd position);
 	void setBvtHist(VectorXd bvtHist);
 	void setPositionErrorCovariance(MatrixXd posErrorCov);
+
+	double compareWith(Object &otherObject, const int mode, const int metric);
 
 	VectorXd getPosition();
 	VectorXd getBvtHist();

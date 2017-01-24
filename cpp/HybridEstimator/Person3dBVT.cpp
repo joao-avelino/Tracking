@@ -1,6 +1,6 @@
 #include "Person3dBVT.hpp"
 
-
+using namespace Comparator;
 
 Person3dBVT::Person3dBVT(VectorXd position, VectorXd bvtHist, MatrixXd positionErrorCovariance)
 {
@@ -26,6 +26,59 @@ void Person3dBVT::setBvtHist(VectorXd bvtHist)
 void Person3dBVT::setPositionErrorCovariance(MatrixXd posErrorCov)
 {
 	this->positionErrorCovariance = posErrorCov;
+}
+
+double Person3dBVT::compareWith(Object & otherObject, const int mode, const int metric)
+{
+
+	Person3dBVT &otherPerson = dynamic_cast<Person3dBVT&>(otherObject);
+
+	switch (mode)
+	{
+	case(COMP_POSITION):
+
+		assert((metric == METRIC_MAHALANOBIS || metric == METRIC_EUCLIDEAN) && "Position distance can only use the Euclidean or the Mahalanobis metrics for now.");
+
+		//Mahalanobis distance between the detected person's position and this ones
+		//position distribution
+
+		if (metric == METRIC_MAHALANOBIS)
+		{
+			return mahalanobis(otherPerson.position, this->position, this->positionErrorCovariance);
+		}
+
+		else if (metric == METRIC_EUCLIDEAN)
+		{
+			return euclidean(otherPerson.position, this->position);
+		}
+
+		break;
+	case(COMP_COLORS):
+
+
+
+		break;
+
+	case(COMP_COLORSANDPOSITION):
+
+		//IMPLEMENTAR
+
+		break;
+	case(COMP_FORMFEATURES):
+
+		//IMPLEMENTAR
+
+		break;
+	case(COMP_ALL):
+
+		//IMPLEMENTAR
+
+		break;
+	default:
+		break;
+	}
+
+	return 0.0;
 }
 
 VectorXd Person3dBVT::getPosition()

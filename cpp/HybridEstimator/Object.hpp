@@ -8,19 +8,25 @@ public:
 	~Object() {};
 
 	//Object type consts
-	const int PERSON = 1;
-	const int TORSO = 2;
-	const int FACE = 3;
-	const int HEAD_AND_SHOULDERS = 4;
-	const int LEGS = 5;
-	const int BALL = 6;
-	const int CYLINDER = 7;
-	const int CUBE = 8;
-	const int MARKER = 7;
-	
+	static const int TYPE_PERSON = 1;
+	static const int TYPE_TORSO = 2;
+	static const int TYPE_FACE = 3;
+	static const int TYPE_HEADANDSHOULDERS = 4;
+	static const int TYPE_LEGS = 5;
+	static const int TYPE_BALL = 6;
+	static const int TYPE_CYLINDER = 7;
+	static const int TYPE_CUBE = 8;
+	static const int TYPE_MARKER = 7;
 
-	//Mode can be defined in derived classes
-	virtual double compareWith(const Object &otherObject, const int mode) = 0;
+	//Comparison mode consts
+	static const int COMP_POSITION = 1;
+	static const int COMP_COLORS = 2;
+	static const int COMP_COLORSANDPOSITION = 3;
+	static const int COMP_FORMFEATURES = 4;
+	static const int COMP_ALL = 5;
+
+	//Mode must be defined in derived classes
+	virtual double compareWith(const Object &otherObject, const int mode, const int metric) = 0;
 
 	int getObjectType()
 	{

@@ -4,6 +4,8 @@
 
 #include "Kfutils.hpp"
 
+#include "Comparator.hpp"
+
 using namespace std;
 
 int main()
@@ -97,6 +99,38 @@ int main()
 
 	std::cout << "x_post: " << kf.getStatePost() << std::endl;
 	std::cout << "P_post: " << kf.getCovPost() << std::endl;
+
+	getchar();
+
+
+	MatrixXd S(2, 2);
+	S << 2, 1,
+		1, 2;
+
+
+
+	VectorXd x(2);
+	x << 3, 1;
+
+
+	VectorXd u(2);
+	u << 4, 2;
+
+
+	std::cout << Comparator::mahalanobis(x, u, S);
+
+	std::cout << "BHATACHARYYA!" << std::endl;
+
+	VectorXd h1(4);
+	h1 << 2, 1, 3, 4;
+	VectorXd h2(4);
+	h2 << 3, 2, 3, 4;
+
+
+	std::cout << Comparator::hellinger(h1, h2);
+
+
+
 
 	getchar();
 

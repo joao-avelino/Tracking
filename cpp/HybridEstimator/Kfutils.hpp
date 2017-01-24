@@ -14,12 +14,14 @@ using namespace Eigen;
 class KFUtils
 {
 public:
-    KFUtils();
 
     static void decorrelateData(VectorXd correlatedData, VectorXd &uncorrelatedData,
                                 MatrixXd H_normal, MatrixXd &H_uncorr, MatrixXd R, MatrixXd &uncorrR);
 
     static void uduFactorization(MatrixXd P, MatrixXd &U, VectorXd &D);
+
+private:
+	KFUtils() {};
 };
 
 #endif // KFUTILS_HPP
