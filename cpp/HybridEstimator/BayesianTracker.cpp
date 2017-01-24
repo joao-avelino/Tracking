@@ -1,8 +1,8 @@
 #include "BayesianTracker.hpp"
 
-/*
+
 template<class Obj, class Estimator>
-inline BayesianTracker<Obj, Estimator>::BayesianTracker(std::shared_ptr<Estimator> estimatorPTR, shared_ptr<Obj> objectPTR)
+inline BayesianTracker<Obj, Estimator>::BayesianTracker(std::shared_ptr<Estimator> estimatorPTR, std::shared_ptr<Obj> objectPTR)
 {
 	this->estimatorPTR = estimatorPTR;
 	this->objectPTR = objectPTR;
@@ -31,10 +31,9 @@ void BayesianTracker<Obj, Estimator>::predict(const MatrixXd &controlVect)
 }
 
 template<class Obj, class Estimator>
-void BayesianTracker<Obj, Estimator>::update(const Detection &det)
+void BayesianTracker<Obj, Estimator>::update(const Detection<Obj> &det)
 {
 
 	//TODO
 
-}
-*/
+};

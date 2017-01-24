@@ -1,8 +1,8 @@
 #ifndef DETECTION_HPP
 #define DETECTION_HPP
 #include <memory>
+#include <string>
 
-/*
 template <class Obj> class Detection
 {
 
@@ -24,5 +24,5 @@ private:
 
 };
 
-*/
+
 #endif // DETECTION_HPP
