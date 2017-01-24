@@ -7,6 +7,7 @@ Person3dBVT::Person3dBVT(VectorXd position, VectorXd bvtHist, MatrixXd positionE
 	this->position = position;
 	this->bvtHist = bvtHist;
 	this->positionErrorCovariance = positionErrorCovariance;
+	this->objectType = TYPE_PERSON;
 }
 
 Person3dBVT::~Person3dBVT()
@@ -30,6 +31,8 @@ void Person3dBVT::setPositionErrorCovariance(MatrixXd posErrorCov)
 
 double Person3dBVT::compareWith(Object & otherObject, const int mode, const int metric)
 {
+
+	assert(this->getObjectType() == otherObject.getObjectType() && "Objects should have the same type if you wish to compare them. Check the types of detections and tracks if you are using them.");
 
 	Person3dBVT &otherPerson = dynamic_cast<Person3dBVT&>(otherObject);
 
