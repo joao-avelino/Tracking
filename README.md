@@ -1,1 +1,1 @@
-# VisTracking - A general purpose tracking toolbox
+# VisTracking++ - A general purpose tracking toolbox written in C++
