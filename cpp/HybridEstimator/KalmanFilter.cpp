@@ -116,7 +116,7 @@ void KalmanFilter::predict(VectorXd &controlVector)
  *  and Bierman (based on Matlab code provided by [3]).
  */
 
-void KalmanFilter::mwgs()
+inline void KalmanFilter::mwgs()
 {
 
 	int n = statePost.size();
@@ -294,7 +294,7 @@ MatrixXd KalmanFilter::getResidualCovariance()
  * @param[out] k Kalman Gain vector
  */
 
-void KalmanFilter::update_single_meas(const VectorXd &h, const double Ri, VectorXd &k)
+inline void KalmanFilter::update_single_meas(const VectorXd &h, const double Ri, VectorXd &k)
 {
 
     VectorXd gamma = VectorXd::Zero(h.size());

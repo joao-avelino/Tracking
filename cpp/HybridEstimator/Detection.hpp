@@ -3,6 +3,9 @@
 #include <memory>
 #include <string>
 
+//Forward declaration. BaseBayesianTracker exists
+template <class Obj> class BaseBayesianTracker;
+
 template <class Obj> class Detection
 {
 
@@ -15,8 +18,12 @@ public:
 
 	std::shared_ptr<Obj> getObjPTR() {return objectPTR};
 
-	double compareWith(const Obj &otherObject, const int mode, const int metric) { return objectPTR->compareWith(otherObject, mode, metric)};
 
+	//Each object has it's own comparison methods
+
+	double compareWith(const Obj &otherObject, const int mode, const int metric) { return objectPTR->compareWith(otherObject, mode, metric)};
+	double compareWith(const Detection<Obj> &detection, const int mode, const int metric) { return detection.compareWith(objectPTR, mode, metric); };
+	double compareWith(const BaseBayesianTracker<Obj> &tracker, const int mode, const int metric) { return tracker.compareWith(objectPTR, mode, metric);  };
 
 private:
 	std::string sourceSensor;

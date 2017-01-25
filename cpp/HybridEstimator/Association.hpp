@@ -7,7 +7,7 @@
 template <class Track, class Detect> class Association
 {
 public:
-	Association(std::shared_ptr<Track> trackPTR, std::shared_ptr<Detect> detecPTR, std::vector<double> metricsList)
+	Association(std::shared_ptr<Track> trackPTR, std::shared_ptr<Detect> detecPTR)
 	{
 		this->trackerPTR = trackPTR;
 		this->detectionPTR = detecPTR;
@@ -22,12 +22,10 @@ public:
 
 	~Association() {};
 
-	bool is_associated()
+	bool checkIfAssociated()
 	{
 		return is_associated;
 	}
-
-	std::vector<double> metricsList;
 
 private:
 	std::shared_ptr<Track> trackerPTR;
