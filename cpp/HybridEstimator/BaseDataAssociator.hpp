@@ -8,15 +8,15 @@
 
 using namespace std;
 
-template <class Tracker, class Detect> class DataAssociator
+template <class Obj> class BaseDataAssociator
 {
 public:
 
 	//Returns a list of associations between trackers and detections
-	virtual vector<Association<Tracker, Detect> > associateData(vector<shared_ptr<Tracker> > trackPTRvec, vector<shared_ptr<Detect> > detecPTRvec) = 0;
+	virtual AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > trackPTRvec, vector<shared_ptr<Detection<Obj> > > detecPTRvec) = 0;
 
 protected:
-	DataAssociator() {};
+	BaseDataAssociator() {};
 
 };
 
