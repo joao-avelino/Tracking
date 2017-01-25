@@ -6,6 +6,9 @@
 
 #include "Comparator.hpp"
 
+#include "HungarianAssociator.hpp"
+#include "Person3dBVT.hpp"
+
 using namespace std;
 
 int main()
@@ -132,6 +135,21 @@ int main()
 
 
 	getchar();
+
+	std::cout << "Testing out the Hungarian Associaotr" << std::endl;
+
+	//Build a list of people trackers
+
+
+
+
+	//Build a list of detections
+
+
+
+
+	//Build an associator of people's positions with the euclidean metric
+
 
 
     return 0;

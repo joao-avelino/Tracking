@@ -12,7 +12,7 @@ public:
 	~HungarianAssociator() {};
 
 
-	AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > trackPTRvec, vector<shared_ptr<Detection<Obj> > > detecPTRvec);
+	AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec);
 
 protected:
 	int method;

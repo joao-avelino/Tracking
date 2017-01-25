@@ -2,7 +2,7 @@
 
 
 template<class Obj>
-AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<BaseTracker<Obj>>> trackPTRvec, vector<shared_ptr<Detection<Obj>>> detecPTRvec)
+AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<BaseTracker<Obj>>> &trackPTRvec, vector<shared_ptr<Detection<Obj>>> &detecPTRvec)
 {
 
 	int nTrackers = trackPTRvec.size();
