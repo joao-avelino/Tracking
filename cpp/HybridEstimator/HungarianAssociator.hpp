@@ -60,7 +60,10 @@ AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<B
 			for (shared_ptr<BaseTracker<Obj>> ptrTrack : trackPTRvec)
 			{
 				distMatrixIn[row + col*nDetections] = ptrTrack->compareWith((*ptrDetect), this->mode, this->metric);
+				col++;
 			}
+
+			row++;
 
 		}
 
