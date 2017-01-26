@@ -15,16 +15,19 @@ public:
 	{
 		this->trackerPTR = trackPTR;
 		this->detectionPTR = detecPTR;
-
-		if (detecPTR == nullptr)
-			is_associated = false;
-		else
-			is_associated = true;
-
-
-	}
+	};
 
 	~Association() {};
+
+	shared_ptr<BaseTracker<Obj> > getTrackerPTR()
+	{
+		return trackerPTR;
+	};
+
+	shared_ptr<Detection<Obj>> getDetectionPTR()
+	{
+		return detectionPTR;
+	};
 
 
 private:
@@ -33,16 +36,41 @@ private:
 
 };
 
-template <class Obj> class AssociationList : Association<Obj>
+template <class Obj> class AssociationList
 {
 public:
 
-	vector<Association<Obj>> getSuccessfulAssociations();
-	vector<shared_ptr<BaseTracker<Obj>>> getUnassociatedTrackers();
-	vector<shared_ptr<Detection<Obj>>> getUnassociatedDetections();
+	AssociationList() {};
 
-	void addSuccessfulAssociation(Association<Obj> assoc);
-	void addUnassociatedDetection(shared_ptr<Detection<Obj>> det);
+	vector<Association<Obj>> getSuccessfulAssociations()
+	{
+		return associationList;
+	}
+
+
+	vector<shared_ptr<BaseTracker<Obj>>> getUnassociatedTrackers()
+	{
+		return unassociatedDetections;
+	}
+
+
+	vector<shared_ptr<Detection<Obj>>> getUnassociatedDetections()
+	{
+
+		return unassociatedDetections;
+	}
+
+	void addSuccessfulAssociation(Association<Obj> assoc) 
+	{
+		this->associationList.push_back(assoc);
+	};
+
+
+
+	void addUnassociatedDetection(shared_ptr<Detection<Obj>> det) 
+	{
+		this->unassociatedDetections.push_back(det);
+	};
 
 protected:
 
@@ -52,3 +80,4 @@ protected:
 
 };
 #endif // ASSOCIATION_HPP
+

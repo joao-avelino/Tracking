@@ -2,12 +2,14 @@
 #define BASEBAYESIANTRACKER_HPP
 
 #include "BaseTracker.hpp"
+#include "Detection.hpp"
 
-template <class Obj> class BaseBayesianTracker : BaseTracker<Obj>
+template <class Obj> class BaseBayesianTracker : public BaseTracker<Obj>
 {
 
 public:
-	BaseBayesianTracker<Obj> (std::shared_ptr<Obj> objectPTR);
+	BaseBayesianTracker() {};
+
 
 	virtual void preProcessingComputations() = 0;
 	virtual void predict(const MatrixXd &controlVect) = 0;
@@ -18,5 +20,3 @@ public:
 };
 
 #endif // BAYESIANTRACKER_HPP
-
-

@@ -15,9 +15,6 @@ public:
 	//Returns a list of associations between trackers and detections
 	virtual AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec) = 0;
 
-protected:
-	BaseDataAssociator() {};
-
 };
 
 

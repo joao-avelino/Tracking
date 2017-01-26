@@ -8,6 +8,8 @@
 
 #include "HungarianAssociator.hpp"
 #include "Person3dBVT.hpp"
+#include "PeopleTrackerWithMMAE.hpp"
+#include "Association.hpp"
 
 using namespace std;
 
@@ -136,21 +138,104 @@ int main()
 
 	getchar();
 
-	std::cout << "Testing out the Hungarian Associaotr" << std::endl;
+	std::cout << "Testing out the Hungarian Associator" << std::endl;
+
 
 	//Build a list of people trackers
+	vector<shared_ptr<BaseTracker<Person3dBVT>>> trackerList;
 
+	//Person 1
+	VectorXd position_p1(2);
+	position_p1 << 1, 1;
+	shared_ptr<Person3dBVT> person1(new Person3dBVT(position_p1, VectorXd(), MatrixXd()));
+	shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>> personTracker1(new PeopleTrackerWithMMAE<Person3dBVT>(person1));
+	trackerList.push_back(personTracker1);
 
+	//Person 2
+	VectorXd position_p2(2);
+	position_p2 << 3, 1;
+	shared_ptr<Person3dBVT> person2(new Person3dBVT(position_p2, VectorXd(), MatrixXd()));
+	shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>> personTracker2(new PeopleTrackerWithMMAE<Person3dBVT>(person2));
+	trackerList.push_back(personTracker2);
+
+	//Person 3
+	VectorXd position_p3(2);
+	position_p3 << 4, 5;
+	shared_ptr<Person3dBVT> person3(new Person3dBVT(position_p3, VectorXd(), MatrixXd()));
+	shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>> personTracker3(new PeopleTrackerWithMMAE<Person3dBVT>(person3));
+	trackerList.push_back(personTracker3);
+
+	//Person 4
+	VectorXd position_p4(2);
+	position_p4 << 1, 5;
+	shared_ptr<Person3dBVT> person4(new Person3dBVT(position_p4, VectorXd(), MatrixXd()));
+	shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>> personTracker4(new PeopleTrackerWithMMAE<Person3dBVT>(person4));
+	trackerList.push_back(personTracker4);
 
 
 	//Build a list of detections
+	vector<shared_ptr<Detection<Person3dBVT>>> detectionList;
+
+
+	//Detect 1
+	VectorXd pdet1(2);
+	pdet1 << 1.5, 1.5;
+	shared_ptr<Person3dBVT> det1(new Person3dBVT(pdet1, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection1(new Detection<Person3dBVT>(det1, "Camera"));
+	detectionList.push_back(detection1);
+
+	//Detect 2
+	VectorXd pdet2(2);
+	pdet2 << 3.5, 1.5;
+	shared_ptr<Person3dBVT> det2(new Person3dBVT(pdet2, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection2(new Detection<Person3dBVT>(det2, "Camera"));
+	detectionList.push_back(detection2);
+
+	//Detec 3
+	VectorXd pdet3(2);
+	pdet3 << 4.5, 5.5;
+	shared_ptr<Person3dBVT> det3(new Person3dBVT(pdet3, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection3(new Detection<Person3dBVT>(det3, "Camera"));
+	detectionList.push_back(detection3);
+
+	//Detec 4
+	VectorXd pdet4(2);
+	pdet4 << 1.5, 5.5;
+	shared_ptr<Person3dBVT> det4(new Person3dBVT(pdet4, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection4(new Detection<Person3dBVT>(det4, "Camera"));
+	detectionList.push_back(detection4);
 
 
 
+	//Build an Hungarian associator of people's positions with the euclidean metric
 
-	//Build an associator of people's positions with the euclidean metric
+	HungarianAssociator<Person3dBVT> associator(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
+	AssociationList<Person3dBVT> assocList = associator.associateData(trackerList, detectionList);
+	
+	vector<Association<Person3dBVT>> success = assocList.getSuccessfulAssociations();
+	vector<shared_ptr<Detection<Person3dBVT>>> unDetections = assocList.getUnassociatedDetections();
 
 
+	cout << "------------------------------ Sucessful associations ------------------------------" << endl;
+
+	for (Association<Person3dBVT> &ass : success)
+	{
+		cout << "Associated: " << endl;
+		cout << ass.getDetectionPTR()->getObjPTR()->getPosition() << endl;
+		cout << "with: " << endl;
+		cout << ass.getTrackerPTR()->getObjPTR()->getPosition() << endl;
+	}
+
+	cout << "------------------------------ Unsucessful detection ------------------------------" << endl;
+	
+	for (shared_ptr<Detection<Person3dBVT>> dt : unDetections)
+	{
+
+		cout << dt->getObjPTR()->getPosition();
+
+	}
+
+	getchar();
 
     return 0;
 }

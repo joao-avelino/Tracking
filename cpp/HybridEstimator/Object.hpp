@@ -26,7 +26,7 @@ public:
 	static const int COMP_ALL = 5;
 
 	//Mode must be defined in derived classes
-	virtual double compareWith(const Object &otherObject, const int mode, const int metric) = 0;
+	virtual double compareWith(Object &otherObject, int mode, int metric) = 0;
 
 	int getObjectType()
 	{

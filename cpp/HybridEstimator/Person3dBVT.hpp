@@ -18,7 +18,7 @@ public:
 	void setBvtHist(VectorXd bvtHist);
 	void setPositionErrorCovariance(MatrixXd posErrorCov);
 
-	double compareWith(Object &otherObject, const int mode, const int metric);
+	double compareWith(Object &otherObject, int mode, int metric);
 
 	VectorXd getPosition();
 	VectorXd getBvtHist();

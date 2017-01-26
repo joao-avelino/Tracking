@@ -16,11 +16,32 @@ template <class Obj> class BaseTracker
 
 public:
 
-	std::shared_ptr<Obj> getObjPTR();
+	std::shared_ptr<Obj> getObjPTR()
+	{
+		return this->objectPTR;
+	};
 
-	double compareWith(const Obj &otherObject, const int mode, const int metric);
-	double compareWith(const Detection<Obj> &detection, const int mode, const int metric);
-	double compareWith(const BaseTracker<Obj> &tracker, const int mode, const int metric);
+	int getObjectType()
+	{
+
+		this->objectPTR->getObjectType();
+	};
+
+	double compareWith(Obj &otherObject, int mode, int metric)
+	{
+		return objectPTR->compareWith(otherObject, mode, metric);
+	};
+
+	double compareWith(Detection<Obj> &detection, int mode, int metric)
+	{
+		return detection.compareWith(*objectPTR, mode, metric);
+	};
+
+
+	double compareWith(BaseTracker<Obj> &tracker, int mode, int metric)
+	{
+		return tracker.compareWith(*objectPTR, mode, metric);
+	};
 
 protected:
 	//Protected constructor no allowing the class to be instantiated

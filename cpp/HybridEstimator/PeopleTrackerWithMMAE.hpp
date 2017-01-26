@@ -8,16 +8,20 @@ template <class Obj> class PeopleTrackerWithMMAE :
 	public BaseBayesianTracker<Obj>
 {
 public:
-	PeopleTrackerWithMMAE(std::shared_ptr<Obj> objectPTR) : BaseBayesianTracker<Obj> (objectPTR) {};
+	PeopleTrackerWithMMAE(std::shared_ptr<Obj> objectPTR) 
+	{
+		this->objectPTR = objectPTR;
+		this->trackerType = objectPTR->getObjectType();
+	};
 	~PeopleTrackerWithMMAE() {};
 
 	void preProcessingComputations() {};
 	void predict(const MatrixXd &controlVect) {};
 	void postPredictComputations() {};
 	void update(const Detection<Obj> &det) {};
-	virtual void postUpdateComputations() {};
+	void postUpdateComputations() {};
 	
-
+	
 };
 
 

@@ -10,14 +10,21 @@ using namespace Eigen;
 class BaseBayesianFilter
 {
 public:
-	BaseBayesianFilter();
-	~BaseBayesianFilter();
+	BaseBayesianFilter() {};
+	~BaseBayesianFilter() {};
 
 	virtual void predict(VectorXd &controlVector = VectorXd()) = 0;
 	virtual void update(VectorXd &measureVector = VectorXd()) = 0;
 
-	std::string getModelName();
-	void setModelName(std::string newName);
+	std::string getModelName()
+	{
+		return modelName;
+	};
+
+	void setModelName(std::string newName)
+	{
+		modelName = newName;
+	};
 
 	virtual VectorXd getStatePred() = 0;
 	virtual MatrixXd getCovPred() = 0;
