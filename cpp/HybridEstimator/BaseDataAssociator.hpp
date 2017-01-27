@@ -8,12 +8,12 @@
 
 using namespace std;
 
-template <class Obj> class BaseDataAssociator
+template <class Obj, class Trk> class BaseDataAssociator
 {
 public:
 
 	//Returns a list of associations between trackers and detections
-	virtual AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec) = 0;
+	virtual AssociationList<Obj, Trk> associateData(vector<shared_ptr<Trk>> &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec) = 0;
 
 };
 

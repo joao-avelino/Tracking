@@ -8,10 +8,10 @@
 
 using namespace std;
 
-template <class Obj> class Association
+template <class Obj, class Trk> class Association
 {
 public:
-	Association(shared_ptr<BaseTracker<Obj> > trackPTR, shared_ptr<Detection<Obj> > detecPTR)
+	Association(shared_ptr<Trk> trackPTR, shared_ptr<Detection<Obj> > detecPTR)
 	{
 		this->trackerPTR = trackPTR;
 		this->detectionPTR = detecPTR;
@@ -19,7 +19,7 @@ public:
 
 	~Association() {};
 
-	shared_ptr<BaseTracker<Obj> > getTrackerPTR()
+	shared_ptr<Trk> getTrackerPTR()
 	{
 		return trackerPTR;
 	};
@@ -31,24 +31,24 @@ public:
 
 
 private:
-	shared_ptr<BaseTracker<Obj> > trackerPTR;
+	shared_ptr<Trk> trackerPTR;
 	shared_ptr<Detection<Obj> > detectionPTR;
 
 };
 
-template <class Obj> class AssociationList
+template <class Obj, class Trk> class AssociationList
 {
 public:
 
 	AssociationList() {};
 
-	vector<Association<Obj>> getSuccessfulAssociations()
+	vector<Association<Obj, Trk>> getSuccessfulAssociations()
 	{
 		return associationList;
 	}
 
 
-	vector<shared_ptr<BaseTracker<Obj>>> getUnassociatedTrackers()
+	vector<shared_ptr<Trk>> getUnassociatedTrackers()
 	{
 		return unassociatedDetections;
 	}
@@ -60,7 +60,7 @@ public:
 		return unassociatedDetections;
 	}
 
-	void addSuccessfulAssociation(Association<Obj> assoc) 
+	void addSuccessfulAssociation(Association<Obj, Trk> assoc)
 	{
 		this->associationList.push_back(assoc);
 	};
@@ -72,9 +72,14 @@ public:
 		this->unassociatedDetections.push_back(det);
 	};
 
+	void addUnassociatedDetection(vector<shared_ptr<Detection<Obj>>> detecPTRvec)
+	{
+		this->unassociatedDetections = detecPTRvec;
+	};
+
 protected:
 
-	vector<Association<Obj>> associationList;
+	vector<Association<Obj, Trk>> associationList;
 	vector<shared_ptr<Detection<Obj>>> unassociatedDetections;
 
 

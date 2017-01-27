@@ -4,15 +4,15 @@
 #include "HungarianFunctions.hpp"
 
 
-template <class Obj> class HungarianAssociator :
-	public BaseDataAssociator<Obj>
+template <class Obj, class Trk> class HungarianAssociator :
+	public BaseDataAssociator<Obj, Trk>
 {
 public:
-	HungarianAssociator<Obj>(int mode, int metric) : mode(mode), metric(metric) {};
+	HungarianAssociator<Obj, Trk>(int mode, int metric) : mode(mode), metric(metric) {};
 	~HungarianAssociator() {};
 	 
 
-	AssociationList<Obj> associateData(vector<shared_ptr<BaseTracker<Obj> > > &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec);
+	AssociationList<Obj, Trk> associateData(vector<shared_ptr<Trk>> &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec);
 
 protected:
 	int mode;
@@ -24,12 +24,12 @@ protected:
 
 #endif // HUNGARIANASSOCIATOR_HPP
 
-template<class Obj>
-AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<BaseTracker<Obj>>>& trackPTRvec, vector<shared_ptr<Detection<Obj>>>& detecPTRvec)
+template<class Obj, class Trk>
+AssociationList<Obj, Trk> HungarianAssociator<Obj, Trk>::associateData(vector<shared_ptr<Trk>>& trackPTRvec, vector<shared_ptr<Detection<Obj>>>& detecPTRvec)
 {
 	int nTrackers = trackPTRvec.size();
 	int nDetections = detecPTRvec.size();
-	AssociationList<Obj> associationList;
+	AssociationList<Obj, Trk> associationList;
 
 	//If the number of trackers and the number of detections is greater than zero, perform the Hungarian Algorithm
 	if (nTrackers > 0 && nDetections > 0)
@@ -82,7 +82,7 @@ AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<B
 			//Check if the detecion is assigned
 			if (assignment[i] != -1)
 			{
-				Association<Obj> assoc(trackPTRvec.at(assignment[i]), detecPTRvec.at(i));
+				Association<Obj, Trk> assoc(trackPTRvec.at(assignment[i]), detecPTRvec.at(i));
 				associationList.addSuccessfulAssociation(assoc);
 			}
 			else
@@ -95,7 +95,15 @@ AssociationList<Obj> HungarianAssociator<Obj>::associateData(vector<shared_ptr<B
 		free(distMatrixIn);
 		free(assignment);
 		free(cost);
+
 	}
+	//If there are no trackers all the detections were unassociated
+	else if (nTrackers <= 0 && nDetections > 0)
+	{
+		associationList.addUnassociatedDetection(detecPTRvec);
+	}
+
+	//If no detections exist, then there are no trackers to be updated. Just return and empty associationList
 
 	return associationList;
 }
