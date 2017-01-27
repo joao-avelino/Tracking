@@ -37,8 +37,20 @@ public:
     virtual MatrixXd getStateCovariancePrediction() = 0;
     virtual VectorXd getStatePosterior() = 0;
     virtual MatrixXd getStateCovariancePosterior() = 0;
-    virtual void predict(VectorXd &control = VectorXd()) = 0;
-	virtual void update(VectorXd &measure = VectorXd()) = 0;
+    virtual void predict(VectorXd &control) = 0;
+
+    void predict()
+    {
+        predict(EMPTYVEC);
+    }
+
+    virtual void update(VectorXd &measure) = 0;
+
+    void update()
+    {
+        update(EMPTYVEC);
+    }
+
     virtual void updateDeltaT(double deltaT) = 0;
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();

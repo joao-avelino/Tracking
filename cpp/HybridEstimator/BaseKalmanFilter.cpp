@@ -1,14 +1,6 @@
 #include "BaseKalmanFilter.hpp"
 
 
-void BaseKalmanFilter::update()
-{
-    statePost = statePred;
-    covPost = covPred;
-
-    return;
-}
-
 VectorXd BaseKalmanFilter::getStatePred()
 {
     return statePred;

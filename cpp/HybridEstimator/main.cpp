@@ -87,7 +87,9 @@ int main()
 
     std::cout << "Gonna predict" << std::endl;
 
-    kf.predict();
+    VectorXd empty;
+    empty = VectorXd();
+    kf.predict(empty);
 
     std::cout << "x_pred: " << kf.getStatePred() << std::endl;
 	

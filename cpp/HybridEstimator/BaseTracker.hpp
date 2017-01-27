@@ -24,7 +24,7 @@ public:
 	int getObjectType()
 	{
 
-		this->objectPTR->getObjectType();
+        return this->objectPTR->getObjectType();
 	};
 
 	double compareWith(Obj &otherObject, int mode, int metric)

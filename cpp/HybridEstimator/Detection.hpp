@@ -10,14 +10,13 @@ template <class Obj> class Detection
 {
 
 public:
-	Detection<Obj>(std::shared_ptr<Obj> objectPTR, std::string sourceSensor) : objectPTR(objectPTR), sourceSensor(sourceSensor) {};
+    Detection<Obj>(std::shared_ptr<Obj> objectPTR, std::string sourceSensor) : sourceSensor(sourceSensor), objectPTR(objectPTR) {};
 
 
-	std::string getSourceSensor() { return sourceSensor };
-	void setSourceSensor(std::string newSourceSensor) { sourceSensor = newSourceSensor };
+    std::string getSourceSensor() { return sourceSensor; };
+    void setSourceSensor(std::string newSourceSensor) { sourceSensor = newSourceSensor; };
 
 	std::shared_ptr<Obj> getObjPTR() { return objectPTR; };
-
 
 	//Each object has it's own comparison methods
 

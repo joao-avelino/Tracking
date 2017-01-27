@@ -16,8 +16,19 @@ public:
 	MatrixXd getCovPred();
 	MatrixXd getCovPost();
 
-	void predict(VectorXd &control=VectorXd());
-	void update(VectorXd &measure = VectorXd());
+    void predict(VectorXd &control);
+    void update(VectorXd &measure);
+
+
+    void predict()
+    {
+        predict(EMPTYVEC);
+    }
+
+    void update()
+    {
+        update(EMPTYVEC);
+    }
 
 	std::string getModelName();
 

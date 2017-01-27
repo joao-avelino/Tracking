@@ -12,10 +12,26 @@ public:
 	MMAEItem(std::shared_ptr<BaseBayesianFilter> model, std::string modelName);
 	~MMAEItem();
 
-	void predict(VectorXd &control = VectorXd());
-	void update(VectorXd &measurement = VectorXd());
+    void predict(VectorXd &control);
+    void update(VectorXd &measurement);
 
-	void computeProbabilityDensity(VectorXd &measurement=VectorXd());
+    void predict()
+    {
+        predict(EMPTYVEC);
+    }
+
+    void update()
+    {
+        update(EMPTYVEC);
+    }
+
+    void computeProbabilityDensity(VectorXd &measurement);
+
+    void computeProbabilityDensity()
+    {
+        computeProbabilityDensity(EMPTYVEC);
+    }
+
 	double getProbDensity();
 	double getProbability();
 	void setProbabiliy(double prob);

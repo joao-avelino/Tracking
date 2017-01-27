@@ -6,6 +6,7 @@
 
 using namespace Eigen;
 
+static VectorXd EMPTYVEC = VectorXd();
 
 class BaseBayesianFilter
 {
@@ -13,8 +14,19 @@ public:
 	BaseBayesianFilter() {};
 	~BaseBayesianFilter() {};
 
-	virtual void predict(VectorXd &controlVector = VectorXd()) = 0;
-	virtual void update(VectorXd &measureVector = VectorXd()) = 0;
+    virtual void predict(VectorXd &controlVector) = 0;
+    virtual void update(VectorXd &measureVector) = 0;
+
+    void predict()
+    {
+        predict(EMPTYVEC);
+    };
+
+
+    void update()
+    {
+        update(EMPTYVEC);
+    };
 
 	std::string getModelName()
 	{
@@ -35,7 +47,6 @@ public:
 
 protected:
 	std::string modelName;
-
 
 };
 

@@ -10,12 +10,18 @@ class BaseKalmanFilter : public BaseBayesianFilter
 {
 public:
 
-    virtual void predict(VectorXd &controlVector=VectorXd()) = 0;
-    virtual void update(VectorXd &measureVector= VectorXd()) = 0;
+    virtual void predict(VectorXd &controlVector) = 0;
+
+    void predict()
+    {
+        predict(EMPTYVEC);
+    }
+
+    virtual void update(VectorXd &measureVector) = 0;
 
     //If we have no measurement, then don't perform the update step (just update the statePost and covPost
     //with the previous one)
-    void update();
+    void update() {}
 
     //Getters
     VectorXd getStatePred();
