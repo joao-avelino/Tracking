@@ -8,7 +8,7 @@
 
 #include "HungarianAssociator.hpp"
 #include "Person3dBVT.hpp"
-#include "PeopleTrackerWithMMAE.hpp"
+#include "TrackerWithBVT.hpp"
 #include "Association.hpp"
 
 using namespace std;
@@ -144,7 +144,7 @@ int main()
 
 
 	//Build a list of people trackers
-	vector<shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>>> trackerList;
+	vector<shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>>> trackerList;
 /*
 	//Person 1
 	VectorXd position_p1(2);
@@ -171,7 +171,15 @@ int main()
 	VectorXd position_p4(2);
 	position_p4 << 1, 5;
 	shared_ptr<Person3dBVT> person4(new Person3dBVT(position_p4, VectorXd(), MatrixXd()));
-	shared_ptr<PeopleTrackerWithMMAE<Person3dBVT>> personTracker4(new PeopleTrackerWithMMAE<Person3dBVT>(person4));
+
+	//Let's create an  MMAEItem for each received model and add it
+	//to the filterBank
+
+	std::vector<std::shared_ptr<MMAEItem> > filterBank;
+
+
+	shared_ptr<MMAE> estim(new MMAE(filterBank));
+	shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>> personTracker4(new TrackerWithBVT<Person3dBVT, MMAE>(person4, estim, 0.5));
 	trackerList.push_back(personTracker4);
 	
 
@@ -211,16 +219,16 @@ int main()
 
 	//Build an Hungarian associator of people's positions with the euclidean metric
 
-	HungarianAssociator<Person3dBVT, PeopleTrackerWithMMAE<Person3dBVT>> associator(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
-	AssociationList<Person3dBVT, PeopleTrackerWithMMAE<Person3dBVT>> assocList = associator.associateData(trackerList, detectionList);
+	HungarianAssociator<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> associator(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
+	AssociationList<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> assocList = associator.associateData(trackerList, detectionList);
 	
-	vector<Association<Person3dBVT, PeopleTrackerWithMMAE<Person3dBVT>>> success = assocList.getSuccessfulAssociations();
+	vector<Association<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>>> success = assocList.getSuccessfulAssociations();
 	vector<shared_ptr<Detection<Person3dBVT>>> unDetections = assocList.getUnassociatedDetections();
 
 
 	cout << "------------------------------ Sucessful associations ------------------------------" << endl;
 
-	for (Association<Person3dBVT, PeopleTrackerWithMMAE<Person3dBVT>> &ass : success)
+	for (Association<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> &ass : success)
 	{
 		cout << "Associated: " << endl;
 		cout << ass.getDetectionPTR()->getObjPTR()->getPosition() << endl;

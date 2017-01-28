@@ -12,9 +12,9 @@ public:
 
 
 	virtual void preProcessingComputations() = 0;
-	virtual void predict(const MatrixXd &controlVect) = 0;
+	virtual void predict(VectorXd &controlVect) = 0;
 	virtual void postPredictComputations() = 0;
-	virtual void update(const Detection<Obj> &det) = 0;
+	virtual void update(Detection<Obj> &det) = 0;
 	virtual void postUpdateComputations() = 0;
 
 };
