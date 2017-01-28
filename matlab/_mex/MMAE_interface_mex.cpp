@@ -85,7 +85,7 @@ mxArray * eigenMatrixToMatlab(const MatrixXd &matrix)
 
 // The class that we are interfacing t
 
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+void teste10(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	// Get the command string
 	char cmd[64];

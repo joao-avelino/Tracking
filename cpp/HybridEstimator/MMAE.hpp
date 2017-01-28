@@ -15,6 +15,11 @@ public:
 	VectorXd getStatePosterior();
 	MatrixXd getStateCovariancePosterior();
     void predict(VectorXd &control);
+	void predict()
+	{
+		VectorXd empty = VectorXd();
+		predict(empty);
+	};
     void update(VectorXd &measure);
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();

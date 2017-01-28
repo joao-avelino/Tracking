@@ -34,8 +34,19 @@ public:
 
 
     void predict(VectorXd &controlVector);
+	void predict()
+	{
+		VectorXd empty = VectorXd();
+		predict(empty);
+	}
 	void mwgs();
     void update(VectorXd &measureVector);
+	void update()
+	{
+		VectorXd empty = VectorXd();
+		update(empty);
+	}
+
 	MatrixXd getCovPost();
 	MatrixXd getCovPred();
 
