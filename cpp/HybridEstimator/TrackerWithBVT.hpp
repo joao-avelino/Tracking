@@ -1,5 +1,5 @@
-#ifndef TRACKERWITHMMAEANDBVT_H
-#define TRACKERWITHMMAEANDBVT_H
+#ifndef TRACKERWITHBVT_H
+#define TRACKERWITHBVT_H
 
 
 #include "BaseBayesianTracker.hpp"
@@ -59,4 +59,4 @@ private:
 
 
 
-#endif // !PEOPLETRACKERWITHMMAE_H
+#endif // !TRACKERWITHBVT_H

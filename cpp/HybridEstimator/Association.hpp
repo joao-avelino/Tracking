@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include "BaseTracker.hpp"
 #include "Detection.hpp"
 
 using namespace std;
