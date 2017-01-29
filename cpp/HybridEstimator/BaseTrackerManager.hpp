@@ -7,7 +7,7 @@
 
 using namespace std;
 
-template <class Obj, class Trk> class BaseTrackerManager
+template <class Obj, class Trk, class MoT> class BaseTrackerManager
 {
 
 public:
@@ -17,7 +17,7 @@ public:
 	virtual void manageTracks(AssociationList<Obj, Trk> &assocList) = 0;
 
 protected:
-	vector <Trk> &trackerList;
+	MoT& multiObjectTracker;
 
 };
 

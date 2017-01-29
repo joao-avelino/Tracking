@@ -5,11 +5,15 @@
 #include "Kfutils.hpp"
 
 #include "Comparator.hpp"
-
+#include "MMAE.hpp"
 #include "HungarianAssociator.hpp"
 #include "Person3dBVT.hpp"
 #include "TrackerWithBVT.hpp"
 #include "Association.hpp"
+#include <iterator>
+#include <algorithm>
+#include <utility>
+#include <map>
 
 using namespace std;
 
@@ -244,6 +248,7 @@ int main()
 		cout << dt->getObjPTR()->getPosition() << endl;
 
 	}
+
 
 	getchar();
 
