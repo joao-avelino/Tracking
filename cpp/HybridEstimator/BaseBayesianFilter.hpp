@@ -45,6 +45,8 @@ public:
 	virtual VectorXd getStatePost() = 0;
 	virtual MatrixXd getCovPost() = 0;
 
+	virtual std::shared_ptr<BaseBayesianFilter> clone() = 0;
+
 protected:
 	std::string modelName;
 

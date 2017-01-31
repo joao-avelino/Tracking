@@ -4,10 +4,11 @@
 #include <memory>
 #include <vector>
 #include "Association.hpp"
+#include "BaseMoT.hpp"
 
 using namespace std;
 
-template <class Obj, class Trk, class MoT> class BaseTrackerManager
+template <class Obj, class Trk> class BaseTrackerManager
 {
 
 public:
@@ -15,9 +16,13 @@ public:
 	~BaseTrackerManager() {};
 
 	virtual void manageTracks(AssociationList<Obj, Trk> &assocList) = 0;
+	void assignMoTPTR(BaseMot<Obj, Trk> *trackerPTR)
+	{
+		this->multiObjectTrackerPTR.reset(trackerPTR);
+	};
 
 protected:
-	MoT& multiObjectTracker;
+	unique_ptr<BaseMot<Obj, Trk>> multiObjectTrackerPTR;
 
 };
 

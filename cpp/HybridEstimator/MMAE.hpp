@@ -5,7 +5,7 @@
 #include "MMAEItem.hpp"
 
 class MMAE :
-	HybridEstimator
+	public HybridEstimator
 {
 public:
 	MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumProbability=0.05, bool initializeProbs=true);
@@ -23,6 +23,8 @@ public:
     void update(VectorXd &measure);
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();
+
+	std::shared_ptr<HybridEstimator> clone();
 
 private:
 	void computeProbabilities(VectorXd & measure);

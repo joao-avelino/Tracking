@@ -55,6 +55,8 @@ public:
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();
 
+	virtual std::shared_ptr<HybridEstimator> clone() = 0;
+
 };
 
 #endif // HYBRIDESTIMATOR_HPP

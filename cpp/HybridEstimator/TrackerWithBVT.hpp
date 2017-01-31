@@ -51,6 +51,17 @@ public:
 	};
 
 	void postUpdateComputations() {};
+
+	shared_ptr<BaseTracker<Obj>> clone()
+	{
+		shared_ptr<PosEstim> estimClone = static_pointer_cast<PosEstim>(this->positionEstimator->clone());
+		shared_ptr<Obj> objClone = static_pointer_cast<Obj>(this->objectPTR->clone());
+
+		
+		return shared_ptr<BaseTracker<Obj>>(new TrackerWithBVT<Obj, PosEstim>(objClone, estimClone,
+			this->colorLearningRate));
+
+	}
 	
 private:
 	int obsSize;

@@ -220,6 +220,22 @@ std::vector<double> MMAE::getAllModelProbabilities()
 	return ret;
 }
 
+std::shared_ptr<HybridEstimator> MMAE::clone()
+{
+	/*Clone each element in the vector*/
+
+	std::vector<std::shared_ptr<MMAEItem> > filterBankClone;
+
+	for (auto& fil : this->filterBank)
+	{
+		std::shared_ptr<MMBankItem> generalItemPTR = fil->clone();
+		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
+	}
+
+	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+}
+
+
 void MMAE::computeProbabilities(VectorXd & measure)
 {
 	//If no measurement available, keep the probabilities

@@ -6,6 +6,7 @@
 #include <eigen3/Eigen/Core>
 
 using namespace Eigen;
+using namespace std;
 
 class Person3dBVT :
 	public Object
@@ -23,6 +24,11 @@ public:
 	VectorXd getPosition();
 	VectorXd getBvtHist();
 	MatrixXd getPositionErrorCovariance();
+
+	shared_ptr<Object> clone()
+	{
+		return shared_ptr<Object>(new Person3dBVT(this->position, this->bvtHist, this->positionErrorCovariance));
+	}
 
 protected:
 	VectorXd position;

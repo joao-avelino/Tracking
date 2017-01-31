@@ -78,3 +78,8 @@ double MMAEItem::getStateDim()
 {
 	return stateDim;
 }
+
+std::shared_ptr<MMBankItem> MMAEItem::clone()
+{
+	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(), this->filter->getModelName()));
+}

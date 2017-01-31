@@ -5,6 +5,7 @@
 #include <memory>
 
 using namespace Eigen;
+using namespace std;
 
 //Forward declaration. Detection exists.
 template <class Obj> class Detection;
@@ -20,6 +21,11 @@ public:
 	{
 		return this->objectPTR;
 	};
+
+	void setObjPTR(shared_ptr<Obj> objPTR)
+	{
+		this->objectPTR = objPTR;
+	}
 
 	int getObjectType()
 	{
@@ -42,6 +48,8 @@ public:
 	{
 		return tracker.compareWith(*objectPTR, mode, metric);
 	};
+
+	virtual shared_ptr<BaseTracker> clone() = 0;
 
 protected:
 	//Protected constructor no allowing the class to be instantiated

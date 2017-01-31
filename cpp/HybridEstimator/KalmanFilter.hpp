@@ -53,6 +53,8 @@ public:
 	VectorXd getMeasurementResidual(VectorXd &measure);
 	MatrixXd getResidualCovariance();
 
+	std::shared_ptr<BaseBayesianFilter> clone();
+
 protected:
 
     MatrixXd stateTransitionModel;

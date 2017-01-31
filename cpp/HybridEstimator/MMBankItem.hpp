@@ -9,7 +9,7 @@ using namespace Eigen;
 class MMBankItem
 {
 public:
-	MMBankItem();
+
 	~MMBankItem();
 	VectorXd getStatePred();
 	VectorXd getStatePost();
@@ -32,8 +32,12 @@ public:
 
 	std::string getModelName();
 
+	virtual std::shared_ptr<MMBankItem> clone() = 0;
+
 
 protected:
+
+	MMBankItem();
 	std::shared_ptr<BaseBayesianFilter> filter;
 	
 

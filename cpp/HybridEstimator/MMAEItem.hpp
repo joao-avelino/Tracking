@@ -37,6 +37,8 @@ public:
 	void setProbabiliy(double prob);
 	double getStateDim();
 
+	std::shared_ptr<MMBankItem> clone();
+
 protected:
 	double probDensity;
 	double probability;

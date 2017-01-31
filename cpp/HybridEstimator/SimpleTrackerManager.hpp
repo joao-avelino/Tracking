@@ -7,16 +7,18 @@ using namespace std;
 
 //Create trackers as they appear and delete after a set number of non associations
 
-template <class Obj, class Trk, class MoT> class SimpleTrackerManager : BaseTrackerManager <Obj, Trk, MoT>
+template <class Obj, class Trk> class SimpleTrackerManager : public BaseTrackerManager <Obj, Trk>
 {
 public:
-	SimpleTrackerManager(MoT &multiObjecTracker, int maxNotAssoc) : multiObjecTracker(multiObjecTracker)
+	SimpleTrackerManager(int maxNotAssoc)
 	{
 		this->maxNotAssoc = maxNotAssoc;
 	};
 
 	void manageTracks(AssociationList<Obj, Trk> &assocList)
 	{
+		assert(this->multiObjectTrackerPTR != nullptr && "The tracker manager needs to have a pointer to the Multiple Object Tracker! Please assign it in the constructor");
+
 		for (int& as : notAssocVect)
 		{
 			as += 1;
@@ -24,7 +26,7 @@ public:
 
 		//Reset the counter of associations
 		vector<Association<Obj, Trk>> successAssoc = assocList.getSuccessfulAssociations();
-		vector<shared_ptr<Trk>> trackers = multiObjectTracker.getTrackersVector();
+		vector<shared_ptr<Trk>> trackers = multiObjectTrackerPTR->getTrackersVector();
 
 		/*THIS NEEDS TO BE OPTIMIZED! BUT NOW I NEED RESULTS FOR THE PAPER*/
 
@@ -33,7 +35,7 @@ public:
 
 			shared_ptr<Trk> trkPTR = assoc.getTrackerPTR();
 			ptrdiff_t pos = find(trackers.begin(), trackers.end(), trkPTR) - trackers.begin();
-			assert(pos < tracker.size() &&  && "That tracker does no longer exist... or isnt on the notAssocVect");
+			assert(pos < trackers.size() && "That tracker does no longer exist... or isnt on the notAssocVect");
 			notAssocVect.at(pos) = 0;
 
 		}
@@ -44,18 +46,18 @@ public:
 		{
 			if (notAssocVect.at(i) >= maxNotAssoc)
 			{
-				multiObjectTracker.deleteTracker(i);
+				multiObjectTrackerPTR->deleteTracker(i);
 				notAssocVect.erase(notAssocVect.begin()+i);
 			}
 			
 		}
 
 		//Create new tracks for each unassociated detection
-		vector<Detection<Obj>> unassocDetsList = assocList.getUnassociatedDetections();
+		vector<shared_ptr<Detection<Obj>>> unassocDetsList = assocList.getUnassociatedDetections();
 
-		for (Detection<Obj>& unassoc : unassocDetsList)
+		for (auto& unassoc : unassocDetsList)
 		{
-			multiObjectTracker.createTracker(unassoc);
+			multiObjectTrackerPTR->createTracker(*unassoc);
 			notAssocVect.push_back(0);
 		}
 

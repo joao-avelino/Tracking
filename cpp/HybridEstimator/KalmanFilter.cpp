@@ -284,6 +284,12 @@ MatrixXd KalmanFilter::getResidualCovariance()
 	return observationModel*U_pred*D_pred.asDiagonal()*U_pred.transpose()*observationModel.transpose()+observationNoiseCov;
 }
 
+std::shared_ptr<BaseBayesianFilter> KalmanFilter::clone()
+{
+	return std::shared_ptr<BaseBayesianFilter>(new KalmanFilter(stateTransitionModel, observationModel,
+		processNoiseCov, observationNoiseCov, this->statePost, this->covPost));
+}
+
 /**
  * U-D update step on single scalar value
  *

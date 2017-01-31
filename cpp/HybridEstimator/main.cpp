@@ -15,6 +15,9 @@
 #include <utility>
 #include <map>
 
+#include "SimpleTrackerManager.hpp"
+#include "MultiObjectTracker.hpp"
+
 using namespace std;
 
 int main()
@@ -86,10 +89,15 @@ int main()
             10, 10, 2000, 10,
             10, 10, 10, 2000;
 
+
+	/*Test out if we are doing shallow or deep copies on kalman filters*/
+
     KalmanFilter kf(stateTransitionModel, observationModel, processNoiseCovariance, observationNoiseCov,
                     initial_state, initial_cov);
 
-    std::cout << "Gonna predict" << std::endl;
+	shared_ptr<BaseBayesianFilter> kf2PTR = kf.clone();
+
+    std::cout << "Gonna predict: KF1" << std::endl;
 
     VectorXd empty;
     empty = VectorXd();
@@ -99,7 +107,7 @@ int main()
 	
     std::cout << "P_pred =  " << kf.getCovPred() << std::endl;
 
-    std::cout << "Check" << std::endl;
+    std::cout << "Check gonna update KF1" << std::endl;
 
 	getchar();
 
@@ -112,6 +120,38 @@ int main()
 	std::cout << "P_post: " << kf.getCovPost() << std::endl;
 
 	getchar();
+
+	cout << "Checking contents of kf2" << endl;
+
+	std::cout << "x_pred: " << kf2PTR->getStatePred() << std::endl;
+	std::cout << "P_pred =  " << kf2PTR->getCovPred() << std::endl;
+	std::cout << "x_post: " << kf2PTR->getStatePost() << std::endl;
+	std::cout << "P_post: " << kf2PTR->getCovPost() << std::endl;
+
+	/*It does a shallow copy :D*/
+
+	getchar();
+
+	/*Test out if we are doing deep copies or shallow copies of persons*/
+
+	cout << "Deep or shallow copies of people" << endl;
+
+	VectorXd testePerson(2);
+	testePerson << 1, 5;
+	shared_ptr<Person3dBVT> testeP1(new Person3dBVT(testePerson, VectorXd(), MatrixXd()));
+
+	shared_ptr<Person3dBVT> testeP2 = static_pointer_cast<Person3dBVT>(testeP1->clone());
+
+	VectorXd newPost = testeP1->getPosition();
+	newPost(0) = 9;
+	newPost(1) = 3;
+	testeP1->setPosition(newPost);
+
+	cout << "P1: " << testeP1->getPosition() << endl;
+	cout << "P2: " << testeP2->getPosition() << endl;
+
+	getchar();
+
 
 
 	MatrixXd S(2, 2);
@@ -142,13 +182,13 @@ int main()
 
 
 
-	getchar();
+	//getchar();
 
-	std::cout << "Testing out the Hungarian Associator" << std::endl;
+	//std::cout << "Testing out the Hungarian Associator" << std::endl;
 
 
 	//Build a list of people trackers
-	vector<shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>>> trackerList;
+//	vector<shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>>> trackerList;
 /*
 	//Person 1
 	VectorXd position_p1(2);
@@ -172,19 +212,19 @@ int main()
 	trackerList.push_back(personTracker3);*/
 
 	//Person 4
-	VectorXd position_p4(2);
-	position_p4 << 1, 5;
-	shared_ptr<Person3dBVT> person4(new Person3dBVT(position_p4, VectorXd(), MatrixXd()));
+//	VectorXd position_p4(2);
+//	position_p4 << 1, 5;
+//	shared_ptr<Person3dBVT> person4(new Person3dBVT(position_p4, VectorXd(), MatrixXd()));
 
 	//Let's create an  MMAEItem for each received model and add it
 	//to the filterBank
 
-	std::vector<std::shared_ptr<MMAEItem> > filterBank;
+//	std::vector<std::shared_ptr<MMAEItem> > filterBank;
 
-
-	shared_ptr<MMAE> estim(new MMAE(filterBank));
-	shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>> personTracker4(new TrackerWithBVT<Person3dBVT, MMAE>(person4, estim, 0.5));
-	trackerList.push_back(personTracker4);
+//	shared_ptr<MMAE> estim(new MMAE(filterBank));
+	
+//	shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>> personTracker4(new TrackerWithBVT<Person3dBVT, MMAE>(person4, estim, 0.5));
+//	trackerList.push_back(personTracker4);
 	
 
 	//Build a list of detections
@@ -222,7 +262,7 @@ int main()
 
 
 	//Build an Hungarian associator of people's positions with the euclidean metric
-
+	/*
 	HungarianAssociator<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> associator(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
 	AssociationList<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> assocList = associator.associateData(trackerList, detectionList);
 	
@@ -247,11 +287,47 @@ int main()
 
 		cout << dt->getObjPTR()->getPosition() << endl;
 
-	}
+	}*/
 
 
 	getchar();
 
-    return 0;
+	cout << "------------------------------ Testing tracker manager and MoT (the managing part) ------------------------------" << endl;
+
+	//Create a nickname for the difficult templates
+	typedef TrackerWithBVT<Person3dBVT, MMAE> MMAEpersonTracker;
+	typedef SimpleTrackerManager<Person3dBVT, MMAEpersonTracker> TrackerManager;
+	typedef HungarianAssociator<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> PeopleHungarianAssociator;
+	typedef MultiObjectTracker<MMAEpersonTracker, TrackerManager, PeopleHungarianAssociator, Person3dBVT> MoT;
+	typedef AssociationList<Person3dBVT, MMAEpersonTracker> PeopleAssociations;
+
+	//Create an object
+	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2)));
+
+	//Create a position estimator
+	std::vector<std::shared_ptr<MMAEItem> > filterBank;
+	std::shared_ptr<MMAE> posEstimator(new MMAE(filterBank));
+
+	//Create a Tracker
+	MMAEpersonTracker *trackerPTR = new MMAEpersonTracker(dummy_person, posEstimator, 0.5);
+
+	//Create an associator
+	PeopleHungarianAssociator hung(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
+
+	//Create a tracker manager
+	TrackerManager trkMgr(5);
+
+	//Create a MoT
+	MoT multipersontracker(trkMgr, hung, trackerPTR);
+
+
+	//Make up 5 associations and give them to the tracker manager
+
+	PeopleAssociations assocList;
+
+
+	//Ver 
+	
+	getchar();
 }
 

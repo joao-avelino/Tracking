@@ -1,6 +1,8 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
+#include <memory>
+
 class Object
 {
 public:
@@ -32,6 +34,8 @@ public:
 	{
 		return objectType;
 	};
+
+	virtual std::shared_ptr<Object> clone() = 0;
 
 protected:
 
