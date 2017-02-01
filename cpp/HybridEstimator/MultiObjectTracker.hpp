@@ -31,26 +31,26 @@ public:
 		
 		shared_ptr<Trk> newTracker = static_pointer_cast<Trk>(trackerToBeClonedPTR->clone());
 		newTracker->setObjPTR(detection.getObjPTR());
-		trackersVector.push_back(std::move(newTracker));
+        this->trackersVector.push_back(std::move(newTracker));
 
 	}
 	
 
 	void deleteTracker(int pos)
 	{
-		trackersVector.erase(trackersVector.begin()+pos);
+        this->trackersVector.erase(this->trackersVector.begin()+pos);
 	}
 
 
 	vector<std::shared_ptr<Trk>> getTrackersVector()
 	{
-		return trackersVector;
+        return this->trackersVector;
 	}
 
 protected:
 	TrkMgr &trackerManager;
+    unique_ptr<Trk> trackerToBeClonedPTR;
 	Assoc &associator;
-	unique_ptr<Trk> trackerToBeClonedPTR; //
 
 };
 

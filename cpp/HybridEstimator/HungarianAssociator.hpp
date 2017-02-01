@@ -12,7 +12,7 @@ public:
 	~HungarianAssociator() {};
 	 
 
-	AssociationList<Obj, Trk> associateData(vector<shared_ptr<Trk>> &trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec);
+    AssociationList<Obj, Trk> associateData(vector<shared_ptr<Trk>> trackPTRvec, vector<shared_ptr<Detection<Obj> > > &detecPTRvec);
 
 protected:
 	int mode;
@@ -25,7 +25,7 @@ protected:
 #endif // HUNGARIANASSOCIATOR_HPP
 
 template<class Obj, class Trk>
-AssociationList<Obj, Trk> HungarianAssociator<Obj, Trk>::associateData(vector<shared_ptr<Trk>>& trackPTRvec, vector<shared_ptr<Detection<Obj>>>& detecPTRvec)
+AssociationList<Obj, Trk> HungarianAssociator<Obj, Trk>::associateData(vector<shared_ptr<Trk>> trackPTRvec, vector<shared_ptr<Detection<Obj>>>& detecPTRvec)
 {
 	int nTrackers = trackPTRvec.size();
 	int nDetections = detecPTRvec.size();

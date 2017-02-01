@@ -26,7 +26,7 @@ public:
 
 		//Reset the counter of associations
 		vector<Association<Obj, Trk>> successAssoc = assocList.getSuccessfulAssociations();
-		vector<shared_ptr<Trk>> trackers = multiObjectTrackerPTR->getTrackersVector();
+        vector<shared_ptr<Trk>> trackers = this->multiObjectTrackerPTR->getTrackersVector();
 
 		/*THIS NEEDS TO BE OPTIMIZED! BUT NOW I NEED RESULTS FOR THE PAPER*/
 
@@ -50,8 +50,8 @@ public:
 			cout << "i: " << i << endl;
 			if (notAssocVect.at(i) >= maxNotAssoc)
 			{
-				cout << "deleting: " << multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getPosition();
-				multiObjectTrackerPTR->deleteTracker(i);
+                cout << "deleting: " << this->multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getPosition();
+                this->multiObjectTrackerPTR->deleteTracker(i);
 				notAssocVect.erase(notAssocVect.begin()+i);
 				i--;
 				vectSize = notAssocVect.size();
@@ -64,7 +64,7 @@ public:
 
 		for (auto& unassoc : unassocDetsList)
 		{
-			multiObjectTrackerPTR->createTracker(*unassoc);
+            this->multiObjectTrackerPTR->createTracker(*unassoc);
 			notAssocVect.push_back(0);
 		}
 
