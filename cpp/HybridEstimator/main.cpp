@@ -128,7 +128,7 @@ int main()
 	std::cout << "x_post: " << kf2PTR->getStatePost() << std::endl;
 	std::cout << "P_post: " << kf2PTR->getCovPost() << std::endl;
 
-	/*It does a shallow copy :D*/
+	/*It does a deep copy :D*/
 
 	getchar();
 
@@ -228,7 +228,7 @@ int main()
 	
 
 	//Build a list of detections
-	vector<shared_ptr<Detection<Person3dBVT>>> detectionList;
+/*	vector<shared_ptr<Detection<Person3dBVT>>> detectionList;
 
 
 	//Detect 1
@@ -258,7 +258,7 @@ int main()
 	shared_ptr<Person3dBVT> det4(new Person3dBVT(pdet4, VectorXd(), MatrixXd()));
 	shared_ptr<Detection<Person3dBVT>> detection4(new Detection<Person3dBVT>(det4, "Camera"));
 	detectionList.push_back(detection4);
-
+	*/
 
 
 	//Build an Hungarian associator of people's positions with the euclidean metric
@@ -300,6 +300,7 @@ int main()
 	typedef HungarianAssociator<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> PeopleHungarianAssociator;
 	typedef MultiObjectTracker<MMAEpersonTracker, TrackerManager, PeopleHungarianAssociator, Person3dBVT> MoT;
 	typedef AssociationList<Person3dBVT, MMAEpersonTracker> PeopleAssociations;
+	typedef Association<Person3dBVT, MMAEpersonTracker> PersonTrackerAssociation;
 
 	//Create an object
 	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2)));
@@ -325,9 +326,142 @@ int main()
 
 	PeopleAssociations assocList;
 
+	//Build a list of detections
+	vector<shared_ptr<Detection<Person3dBVT>>> detectionList;
+	vector<shared_ptr<Detection<Person3dBVT>>> detectionList2;
 
-	//Ver 
+	//Detect 1
+	VectorXd pdet1(2);
+	pdet1 << 1.5, 1.5;
+	shared_ptr<Person3dBVT> det1(new Person3dBVT(pdet1, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection1(new Detection<Person3dBVT>(det1, "Camera"));
+	detectionList.push_back(detection1);
+
+	//Detect 2
+	VectorXd pdet2(2);
+	pdet2 << 3.5, 1.5;
+	shared_ptr<Person3dBVT> det2(new Person3dBVT(pdet2, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection2(new Detection<Person3dBVT>(det2, "Camera"));
+	detectionList.push_back(detection2);
+
+	//Detec 3
+	VectorXd pdet3(2);
+	pdet3 << 4.5, 5.5;
+	shared_ptr<Person3dBVT> det3(new Person3dBVT(pdet3, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection3(new Detection<Person3dBVT>(det3, "Camera"));
+	detectionList.push_back(detection3);
+
+	//Detec 4
+	VectorXd pdet4(2);
+	pdet4 << 1.5, 5.5;
+	shared_ptr<Person3dBVT> det4(new Person3dBVT(pdet4, VectorXd(), MatrixXd()));
+	shared_ptr<Detection<Person3dBVT>> detection4(new Detection<Person3dBVT>(det4, "Camera"));
+	detectionList.push_back(detection4);
+
+	detectionList2.push_back(detection1);
+
+	assocList.addUnassociatedDetection(detectionList);
+
+	//Check the trackers vector in the beginning
+	cout << "---- Before the existance of any tracker ----" << endl;
+
+	auto trkVect = multipersontracker.getTrackersVector();
+	
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
+
+
+	//Give the unassociated detections to the tracker
+	trkMgr.manageTracks(assocList);
+
+	//Check if it created the new tracks
+	cout << "---- Check if trackers were created ----" << endl;
+	trkVect = multipersontracker.getTrackersVector();
+
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
 	
 	getchar();
+
+	//Use let the hungarian make an association
+	assocList = hung.associateData(multipersontracker.getTrackersVector(), detectionList2);
+
+	auto teste1 = assocList.getSuccessfulAssociations();
+
+	cout << "Association" << endl;
+	for (auto& t : teste1)
+	{
+		cout << t.getDetectionPTR()->getObjPTR()->getPosition() << endl;
+		cout << "with" << endl;
+		cout << t.getTrackerPTR()->getObjPTR()->getPosition() << endl;
+	}
+
+	//Manage tracks
+	trkMgr.manageTracks(assocList);
+
+	PeopleAssociations assoclistempty;
+
+	//Manage tracks 4 times
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+
+	//Check if only the first tracker is alive
+	cout << "---- Check if only the first tracker is alive ----" << endl;
+	trkVect = multipersontracker.getTrackersVector();
+
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
+
+	getchar();
+
+	trkMgr.manageTracks(assocList);
+
+	//Check if only the first tracker is alive
+	cout << "---- Check if only the first tracker is alive ----" << endl;
+	trkVect = multipersontracker.getTrackersVector();
+
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
+
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+	trkMgr.manageTracks(assoclistempty);
+
+
+	cout << "---- Check that only one tracker is alive----" << endl;
+
+	trkVect = multipersontracker.getTrackersVector();
+
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
+
+	trkMgr.manageTracks(assoclistempty);
+
+	//Manage again and check that no tracks are alive
+	cout << "---- Check that no trackers are alive ----" << endl;
+
+	trkMgr.manageTracks(assoclistempty);
+	trkVect = multipersontracker.getTrackersVector();
+
+	for (auto& trk : trkVect)
+	{
+		cout << trk->getObjPTR()->getPosition() << endl;
+	}
+
+	getchar();
+
 }
 

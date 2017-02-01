@@ -18,11 +18,11 @@ public:
 	virtual void manageTracks(AssociationList<Obj, Trk> &assocList) = 0;
 	void assignMoTPTR(BaseMot<Obj, Trk> *trackerPTR)
 	{
-		this->multiObjectTrackerPTR.reset(trackerPTR);
+		this->multiObjectTrackerPTR = trackerPTR;
 	};
 
 protected:
-	unique_ptr<BaseMot<Obj, Trk>> multiObjectTrackerPTR;
+	BaseMot<Obj, Trk> *multiObjectTrackerPTR;
 
 };
 

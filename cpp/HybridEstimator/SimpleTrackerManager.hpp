@@ -36,18 +36,25 @@ public:
 			shared_ptr<Trk> trkPTR = assoc.getTrackerPTR();
 			ptrdiff_t pos = find(trackers.begin(), trackers.end(), trkPTR) - trackers.begin();
 			assert(pos < trackers.size() && "That tracker does no longer exist... or isnt on the notAssocVect");
+			std::cout << "Pos[ " << pos << "]" << std::endl;
 			notAssocVect.at(pos) = 0;
 
 		}
 
 
+		cout << "---------check if delete------------" << endl;
 		//Delete the trackers that need to be deleted
-		for (int i = 0; i < notAssocVect.size(); i++)
+		int vectSize = notAssocVect.size();
+		for (int i = 0; i < vectSize; i++)
 		{
+			cout << "i: " << i << endl;
 			if (notAssocVect.at(i) >= maxNotAssoc)
 			{
+				cout << "deleting: " << multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getPosition();
 				multiObjectTrackerPTR->deleteTracker(i);
 				notAssocVect.erase(notAssocVect.begin()+i);
+				i--;
+				vectSize = notAssocVect.size();
 			}
 			
 		}
@@ -60,6 +67,16 @@ public:
 			multiObjectTrackerPTR->createTracker(*unassoc);
 			notAssocVect.push_back(0);
 		}
+
+		/*DEBUG*/
+
+		for (auto& lol : notAssocVect)
+		{
+
+			cout << "notAssocVect: " << lol << endl;
+		}
+
+		cout << "----------------" << endl;
 
 	}
 

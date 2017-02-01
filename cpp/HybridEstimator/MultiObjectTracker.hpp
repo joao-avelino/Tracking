@@ -19,7 +19,7 @@ public:
 	{
 	
 		//Assign the tracker pointer so that the tracker manager can add and delete tracks
-		//trackerManager.assignMoTPTR(this);
+		trackerManager.assignMoTPTR(this);
 	
 	};
 
