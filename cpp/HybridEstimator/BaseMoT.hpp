@@ -9,7 +9,7 @@ class BaseMot
 public:
 	BaseMot() {};
 
-	virtual void createTracker(Detection<Obj> detection) = 0;
+	virtual void createTracker(Detection<Obj> detection, int id) = 0;
 	virtual void deleteTracker(int pos) = 0;
 	virtual vector<std::shared_ptr<Trk>> getTrackersVector() = 0;
 

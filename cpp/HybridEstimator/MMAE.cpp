@@ -57,7 +57,7 @@ MMAE::~MMAE()
 {
 }
 
-VectorXd MMAE::getStatePrediction()
+VectorXd MMAE::getStatePred()
 {
 
 	//Set up a vector for the states
@@ -80,7 +80,7 @@ VectorXd MMAE::getStatePrediction()
 	return stateMixture;
 }
 
-MatrixXd MMAE::getStateCovariancePrediction()
+MatrixXd MMAE::getCovPred()
 {
 
 	MatrixXd covMat = MatrixXd::Zero(stateDim, stateDim);
@@ -103,7 +103,7 @@ MatrixXd MMAE::getStateCovariancePrediction()
 		augmentedMat.block(0, 0, rows, cols) = filterCovPred;
 		augmentedState.head(modelStateDim) = filterStatePred;
 
-		VectorXd diffState = augmentedState - getStatePrediction();
+		VectorXd diffState = augmentedState - getStatePred();
 
 		covMat += ptr->getProbability()*(augmentedMat-diffState*diffState.transpose());
 	}
@@ -112,7 +112,7 @@ MatrixXd MMAE::getStateCovariancePrediction()
 	return covMat;
 }
 
-VectorXd MMAE::getStatePosterior()
+VectorXd MMAE::getStatePost()
 {
 
 	//Set up a vector for the states
@@ -135,7 +135,7 @@ VectorXd MMAE::getStatePosterior()
 
 }
 
-MatrixXd MMAE::getStateCovariancePosterior()
+MatrixXd MMAE::getCovPost()
 {
 	MatrixXd covMat = MatrixXd::Zero(stateDim, stateDim);
 
@@ -157,7 +157,7 @@ MatrixXd MMAE::getStateCovariancePosterior()
 		augmentedMat.block(0, 0, rows, cols) = filterCovPost;
 		augmentedState.head(modelStateDim) = filterStatePost;
 
-		VectorXd diffState = augmentedState - getStatePosterior();
+		VectorXd diffState = augmentedState - getStatePost();
 
 		covMat += ptr->getProbability()*(augmentedMat - diffState*diffState.transpose());
 	}
@@ -220,7 +220,7 @@ std::vector<double> MMAE::getAllModelProbabilities()
 	return ret;
 }
 
-std::shared_ptr<HybridEstimator> MMAE::clone()
+std::shared_ptr<BaseBayesianFilter> MMAE::clone()
 {
 	/*Clone each element in the vector*/
 

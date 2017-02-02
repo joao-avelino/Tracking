@@ -28,9 +28,9 @@ public:
 	void predict(VectorXd &controlVect)
 	{
 		positionEstimator->predict(controlVect);
-		VectorXd state = positionEstimator->getStatePrediction();
+		VectorXd state = positionEstimator->getStatePred();
         this->objectPTR->setPosition(state.head(obsSize));
-		MatrixXd stateCov = positionEstimator->getStateCovariancePrediction();
+		MatrixXd stateCov = positionEstimator->getCovPred();
         this->objectPTR->setPositionErrorCovariance(stateCov.block(0, 0, obsSize, obsSize));
 
 		//Predict the colors somehow?
@@ -42,9 +42,9 @@ public:
 	{
 		VectorXd detPosition = det.getObjPTR()->getPosition();
 		positionEstimator->update(detPosition);
-		VectorXd state = positionEstimator->getStatePosterior();
+		VectorXd state = positionEstimator->getStatePost();
         this->objectPTR->setPosition(state.head(obsSize));
-		MatrixXd stateCov = positionEstimator->getStateCovariancePosterior();
+		MatrixXd stateCov = positionEstimator->getCovPost();
         this->objectPTR->setPositionErrorCovariance(stateCov.block(0, 0, obsSize, obsSize));
         this->objectPTR->setBvtHist(this->objectPTR->getBvtHist()*(1.0 - colorLearningRate) + colorLearningRate*det.getObjPTR()->getBvtHist());
 

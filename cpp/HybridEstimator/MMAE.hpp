@@ -10,10 +10,10 @@ class MMAE :
 public:
 	MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumProbability=0.05, bool initializeProbs=true);
 	~MMAE();
-	VectorXd getStatePrediction();
-	MatrixXd getStateCovariancePrediction();
-	VectorXd getStatePosterior();
-	MatrixXd getStateCovariancePosterior();
+	VectorXd getStatePred();
+	MatrixXd getCovPred();
+	VectorXd getStatePost();
+	MatrixXd getCovPost();
     void predict(VectorXd &control);
 	void predict()
 	{
@@ -24,7 +24,7 @@ public:
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();
 
-	std::shared_ptr<HybridEstimator> clone();
+	std::shared_ptr<BaseBayesianFilter> clone();
 
 private:
 	void computeProbabilities(VectorXd & measure);

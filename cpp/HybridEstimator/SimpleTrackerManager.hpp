@@ -65,8 +65,10 @@ public:
 
 		for (auto& unassoc : unassocDetsList)
 		{
-            this->multiObjectTrackerPTR->createTracker(*unassoc);
+			
+            this->multiObjectTrackerPTR->createTracker(*unassoc, numOfIds);
 			notAssocVect.push_back(0);
+			numOfIds++;
 		}
 
 		/*DEBUG*/

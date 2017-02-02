@@ -4,6 +4,7 @@
 #include <eigen3/Eigen/Core>
 #include "MMBankItem.hpp"
 #include "MMBankItem.hpp"
+#include "BaseBayesianFilter.hpp"
 #include <vector>
 #include <memory>
 
@@ -30,13 +31,23 @@ using namespace Eigen;
  *  License stuff
  */
 
-class HybridEstimator
+class HybridEstimator : public BaseBayesianFilter
 {
 public:
-    virtual VectorXd getStatePrediction() = 0;
-    virtual MatrixXd getStateCovariancePrediction() = 0;
-    virtual VectorXd getStatePosterior() = 0;
-    virtual MatrixXd getStateCovariancePosterior() = 0;
+    virtual VectorXd getStatePred() = 0;
+    virtual MatrixXd getCovPred() = 0;
+    virtual VectorXd getStatePost() = 0;
+    virtual MatrixXd getCovPost() = 0;
+	VectorXd getMeasurementResidual(VectorXd &measure)
+	{
+		return VectorXd();
+	}
+
+	MatrixXd getResidualCovariance()
+	{
+		return MatrixXd();
+	}
+
     virtual void predict(VectorXd &control) = 0;
 
     void predict()
@@ -55,7 +66,7 @@ public:
     virtual std::vector<double> getAllModelProbabilities() = 0;
     HybridEstimator();
 
-	virtual std::shared_ptr<HybridEstimator> clone() = 0;
+	virtual std::shared_ptr<BaseBayesianFilter> clone() = 0;
 
 };
 
