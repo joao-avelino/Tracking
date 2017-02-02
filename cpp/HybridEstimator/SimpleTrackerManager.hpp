@@ -13,6 +13,7 @@ public:
 	SimpleTrackerManager(int maxNotAssoc)
 	{
 		this->maxNotAssoc = maxNotAssoc;
+		numOfIds = 0;
 	};
 
 	void manageTracks(AssociationList<Obj, Trk> &assocList)
@@ -84,6 +85,7 @@ protected:
 	vector<int> notAssocVect;
 
 	int maxNotAssoc;
+	int numOfIds;
 
 };
 

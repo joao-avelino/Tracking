@@ -26,11 +26,12 @@ public:
 
 	/*These are the necessary methods for the Tracker Manager to work with*/
 
-	void createTracker(Detection<Obj> detection)
+	void createTracker(Detection<Obj> detection, int id)
 	{
 		
 		shared_ptr<Trk> newTracker = static_pointer_cast<Trk>(trackerToBeClonedPTR->clone());
 		newTracker->setObjPTR(detection.getObjPTR());
+		newTracker->setTrackerId(id);
 		trackersVector.push_back(std::move(newTracker));
 
 	}

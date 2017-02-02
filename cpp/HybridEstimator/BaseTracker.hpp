@@ -51,6 +51,16 @@ public:
 
 	virtual shared_ptr<BaseTracker> clone() = 0;
 
+	void setTrackerId(int trackerId_)
+	{
+		trackerId = trackerId_;
+	}
+
+	int getTrackerId()
+	{
+		return trackerId;
+	}
+
 protected:
 	//Protected constructor no allowing the class to be instantiated
 	BaseTracker() {};
