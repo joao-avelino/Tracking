@@ -49,7 +49,7 @@ public:
 	}
 
 
-	//Process detections - This is the "main" routine
+	//Process detections - This is the "main" rotine
 	void processDetections(vector<shared_ptr<Detection<Obj>>> &detList)
 	{
 	
@@ -66,7 +66,10 @@ public:
 
 
 		//Apply the validation Gate
-
+		/*TODO TODO TODO TODO TODO TODO TODO TODO 
+		* TODO TODO TODO TODO TODO TODO TODO TODO 
+		* TODO TODO TODO TODO TODO TODO TODO TODO
+		*/
 
 
 		//Update
@@ -74,10 +77,11 @@ public:
 
 		for (auto& ass : assVect)
 		{
-			ass.getTrackerPTR()->
+			ass.getTrackerPTR()->update(ass.getDetectionPTR());
 		}
 
-		//Manage
+		//Manage trackers
+		trackerManager.manageTracks(assList);
 
 	
 	}

@@ -42,9 +42,12 @@ public:
 	{
 		VectorXd detPosition = det.getObjPTR()->getObservableStates();
 		MatrixXd detCov = det.getObjPTR()->getObervableCovariance();
-		positionEstimator->update(detPosition);
-		 
 
+		if(detCov.size() > 0)
+			positionEstimator->update(detPosition, detCov);
+		else
+			positionEstimator->update(detPosition);
+		
 		VectorXd state = positionEstimator->getStatePost();
         this->objectPTR->setObservableStates(state.head(obsSize));
 		MatrixXd stateCov = positionEstimator->getCovPost();
