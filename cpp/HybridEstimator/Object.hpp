@@ -2,6 +2,9 @@
 #define OBJECT_HPP
 
 #include <memory>
+#include <eigen3/Eigen/Core>
+
+using namespace Eigen;
 
 class Object
 {
@@ -18,7 +21,7 @@ public:
 	static const int TYPE_BALL = 6;
 	static const int TYPE_CYLINDER = 7;
 	static const int TYPE_CUBE = 8;
-	static const int TYPE_MARKER = 7;
+	static const int TYPE_MARKER = 9;
 
 	//Comparison mode consts
 	static const int COMP_POSITION = 1;
@@ -36,6 +39,10 @@ public:
 	};
 
 	virtual std::shared_ptr<Object> clone() = 0;
+
+	virtual VectorXd getObservableStates() = 0;
+
+	virtual MatrixXd getObervableCovariance() = 0;
 
 protected:
 

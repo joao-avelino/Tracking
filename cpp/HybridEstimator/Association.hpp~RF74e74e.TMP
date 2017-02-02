@@ -27,19 +27,19 @@ public:
 	{
 		return detectionPTR;
 	};
-	/*
+
 	friend ostream& operator<<(ostream& os, const Association& ass)
 	{
 
 		os << "**** Association ****" << endl << endl;
-		os << *ass.getTrackerPTR() << endl;
-		os << "with: " << endl;
-		os << *ass.getDetectionPTR() << endl;
+		os << "Tracker id: " << ass.getTrackerPTR()->getTrackerId();
+		os << *ass.getTrackerPTR();
+
 		os << "******************" << endl;
 
 		return os;
 	}
-	*/
+
 
 private:
 	shared_ptr<Trk> trackerPTR;
@@ -53,7 +53,7 @@ public:
 
 	AssociationList() {};
 
-	vector<Association<Obj, Trk>> getSuccessfulAssociations() const
+	vector<Association<Obj, Trk>> getSuccessfulAssociations()
 	{
 		return associationList;
 	}
@@ -87,7 +87,7 @@ public:
 	{
 		this->unassociatedDetections = detecPTRvec;
 	};
-	/*
+
 	friend ostream& operator<<(ostream& os, const AssociationList& assocList)
 	{
 
@@ -101,7 +101,7 @@ public:
 		}
 
 		return os;
-	}*/
+	}
 
 protected:
 

@@ -16,8 +16,9 @@ public:
 	MatrixXd getCovPred();
 	MatrixXd getCovPost();
 
-    void predict(VectorXd &control);
-    void update(VectorXd &measure);
+    virtual void predict(VectorXd &control);
+    virtual void update(VectorXd &measure);
+	virtual void update(VectorXd &measure, MatrixXd &measurementCov);
 
 
     void predict()

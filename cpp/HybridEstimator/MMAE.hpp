@@ -4,6 +4,7 @@
 #include "HybridEstimator.hpp"
 #include "MMAEItem.hpp"
 
+
 class MMAE :
 	public HybridEstimator
 {
@@ -21,6 +22,7 @@ public:
 		predict(empty);
 	};
     void update(VectorXd &measure);
+	void update(VectorXd & measure, MatrixXd &measurementCov);
 	void updateDeltaT(double deltaT);
 	std::vector<double> getAllModelProbabilities();
 

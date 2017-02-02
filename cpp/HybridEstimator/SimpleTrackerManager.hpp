@@ -51,7 +51,7 @@ public:
 			cout << "i: " << i << endl;
 			if (notAssocVect.at(i) >= maxNotAssoc)
 			{
-                cout << "deleting: " << this->multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getPosition();
+                cout << "deleting: " << this->multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getObservableStates();
                 this->multiObjectTrackerPTR->deleteTracker(i);
 				notAssocVect.erase(notAssocVect.begin()+i);
 				i--;

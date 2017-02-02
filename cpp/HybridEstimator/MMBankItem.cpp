@@ -41,6 +41,11 @@ void MMBankItem::update(VectorXd & measure)
 	this->filter->update(measure);
 }
 
+void MMBankItem::update(VectorXd & measure, MatrixXd & measurementCov)
+{
+	this->filter->update(measure, measurementCov);
+}
+
 std::string MMBankItem::getModelName()
 {
 	return this->filter->getModelName();

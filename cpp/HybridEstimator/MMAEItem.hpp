@@ -14,6 +14,7 @@ public:
 
     void predict(VectorXd &control);
     void update(VectorXd &measurement);
+	void update(VectorXd &measurement, MatrixXd &measurementCov);
 
     void predict()
     {

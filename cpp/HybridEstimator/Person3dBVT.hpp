@@ -12,28 +12,28 @@ class Person3dBVT :
 	public Object
 {
 public:
-	Person3dBVT(VectorXd position, VectorXd bvtHist, MatrixXd positionErrorCovariance);
+	Person3dBVT(VectorXd observableStates, VectorXd bvtHist, MatrixXd observableCovariance);
 	~Person3dBVT();
 
-	void setPosition(VectorXd position);
+	void setObservableStates(VectorXd observableStates);
 	void setBvtHist(VectorXd bvtHist);
-	void setPositionErrorCovariance(MatrixXd posErrorCov);
+	void setObservableCovariance(MatrixXd posErrorCov);
 
 	double compareWith(Object &otherObject, int mode, int metric);
 
-	VectorXd getPosition();
+	VectorXd getObservableStates();
 	VectorXd getBvtHist();
-	MatrixXd getPositionErrorCovariance();
+	MatrixXd getObervableCovariance();
 
 	shared_ptr<Object> clone()
 	{
-		return shared_ptr<Object>(new Person3dBVT(this->position, this->bvtHist, this->positionErrorCovariance));
+		return shared_ptr<Object>(new Person3dBVT(this->observableStates, this->bvtHist, this->observableCovariance));
 	}
 
 protected:
-	VectorXd position;
+	VectorXd observableStates;
 	VectorXd bvtHist;
-	MatrixXd positionErrorCovariance;
+	MatrixXd observableCovariance;
 };
 
 

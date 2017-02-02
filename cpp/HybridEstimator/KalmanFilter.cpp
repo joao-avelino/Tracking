@@ -239,6 +239,35 @@ void KalmanFilter::update(VectorXd &measureVector)
 }
 
 /**
+* Performs the Kalman Filter update step using Bierman's method.
+* (see [2], pages 394-396)
+*
+* Note that the state update is incrementally updated, meaning that
+* for each SCALAR measurement (each uncorrelated measurement dimension)
+* the results of the previous SCALAR measurement are used (U, D, and x_pred).
+*
+* (This is not so obvious from the book...)
+*
+* for each measurement:
+*   x_pred = x_pred + k(observation - h*x_pred)
+* end for
+*
+* x_post = x_pred
+*
+* If no measurement is available it does nothing.
+*
+* @param[in] measureVector The measurement vector. Can be called with no arguments
+* @param[in] measurementCov The measurement covariance matrix.
+*/
+void KalmanFilter::update(VectorXd &measureVector, MatrixXd &measurementCov)
+{
+	assert(observationNoiseCov.rows() == measurementCov.rows() && observationNoiseCov.cols() == measurementCov.cols() && "The measurement matrix has a different size than the estimator noise covariance matrix");
+	observationNoiseCov = measurementCov;
+
+	update(measureVector);
+}
+
+/**
  * @brief KalmanFilter::getCovPost
  * @details Gets the state covariance matrix after
  * the update step

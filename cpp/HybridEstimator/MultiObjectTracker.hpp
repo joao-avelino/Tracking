@@ -48,6 +48,41 @@ public:
         return this->trackersVector;
 	}
 
+
+	//Process detections - This is the "main" routine
+	void processDetections(vector<shared_ptr<Detection<Obj>>> &detList)
+	{
+	
+		//Predict
+		for (auto& trk : this->trackersVector)
+		{
+			VectorXd empty = VectorXd();
+			trk->predict(empty);
+		}
+
+		//Associate
+		AssociationList<Obj, Trk> assList;
+		assList = associator.associateData(this->trackersVector, detList);
+
+
+		//Apply the validation Gate
+
+
+
+		//Update
+		std::vector<Association<Obj, Trk>> assVect = assList->getSuccessfulAssociations();
+
+		for (auto& ass : assVect)
+		{
+			ass.getTrackerPTR()->
+		}
+
+		//Manage
+
+	
+	}
+
+
 protected:
 	TrkMgr &trackerManager;
     unique_ptr<Trk> trackerToBeClonedPTR;

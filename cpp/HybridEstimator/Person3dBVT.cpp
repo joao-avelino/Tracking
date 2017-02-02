@@ -2,11 +2,11 @@
 
 using namespace Comparator;
 
-Person3dBVT::Person3dBVT(VectorXd position, VectorXd bvtHist, MatrixXd positionErrorCovariance)
+Person3dBVT::Person3dBVT(VectorXd observableStates, VectorXd bvtHist, MatrixXd observableCovariance)
 {
-	this->position = position;
+	this->observableStates = observableStates;
 	this->bvtHist = bvtHist;
-	this->positionErrorCovariance = positionErrorCovariance;
+	this->observableCovariance = observableCovariance;
 	this->objectType = TYPE_PERSON;
 }
 
@@ -14,9 +14,9 @@ Person3dBVT::~Person3dBVT()
 {
 }
 
-void Person3dBVT::setPosition(VectorXd position)
+void Person3dBVT::setObservableStates(VectorXd observableStates)
 {
-	this->position = position;
+	this->observableStates = observableStates;
 }
 
 void Person3dBVT::setBvtHist(VectorXd bvtHist)
@@ -24,9 +24,9 @@ void Person3dBVT::setBvtHist(VectorXd bvtHist)
 	this->bvtHist = bvtHist;
 }
 
-void Person3dBVT::setPositionErrorCovariance(MatrixXd posErrorCov)
+void Person3dBVT::setObservableCovariance(MatrixXd posErrorCov)
 {
-	this->positionErrorCovariance = posErrorCov;
+	this->observableCovariance = posErrorCov;
 }
 
 double Person3dBVT::compareWith(Object & otherObject, const int mode, const int metric)
@@ -42,17 +42,17 @@ double Person3dBVT::compareWith(Object & otherObject, const int mode, const int 
 
 		assert((metric == METRIC_MAHALANOBIS || metric == METRIC_EUCLIDEAN) && "Position distance can only use the Euclidean or the Mahalanobis metrics for now.");
 
-		//Mahalanobis distance between the detected person's position and this ones
-		//position distribution
+		//Mahalanobis distance between the detected person's observableStates and this ones
+		//observableStates distribution
 
 		if (metric == METRIC_MAHALANOBIS)
 		{
-			return mahalanobis(otherPerson.position, this->position, this->positionErrorCovariance);
+			return mahalanobis(otherPerson.observableStates, this->observableStates, this->observableCovariance);
 		}
 
 		else if (metric == METRIC_EUCLIDEAN)
 		{
-			return euclidean(otherPerson.position, this->position);
+			return euclidean(otherPerson.observableStates, this->observableStates);
 		}
 
 		break;
@@ -84,9 +84,9 @@ double Person3dBVT::compareWith(Object & otherObject, const int mode, const int 
 	return 0.0;
 }
 
-VectorXd Person3dBVT::getPosition()
+VectorXd Person3dBVT::getObservableStates()
 {
-	return position;
+	return observableStates;
 }
 
 VectorXd Person3dBVT::getBvtHist()
@@ -94,7 +94,7 @@ VectorXd Person3dBVT::getBvtHist()
 	return bvtHist;
 }
 
-MatrixXd Person3dBVT::getPositionErrorCovariance()
+MatrixXd Person3dBVT::getObervableCovariance()
 {
-	return positionErrorCovariance;
+	return observableCovariance;
 }

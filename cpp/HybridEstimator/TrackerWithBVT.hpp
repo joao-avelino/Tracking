@@ -15,7 +15,7 @@ public:
 		double colorLeaningRate) : positionEstimator(positionEstimator), colorLearningRate(colorLeaningRate)
 	{
 		this->objectPTR = objectPTR;
-		obsSize = objectPTR->getPosition().size();
+		obsSize = objectPTR->getObservableStates().size();
 		this->trackerType = objectPTR->getObjectType();
 	};
 
@@ -29,9 +29,9 @@ public:
 	{
 		positionEstimator->predict(controlVect);
 		VectorXd state = positionEstimator->getStatePred();
-        this->objectPTR->setPosition(state.head(obsSize));
+        this->objectPTR->setObservableStates(state.head(obsSize));
 		MatrixXd stateCov = positionEstimator->getCovPred();
-        this->objectPTR->setPositionErrorCovariance(stateCov.block(0, 0, obsSize, obsSize));
+        this->objectPTR->setObservableCovariance(stateCov.block(0, 0, obsSize, obsSize));
 
 		//Predict the colors somehow?
 
@@ -40,12 +40,15 @@ public:
 
 	void update(Detection<Obj> &det)
 	{
-		VectorXd detPosition = det.getObjPTR()->getPosition();
+		VectorXd detPosition = det.getObjPTR()->getObservableStates();
+		MatrixXd detCov = det.getObjPTR()->getObervableCovariance();
 		positionEstimator->update(detPosition);
+		 
+
 		VectorXd state = positionEstimator->getStatePost();
-        this->objectPTR->setPosition(state.head(obsSize));
+        this->objectPTR->setObservableStates(state.head(obsSize));
 		MatrixXd stateCov = positionEstimator->getCovPost();
-        this->objectPTR->setPositionErrorCovariance(stateCov.block(0, 0, obsSize, obsSize));
+        this->objectPTR->setObservableCovariance(stateCov.block(0, 0, obsSize, obsSize));
         this->objectPTR->setBvtHist(this->objectPTR->getBvtHist()*(1.0 - colorLearningRate) + colorLearningRate*det.getObjPTR()->getBvtHist());
 
 	};

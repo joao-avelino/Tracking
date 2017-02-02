@@ -28,6 +28,11 @@ void MMAEItem::update(VectorXd & measurement)
 	filter->update(measurement);
 }
 
+void MMAEItem::update(VectorXd & measurement, MatrixXd & measurementCov)
+{
+	filter->update(measurement, measurementCov);
+}
+
 void MMAEItem::computeProbabilityDensity(VectorXd & measurement)
 {
 

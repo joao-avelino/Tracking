@@ -69,7 +69,7 @@ AssociationList<Obj, Trk> HungarianAssociator<Obj, Trk>::associateData(vector<sh
 
 		assignmentoptimal(assignment, cost, distMatrixIn, nDetections, nTrackers);
 
-		//assignment vector positions represents the detections and the value in each position represents the assigned tracker
+		//assignment vector positions represents the detections and the value in each observableStates represents the assigned tracker
 		//if there is no possible association, then the value is -1
 		//cost vector doesn't mean anything at this point...
 

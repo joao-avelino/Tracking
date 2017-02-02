@@ -41,6 +41,7 @@ public:
 	}
 	void mwgs();
     void update(VectorXd &measureVector);
+	void update(VectorXd &measureVector, MatrixXd &measurementCov);
 	void update()
 	{
 		VectorXd empty = VectorXd();

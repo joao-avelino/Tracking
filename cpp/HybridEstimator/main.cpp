@@ -142,13 +142,13 @@ int main()
 
 	shared_ptr<Person3dBVT> testeP2 = static_pointer_cast<Person3dBVT>(testeP1->clone());
 
-	VectorXd newPost = testeP1->getPosition();
+	VectorXd newPost = testeP1->getObservableStates();
 	newPost(0) = 9;
 	newPost(1) = 3;
-	testeP1->setPosition(newPost);
+	testeP1->setObservableStates(newPost);
 
-	cout << "P1: " << testeP1->getPosition() << endl;
-	cout << "P2: " << testeP2->getPosition() << endl;
+	cout << "P1: " << testeP1->getObservableStates() << endl;
+	cout << "P2: " << testeP2->getObservableStates() << endl;
 
 	getchar();
 
@@ -275,9 +275,9 @@ int main()
 	for (Association<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> &ass : success)
 	{
 		cout << "Associated: " << endl;
-		cout << ass.getDetectionPTR()->getObjPTR()->getPosition() << endl;
+		cout << ass.getDetectionPTR()->getObjPTR()->getObservableStates() << endl;
 		cout << "with: " << endl;
-		cout << ass.getTrackerPTR()->getObjPTR()->getPosition() << endl;
+		cout << ass.getTrackerPTR()->getObjPTR()->getObservableStates() << endl;
 	}
 
 	cout << "------------------------------ Unsucessful detections ------------------------------" << endl;
@@ -285,7 +285,7 @@ int main()
 	for (shared_ptr<Detection<Person3dBVT>> dt : unDetections)
 	{
 
-		cout << dt->getObjPTR()->getPosition() << endl;
+		cout << dt->getObjPTR()->getObservableStates() << endl;
 
 	}*/
 
@@ -305,7 +305,7 @@ int main()
 	//Create an object
 	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2)));
 
-	//Create a position estimator
+	//Create a observableStates estimator
 	std::vector<std::shared_ptr<MMAEItem> > filterBank;
 	std::shared_ptr<MMAE> posEstimator(new MMAE(filterBank));
 
@@ -369,7 +369,7 @@ int main()
 	
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
 
@@ -382,7 +382,7 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 	
 	getchar();
@@ -392,12 +392,13 @@ int main()
 
 	auto teste1 = assocList.getSuccessfulAssociations();
 
-	cout << "Association" << endl;
+//	cout << "Association" << endl;
+//	cout << assocList << endl;
 	for (auto& t : teste1)
 	{
-		cout << t.getDetectionPTR()->getObjPTR()->getPosition() << endl;
+		cout << t.getDetectionPTR()->getObjPTR()->getObservableStates() << endl;
 		cout << "with" << endl;
-		cout << t.getTrackerPTR()->getObjPTR()->getPosition() << endl;
+		cout << t.getTrackerPTR()->getObjPTR()->getObservableStates() << endl;
 	}
 
 	//Manage tracks
@@ -417,7 +418,7 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
 	getchar();
@@ -430,7 +431,7 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
 	trkMgr.manageTracks(assoclistempty);
@@ -445,7 +446,9 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << "Testing << operator" << endl;
+
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
 	trkMgr.manageTracks(assoclistempty);
@@ -458,8 +461,11 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << trk->getObjPTR()->getPosition() << endl;
+		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
+
+	
+
 
 	getchar();
 

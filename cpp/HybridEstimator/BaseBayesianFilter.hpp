@@ -17,6 +17,8 @@ public:
     virtual void predict(VectorXd &controlVector) = 0;
     virtual void update(VectorXd &measureVector) = 0;
 
+	virtual void update(VectorXd &measureVector, MatrixXd &detCov) = 0;
+
     void predict()
     {
         predict(EMPTYVEC);

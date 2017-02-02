@@ -196,6 +196,22 @@ void MMAE::update(VectorXd & measure)
 }
 
 
+void MMAE::update(VectorXd & measure, MatrixXd &measurementCov)
+{
+
+	//Perform the MMAE measurement updates
+	for (std::shared_ptr<MMAEItem> ptr : filterBank)
+	{
+
+		ptr->update(measure, measurementCov);
+
+	}
+
+	computeProbabilities(measure);
+
+}
+
+
 
 void MMAE::updateDeltaT(double deltaT)
 {
