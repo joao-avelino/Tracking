@@ -128,10 +128,10 @@ public:
 
 
 protected:
-	TrkMgr &trackerManager;
+
     unique_ptr<Trk> trackerToBeClonedPTR;
 	Assoc &associator;
-
+    TrkMgr &trackerManager;
 };
 
 #endif // !MULTIOBJECTTRACKER_HPP

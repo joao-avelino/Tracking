@@ -315,10 +315,8 @@ int main()
 	std::shared_ptr<MMAE> posEstimator(new MMAE(filterBank));
 
 	//Create a Tracker
-	MMAEpersonTracker *trackerPTR = new MMAEpersonTracker(dummy_person, posEstimator, 0.5);
+    MMAEpersonTracker *trackerPTR = new MMAEpersonTracker(dummy_person, posEstimator, 0.5);
 
-
-	shared_ptr<MMAE> estim(new MMAE(filterBank));
 
 	//Create an associator
 	PeopleHungarianAssociator hung(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);

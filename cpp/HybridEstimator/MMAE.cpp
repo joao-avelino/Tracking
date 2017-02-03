@@ -286,7 +286,7 @@ std::shared_ptr<BaseBayesianFilter> MMAE::clone()
 		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
 	}
 
-	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+    return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, true));
 }
 
 std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state)
@@ -307,7 +307,7 @@ std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state)
 		std::cout << "Cloned MMAE element" << std::endl;
 	}
 
-	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+    return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, true));
 }
 
 std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state, MatrixXd measurementCov)
@@ -322,7 +322,7 @@ std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state, MatrixXd
 		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
 	}
 
-	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+    return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, true));
 }
 
 
