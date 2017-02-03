@@ -56,8 +56,12 @@ public:
 
 		for (auto& trk : this->trackersVector)
 		{
-			cout << "Tracker: " << trk->getObjPTR()->getObservableStates() << endl;
+			cout << "Obj: " << trk->getObjPTR()->getObservableStates() << endl;
+			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
+			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
 		}
+
+
 
 	
 		//Predict
@@ -72,6 +76,8 @@ public:
 		for (auto& trk : this->trackersVector)
 		{
 			cout << "Tracker: " << trk->getObjPTR()->getObservableStates() << endl;
+			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
+			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
 		}
 
 
@@ -108,6 +114,14 @@ public:
 
 		//Manage trackers
 		trackerManager.manageTracks(assList);
+
+		cout << "Created Trackers" << endl;
+		for (auto& trk : this->trackersVector)
+		{
+			cout << "Obj: " << trk->getObjPTR()->getObservableStates() << endl;
+			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
+			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
+		}
 
 	
 	}
