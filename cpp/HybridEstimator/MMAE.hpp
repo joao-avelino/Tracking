@@ -15,6 +15,12 @@ public:
 	MatrixXd getCovPred();
 	VectorXd getStatePost();
 	MatrixXd getCovPost();
+
+	void setStatePred(VectorXd statePred);
+	void setCovPred(MatrixXd covPred);
+	void setStatePost(VectorXd statePost);
+	void setCovPost(MatrixXd covPost);
+
     void predict(VectorXd &control);
 	void predict()
 	{
@@ -27,6 +33,8 @@ public:
 	std::vector<double> getAllModelProbabilities();
 
 	std::shared_ptr<BaseBayesianFilter> clone();
+	std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state);
+	std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state, MatrixXd measurementCov);
 
 private:
 	void computeProbabilities(VectorXd & measure);

@@ -29,8 +29,8 @@ public:
 	void createTracker(Detection<Obj> detection, int id)
 	{
 		
-		shared_ptr<Trk> newTracker = static_pointer_cast<Trk>(trackerToBeClonedPTR->clone());
-		newTracker->setObjPTR(detection.getObjPTR());
+		shared_ptr<Trk> newTracker = static_pointer_cast<Trk>(trackerToBeClonedPTR->clone(detection.getObjPTR()));
+
 		newTracker->setTrackerId(id);
 		this->trackersVector.push_back(std::move(newTracker));
 
@@ -52,6 +52,13 @@ public:
 	//Process detections - This is the "main" rotine
 	void processDetections(vector<shared_ptr<Detection<Obj>>> &detList)
 	{
+		cout << "--- Before predict ---" << endl;
+
+		for (auto& trk : this->trackersVector)
+		{
+			cout << "Tracker: " << trk->getObjPTR()->getObservableStates() << endl;
+		}
+
 	
 		//Predict
 		for (auto& trk : this->trackersVector)
@@ -60,9 +67,28 @@ public:
 			trk->predict(empty);
 		}
 
+		cout << "--- After predict ---" << endl;
+
+		for (auto& trk : this->trackersVector)
+		{
+			cout << "Tracker: " << trk->getObjPTR()->getObservableStates() << endl;
+		}
+
+
 		//Associate
 		AssociationList<Obj, Trk> assList;
 		assList = associator.associateData(this->trackersVector, detList);
+
+		/*Debug - print AssociateList*/
+
+		cout << "Associations" << endl;
+		for (auto& ass : assList.getSuccessfulAssociations())
+		{
+			cout << ass.getTrackerPTR()->getObjPTR()->getObservableStates() << endl;
+			cout << "with" << endl;
+			cout << ass.getDetectionPTR()->getObjPTR()->getObservableStates() << endl;
+
+		}
 
 
 		//Apply the validation Gate
@@ -73,11 +99,11 @@ public:
 
 
 		//Update
-		std::vector<Association<Obj, Trk>> assVect = assList->getSuccessfulAssociations();
+		std::vector<Association<Obj, Trk>> assVect = assList.getSuccessfulAssociations();
 
 		for (auto& ass : assVect)
 		{
-			ass.getTrackerPTR()->update(ass.getDetectionPTR());
+			ass.getTrackerPTR()->update(*ass.getDetectionPTR());
 		}
 
 		//Manage trackers

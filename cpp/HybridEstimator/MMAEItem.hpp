@@ -36,14 +36,21 @@ public:
 	double getProbDensity();
 	double getProbability();
 	void setProbabiliy(double prob);
-	double getStateDim();
+	int getStateDim();
 
 	std::shared_ptr<MMBankItem> clone();
+	std::shared_ptr<MMBankItem> clone(VectorXd initial_state);
+	std::shared_ptr<MMBankItem> clone(VectorXd initial_state, MatrixXd measurementCov);
+
+	int getObsDim()
+	{
+		return filter->getObsDim();
+	}
 
 protected:
 	double probDensity;
 	double probability;
-	double stateDim;
+	int stateDim;
 
 
 };

@@ -15,6 +15,10 @@ public:
 	VectorXd getStatePost();
 	MatrixXd getCovPred();
 	MatrixXd getCovPost();
+	void setStatePred(VectorXd statePred);
+	void setCovPred(MatrixXd covPred);
+	void setStatePost(VectorXd statePost);
+	void setCovPost(MatrixXd covPost);
 
     virtual void predict(VectorXd &control);
     virtual void update(VectorXd &measure);

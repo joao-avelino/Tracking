@@ -43,15 +43,12 @@ public:
 		}
 
 
-		cout << "---------check if delete------------" << endl;
 		//Delete the trackers that need to be deleted
 		int vectSize = notAssocVect.size();
 		for (int i = 0; i < vectSize; i++)
 		{
-			cout << "i: " << i << endl;
 			if (notAssocVect.at(i) >= maxNotAssoc)
 			{
-                cout << "deleting: " << this->multiObjectTrackerPTR->getTrackersVector().at(i)->getObjPTR()->getObservableStates();
                 this->multiObjectTrackerPTR->deleteTracker(i);
 				notAssocVect.erase(notAssocVect.begin()+i);
 				i--;

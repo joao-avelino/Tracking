@@ -79,7 +79,7 @@ void MMAEItem::setProbabiliy(double prob)
 	probability = prob;
 }
 
-double MMAEItem::getStateDim()
+int MMAEItem::getStateDim()
 {
 	return stateDim;
 }
@@ -87,4 +87,14 @@ double MMAEItem::getStateDim()
 std::shared_ptr<MMBankItem> MMAEItem::clone()
 {
 	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(), this->filter->getModelName()));
+}
+
+std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state)
+{
+	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(initial_state), this->filter->getModelName()));
+}
+
+std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state, MatrixXd measurementCov)
+{
+	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(initial_state, measurementCov), this->filter->getModelName()));
 }

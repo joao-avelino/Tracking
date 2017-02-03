@@ -50,6 +50,8 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationMo
     this->covPost = initialCov;
 	this->covPred = initialCov;
 
+	obsDim = observationModel.rows();
+
 	KFUtils::uduFactorization(initialCov, U_post, D_post);
 
 	U_pred = U_post;
@@ -203,7 +205,6 @@ void KalmanFilter::update(VectorXd &measureVector)
 
     KFUtils::decorrelateData(measureVector, uncorrData, observationModel, uncorrH, observationNoiseCov, uncorrR);
 
-    int obsDim = measureVector.size();
 
 	if (obsDim < 1)
 	{
@@ -242,7 +243,7 @@ void KalmanFilter::update(VectorXd &measureVector)
 * Performs the Kalman Filter update step using Bierman's method.
 * (see [2], pages 394-396)
 *
-* Note that the state update is incrementally updated, meaning that
+* Note that the state update is incrementally updated, meaning tha
 * for each SCALAR measurement (each uncorrelated measurement dimension)
 * the results of the previous SCALAR measurement are used (U, D, and x_pred).
 *
@@ -265,6 +266,28 @@ void KalmanFilter::update(VectorXd &measureVector, MatrixXd &measurementCov)
 	observationNoiseCov = measurementCov;
 
 	update(measureVector);
+}
+
+void KalmanFilter::setStatePred(VectorXd statePred)
+{
+	this->statePred = statePred;
+	return;
+}
+
+void KalmanFilter::setCovPred(MatrixXd covPred)
+{
+	this->covPred = covPred;
+	return;
+}
+
+void KalmanFilter::setStatePost(VectorXd statePost)
+{
+	this->statePost = statePost;
+}
+
+void KalmanFilter::setCovPost(MatrixXd covPost)
+{
+	this->covPost = covPost;
 }
 
 /**
@@ -317,6 +340,18 @@ std::shared_ptr<BaseBayesianFilter> KalmanFilter::clone()
 {
 	return std::shared_ptr<BaseBayesianFilter>(new KalmanFilter(stateTransitionModel, observationModel,
 		processNoiseCov, observationNoiseCov, this->statePost, this->covPost));
+}
+
+std::shared_ptr<BaseBayesianFilter> KalmanFilter::clone(VectorXd initial_state)
+{
+	return std::shared_ptr<BaseBayesianFilter>(new KalmanFilter(stateTransitionModel, observationModel,
+		processNoiseCov, observationNoiseCov, initial_state, this->covPost));
+}
+
+std::shared_ptr<BaseBayesianFilter> KalmanFilter::clone(VectorXd initial_state, MatrixXd measurementCov)
+{
+	return std::shared_ptr<BaseBayesianFilter>(new KalmanFilter(stateTransitionModel, observationModel,
+		processNoiseCov, measurementCov, initial_state, this->covPost));
 }
 
 /**

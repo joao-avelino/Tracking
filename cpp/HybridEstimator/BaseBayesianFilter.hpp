@@ -40,6 +40,11 @@ public:
 		modelName = newName;
 	};
 
+	int getObsDim()
+	{
+		return obsDim;
+	}
+
 	virtual VectorXd getStatePred() = 0;
 	virtual MatrixXd getCovPred() = 0;
 	virtual VectorXd getMeasurementResidual(VectorXd &measure) = 0;
@@ -47,10 +52,18 @@ public:
 	virtual VectorXd getStatePost() = 0;
 	virtual MatrixXd getCovPost() = 0;
 
+	virtual void setStatePred(VectorXd statePred) = 0;
+	virtual void setCovPred(MatrixXd covPred) = 0;
+	virtual void setStatePost(VectorXd statePost) = 0;
+	virtual void setCovPost(MatrixXd covPost) = 0;
+
 	virtual std::shared_ptr<BaseBayesianFilter> clone() = 0;
+	virtual std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state) = 0;
+	virtual std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state, MatrixXd measurementCov) = 0;
 
 protected:
 	std::string modelName;
+	int obsDim;
 
 };
 

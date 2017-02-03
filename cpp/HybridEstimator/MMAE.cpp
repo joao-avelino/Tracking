@@ -38,6 +38,8 @@ MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumPro
 			stateDim = ptr->getStateDim();
 	}
 
+	obsDim = filterBank.at(0)->getObsDim();
+
 	if (initializeProbs)
 	{
 		int nModels = filterBank.size();
@@ -55,6 +57,42 @@ MMAE::MMAE(std::vector<std::shared_ptr<MMAEItem> > filterBank, double minimumPro
 
 MMAE::~MMAE()
 {
+}
+
+void MMAE::setStatePred(VectorXd statePred)
+{
+	for (auto& fil : filterBank)
+	{
+		fil->setStatePred(statePred);
+	}
+
+}
+
+void MMAE::setCovPred(MatrixXd covPred)
+{
+	for (auto& fil : filterBank)
+	{
+		fil->setCovPred(covPred);
+	}
+
+}
+
+void MMAE::setStatePost(VectorXd statePost)
+{
+	for (auto& fil : filterBank)
+	{
+		fil->setStatePost(statePost);
+	}
+
+}
+
+void MMAE::setCovPost(MatrixXd covPost)
+{
+	for (auto& fil : filterBank)
+	{
+		fil->setCovPost(covPost);
+	}
+
 }
 
 VectorXd MMAE::getStatePred()
@@ -251,6 +289,37 @@ std::shared_ptr<BaseBayesianFilter> MMAE::clone()
 	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
 }
 
+std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state)
+{
+	/*Clone each element in the vector*/
+
+	std::vector<std::shared_ptr<MMAEItem> > filterBankClone;
+
+	for (auto& fil : this->filterBank)
+	{
+		std::shared_ptr<MMBankItem> generalItemPTR = fil->clone(initial_state);
+		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
+	}
+
+	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+}
+
+std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state, MatrixXd measurementCov)
+{
+	/*Clone each element in the vector*/
+
+	std::vector<std::shared_ptr<MMAEItem> > filterBankClone;
+
+	for (auto& fil : this->filterBank)
+	{
+		std::shared_ptr<MMBankItem> generalItemPTR = fil->clone(initial_state, measurementCov);
+		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
+	}
+
+	return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, false));
+}
+
+
 
 void MMAE::computeProbabilities(VectorXd & measure)
 {
@@ -309,3 +378,5 @@ void MMAE::computeProbabilities(VectorXd & measure)
 
 
 }
+
+

@@ -122,11 +122,11 @@ int main()
 	getchar();
 
 	cout << "Checking contents of kf2" << endl;
-
+	/*
 	std::cout << "x_pred: " << kf2PTR->getStatePred() << std::endl;
 	std::cout << "P_pred =  " << kf2PTR->getCovPred() << std::endl;
 	std::cout << "x_post: " << kf2PTR->getStatePost() << std::endl;
-	std::cout << "P_post: " << kf2PTR->getCovPost() << std::endl;
+	std::cout << "P_post: " << kf2PTR->getCovPost() << std::endl;*/
 
 	/*It does a deep copy :D*/
 
@@ -219,9 +219,9 @@ int main()
 	//Let's create an  MMAEItem for each received model and add it
 	//to the filterBank
 
-//	std::vector<std::shared_ptr<MMAEItem> > filterBank;
+	//std::vector<std::shared_ptr<MMAEItem> > filterBank;
 
-//	shared_ptr<MMAE> estim(new MMAE(filterBank));
+	//shared_ptr<MMAE> estim(new MMAE(filterBank));
 	
 //	shared_ptr<TrackerWithBVT<Person3dBVT, MMAE>> personTracker4(new TrackerWithBVT<Person3dBVT, MMAE>(person4, estim, 0.5));
 //	trackerList.push_back(personTracker4);
@@ -307,10 +307,18 @@ int main()
 
 	//Create a observableStates estimator
 	std::vector<std::shared_ptr<MMAEItem> > filterBank;
+	std::shared_ptr<MMAEItem> mmaeitem_ptr(new MMAEItem(kf2PTR, "Just one filter lol"));
+
+
+	filterBank.push_back(mmaeitem_ptr);
+
 	std::shared_ptr<MMAE> posEstimator(new MMAE(filterBank));
 
 	//Create a Tracker
 	MMAEpersonTracker *trackerPTR = new MMAEpersonTracker(dummy_person, posEstimator, 0.5);
+
+
+	shared_ptr<MMAE> estim(new MMAE(filterBank));
 
 	//Create an associator
 	PeopleHungarianAssociator hung(Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
@@ -358,7 +366,13 @@ int main()
 	shared_ptr<Detection<Person3dBVT>> detection4(new Detection<Person3dBVT>(det4, "Camera"));
 	detectionList.push_back(detection4);
 
+
+
+	//One detection
 	detectionList2.push_back(detection1);
+
+	//No detection
+	vector<shared_ptr<Detection<Person3dBVT>>> detectionListEmpty;
 
 	assocList.addUnassociatedDetection(detectionList);
 
@@ -372,9 +386,13 @@ int main()
 		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
+	getchar();
 
-	//Give the unassociated detections to the tracker
-	trkMgr.manageTracks(assocList);
+	//Give the detections
+	
+
+	multipersontracker.processDetections(detectionList);
+
 
 	//Check if it created the new tracks
 	cout << "---- Check if trackers were created ----" << endl;
@@ -387,30 +405,19 @@ int main()
 	
 	getchar();
 
-	//Use let the hungarian make an association
-    assocList = hung.associateData(multipersontracker.getTrackersVector(), detectionList2);
 
-	auto teste1 = assocList.getSuccessfulAssociations();
+	//Now give only the first detection
 
-//	cout << "Association" << endl;
-//	cout << assocList << endl;
-	for (auto& t : teste1)
-	{
-		cout << t.getDetectionPTR()->getObjPTR()->getObservableStates() << endl;
-		cout << "with" << endl;
-		cout << t.getTrackerPTR()->getObjPTR()->getObservableStates() << endl;
-	}
+	multipersontracker.processDetections(detectionList2);
+	
 
-	//Manage tracks
-	trkMgr.manageTracks(assocList);
+	//Give no detections 4 times in a row
+	
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
 
-	PeopleAssociations assoclistempty;
-
-	//Manage tracks 4 times
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
 
 	//Check if only the first tracker is alive
 	cout << "---- Check if only the first tracker is alive ----" << endl;
@@ -423,10 +430,14 @@ int main()
 
 	getchar();
 
-	trkMgr.manageTracks(assocList);
+	//Give no detections again
+
+	multipersontracker.processDetections(detectionListEmpty);
+
+
 
 	//Check if only the first tracker is alive
-	cout << "---- Check if only the first tracker is alive ----" << endl;
+	cout << "---- Check that no tracker is alive ----" << endl;
 	trkVect = multipersontracker.getTrackersVector();
 
 	for (auto& trk : trkVect)
@@ -434,10 +445,19 @@ int main()
 		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
-	trkMgr.manageTracks(assoclistempty);
+	getchar();
+
+	//Give 1 detection
+	
+	multipersontracker.processDetections(detectionList2);
+
+
+	//Give no detections 4 more times
+
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
+	multipersontracker.processDetections(detectionListEmpty);
 
 
 	cout << "---- Check that only one tracker is alive----" << endl;
@@ -446,17 +466,18 @@ int main()
 
 	for (auto& trk : trkVect)
 	{
-		cout << "Testing << operator" << endl;
-
 		cout << trk->getObjPTR()->getObservableStates() << endl;
 	}
 
-	trkMgr.manageTracks(assoclistempty);
+	getchar();
 
-	//Manage again and check that no tracks are alive
+	//Give no detections again and check that no trackers are alive
+
+	multipersontracker.processDetections(detectionListEmpty);
+
 	cout << "---- Check that no trackers are alive ----" << endl;
 
-	trkMgr.manageTracks(assoclistempty);
+
 	trkVect = multipersontracker.getTrackersVector();
 
 	for (auto& trk : trkVect)

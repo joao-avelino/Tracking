@@ -11,13 +11,20 @@ public:
 
 	std::shared_ptr<PosEstim> positionEstimator;
 
+
+	/****************************************Fail**************************************************************/
 	TrackerWithBVT(std::shared_ptr<Obj> objectPTR, std::shared_ptr<PosEstim> positionEstimator,
 		double colorLeaningRate) : positionEstimator(positionEstimator), colorLearningRate(colorLeaningRate)
 	{
 		this->objectPTR = objectPTR;
+
+		/*FAIL*/
+
 		obsSize = objectPTR->getObservableStates().size();
 		this->trackerType = objectPTR->getObjectType();
 	};
+
+	/************************************************************************************************************/
 
 	~TrackerWithBVT() {}
 
@@ -29,7 +36,8 @@ public:
 	{
 		positionEstimator->predict(controlVect);
 		VectorXd state = positionEstimator->getStatePred();
-        this->objectPTR->setObservableStates(state.head(obsSize));
+		VectorXd obsStates = state.head(obsSize);
+        this->objectPTR->setObservableStates(obsStates);
 		MatrixXd stateCov = positionEstimator->getCovPred();
         this->objectPTR->setObservableCovariance(stateCov.block(0, 0, obsSize, obsSize));
 
@@ -65,6 +73,37 @@ public:
 
 		
 		return shared_ptr<BaseTracker<Obj>>(new TrackerWithBVT<Obj, PosEstim>(objClone, estimClone,
+			this->colorLearningRate));
+
+	}
+
+	shared_ptr<BaseTracker<Obj>> clone(shared_ptr<Obj> objecto)
+	{
+
+		assert(objecto->getObservableStates().size() > 1 && "Object provided has zero size (during cloning of tracker)");
+		assert(objecto->getObservableStates().size() == positionEstimator->getObsDim() && "The measurement dimensions are different from the observable states dimensions");
+		
+			
+
+		int stateDim = this->positionEstimator->getStatePost().size();
+		VectorXd initState = VectorXd::Zero(stateDim);
+		int obsDim = objecto->getObservableStates().size();
+		initState.head(obsDim) = objecto->getObservableStates();
+
+
+		shared_ptr<PosEstim> estimClone;
+
+		if (objecto->getObervableCovariance().size() < 1)
+		{
+			estimClone = static_pointer_cast<PosEstim>(this->positionEstimator->clone(initState));
+		}
+		else {
+			estimClone = static_pointer_cast<PosEstim>(this->positionEstimator->clone(initState, objecto->getObervableCovariance()));
+		}
+
+
+
+		return shared_ptr<BaseTracker<Obj>>(new TrackerWithBVT<Obj, PosEstim>(objecto, estimClone,
 			this->colorLearningRate));
 
 	}

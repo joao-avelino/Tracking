@@ -54,7 +54,14 @@ public:
 	VectorXd getMeasurementResidual(VectorXd &measure);
 	MatrixXd getResidualCovariance();
 
+	void setStatePred(VectorXd statePred);
+	void setCovPred(MatrixXd covPred);
+	void setStatePost(VectorXd statePost);
+	void setCovPost(MatrixXd covPost);
+
 	std::shared_ptr<BaseBayesianFilter> clone();
+	std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state);
+	std::shared_ptr<BaseBayesianFilter> clone(VectorXd initial_state, MatrixXd measurementCov);
 
 protected:
 
