@@ -1,6 +1,7 @@
 #include "MMAEItem.hpp"
 #include <eigen3/Eigen/QR>
 #include <eigen3/Eigen/LU>
+#include <iostream>
 #include <cmath>
 
 
@@ -10,6 +11,12 @@
 MMAEItem::MMAEItem(std::shared_ptr<BaseBayesianFilter> model, std::string modelName)
 {
 	this->filter = model;
+
+    std::cout << "MMAE item constructor" << std::endl;
+
+    std::cout << "Estimator pred: " << filter->getStatePred() << std::endl;
+    std::cout << "Estimator post: " << filter->getStatePost() << std::endl;
+
 	this->filter->setModelName(modelName);
 	this->stateDim = model->getStatePost().size();
 }
@@ -91,7 +98,18 @@ std::shared_ptr<MMBankItem> MMAEItem::clone()
 
 std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state)
 {
-	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(initial_state), this->filter->getModelName()));
+    std::cout << "WTF" << std::endl;
+
+    std::shared_ptr<MMAEItem> newItem(new MMAEItem(this->filter->clone(initial_state), this->filter->getModelName()));
+
+    std::shared_ptr<MMBankItem> novo = std::static_pointer_cast<MMBankItem>(newItem);
+
+    std::cout << "New MMAAEitem" << std::endl;
+    std::cout << novo->getStatePred() << std::endl;
+    std::cout << novo->getStatePost() << std::endl;
+    std::cout << "End new MMAEitem" << std::endl;
+
+    return novo;
 }
 
 std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state, MatrixXd measurementCov)
