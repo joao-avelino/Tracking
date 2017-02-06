@@ -40,14 +40,14 @@
 KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd observationModel,
              MatrixXd processNoiseCov, MatrixXd observationNoiseCov, VectorXd initialState, MatrixXd initialCov)
 {
-    this->stateTransitionModel = stateTransitionModel;
-    this->controlInputModel = MatrixXd::Zero(initialState.size(), 1);
-    this->observationModel = observationModel;
-    this->processNoiseCov = processNoiseCov;
-    this->observationNoiseCov = observationNoiseCov;
-    this->statePost = initialState;
+	this->stateTransitionModel = stateTransitionModel;
+	this->controlInputModel = MatrixXd::Zero(initialState.size(), 1);
+	this->observationModel = observationModel;
+	this->processNoiseCov = processNoiseCov;
+	this->observationNoiseCov = observationNoiseCov;
+	this->statePost = initialState;
 	this->statePred = initialState;
-    this->covPost = initialCov;
+	this->covPost = initialCov;
 	this->covPred = initialCov;
 
 	obsDim = observationModel.rows();
@@ -63,7 +63,6 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
                            MatrixXd processNoiseCov, MatrixXd observationNoiseCov,
                            VectorXd initialState, MatrixXd initialCov)
 {
-
     this->stateTransitionModel = stateTransitionModel;
     this->controlInputModel = controlInputModel;
     this->observationModel = observationModel;
@@ -72,7 +71,12 @@ KalmanFilter::KalmanFilter(MatrixXd stateTransitionModel, MatrixXd controlInputM
     this->statePost = initialState;
     this->covPost = initialCov;
 
+	obsDim = observationModel.rows();
+
 	KFUtils::uduFactorization(initialCov, U_post, D_post);
+
+	U_pred = U_post;
+	D_pred = D_post;
 }
 
 
@@ -92,7 +96,9 @@ void KalmanFilter::predict(VectorXd &controlVector)
 {
     //Normal Kalman predict with control
 	if (controlVector.size() > 0)
+	{
 		statePred = stateTransitionModel*statePost + controlInputModel*controlVector;
+	}
 	else
 		statePred = stateTransitionModel*statePost;
 
