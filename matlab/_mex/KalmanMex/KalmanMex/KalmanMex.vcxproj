@@ -153,7 +153,9 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseBayesianTracker.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseDataAssociator.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseKalmanFilter.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseMoT.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseTracker.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseTrackerManager.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Comparator.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Detection.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\HungarianAssociator.hpp" />
@@ -164,8 +166,10 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAE.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MultiObjectTracker.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Object.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Person3dBVT.hpp" />
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\SimpleTrackerManager.hpp" />
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\TrackerWithBVT.hpp" />
     <ClInclude Include="..\..\BiermanKF_handle.hpp" />
     <ClInclude Include="..\..\OpenCvKF_handle.hpp" />
@@ -183,6 +187,10 @@
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMAEItem.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.cpp" />
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\Person3dBVT.cpp" />
+    <ClCompile Include="..\..\BiermanKF_interface_mex.cpp" />
+    <ClCompile Include="..\..\MMAE_interface_mex.cpp" />
+    <ClCompile Include="..\..\MoTBVT_interface_mex.cpp" />
+    <ClCompile Include="..\..\OpenCvKF_interface_mex.cpp" />
     <ClCompile Include="..\..\TrackerMMAE_interface_mex.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

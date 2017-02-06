@@ -54,7 +54,13 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseDataAssociator.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseMoT.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseTracker.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\BaseTrackerManager.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Comparator.hpp">
@@ -78,10 +84,16 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MMBankItem.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\MultiObjectTracker.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Object.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\Person3dBVT.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\cpp\HybridEstimator\SimpleTrackerManager.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\TrackerWithBVT.hpp">
@@ -126,6 +138,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\cpp\HybridEstimator\Person3dBVT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\BiermanKF_interface_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MMAE_interface_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OpenCvKF_interface_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MoTBVT_interface_mex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

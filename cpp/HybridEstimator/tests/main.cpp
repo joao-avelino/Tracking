@@ -300,7 +300,7 @@ int main()
 	typedef HungarianAssociator<Person3dBVT, TrackerWithBVT<Person3dBVT, MMAE>> PeopleHungarianAssociator;
 	typedef MultiObjectTracker<MMAEpersonTracker, TrackerManager, PeopleHungarianAssociator, Person3dBVT> MoT;
 	typedef AssociationList<Person3dBVT, MMAEpersonTracker> PeopleAssociations;
-    //typedef Association<Person3dBVT, MMAEpersonTracker> PersonTrackerAssociation;
+    typedef Association<Person3dBVT, MMAEpersonTracker> PersonTrackerAssociation;
 
 	//Create an object
 	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2)));

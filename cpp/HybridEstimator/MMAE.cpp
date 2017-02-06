@@ -297,14 +297,9 @@ std::shared_ptr<BaseBayesianFilter> MMAE::clone(VectorXd initial_state)
 
 	for (auto& fil : this->filterBank)
 	{
-		std::cout << "Cloning MMAE element" << std::endl;
 		std::shared_ptr<MMBankItem> generalItemPTR = fil->clone(initial_state);
 
-		std::cout << "State pred: " << generalItemPTR->getStatePred() << std::endl;
-		std::cout << "State post: " << generalItemPTR->getStatePost() << std::endl;
-
 		filterBankClone.push_back(std::static_pointer_cast<MMAEItem>(generalItemPTR));
-		std::cout << "Cloned MMAE element" << std::endl;
 	}
 
     return std::shared_ptr<HybridEstimator>(new MMAE(filterBankClone, this->minimumProbability, true));

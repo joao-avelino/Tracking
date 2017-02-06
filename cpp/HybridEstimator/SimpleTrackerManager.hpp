@@ -37,7 +37,6 @@ public:
 			shared_ptr<Trk> trkPTR = assoc.getTrackerPTR();
 			ptrdiff_t pos = find(trackers.begin(), trackers.end(), trkPTR) - trackers.begin();
 			assert(pos < trackers.size() && "That tracker does no longer exist... or isnt on the notAssocVect");
-			std::cout << "Pos[ " << pos << "]" << std::endl;
 			notAssocVect.at(pos) = 0;
 
 		}
@@ -67,16 +66,6 @@ public:
 			notAssocVect.push_back(0);
 			numOfIds++;
 		}
-
-		/*DEBUG*/
-
-		for (auto& lol : notAssocVect)
-		{
-
-			cout << "notAssocVect: " << lol << endl;
-		}
-
-		cout << "----------------" << endl;
 
 	}
 

@@ -17,22 +17,18 @@ public:
 		double colorLeaningRate) : colorLearningRate(colorLeaningRate)
 	{
 
-		cout << "Creating a new tracker" << endl;
-
 		this->positionEstimator = positionEstimator;
-		cout << "Estimator pred: " << this->positionEstimator->getStatePred() << endl;
-		cout << "Estimator post: " << this->positionEstimator->getStatePost() << endl;
-
 		this->objectPTR = objectPTR;
-		cout << "Object: " << objectPTR->getObservableStates() << endl;
 
+		obsSize = objectPTR->getObservableStates().size();
+
+		this->objectPTR->setObservableCovariance(positionEstimator->getCovPost().block(0, 0, obsSize, obsSize));
 
 		/*FAIL*/
 
-		obsSize = objectPTR->getObservableStates().size();
+
 		this->trackerType = objectPTR->getObjectType();
 
-		cout << "-- Tracker created -- " << endl;
 	};
 
 	/************************************************************************************************************/
@@ -111,12 +107,6 @@ public:
 		else {
 			estimClone = static_pointer_cast<PosEstim>(this->positionEstimator->clone(initState, objecto->getObervableCovariance()));
 		}
-
-
-		cout << "New estimator" << endl;
-		cout << "Estimator pred: " << estimClone->getStatePred() << endl;
-		cout << "Estimator post: " << estimClone->getStatePost() << endl;
-
 
 		return shared_ptr<BaseTracker<Obj>>(new TrackerWithBVT<Obj, PosEstim>(objecto, estimClone,
 			this->colorLearningRate));

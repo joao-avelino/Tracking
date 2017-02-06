@@ -52,32 +52,13 @@ public:
 	//Process detections - This is the "main" rotine
 	void processDetections(vector<shared_ptr<Detection<Obj>>> &detList)
 	{
-		cout << "--- Before predict ---" << endl;
-
-		for (auto& trk : this->trackersVector)
-		{
-			cout << "Obj: " << trk->getObjPTR()->getObservableStates() << endl;
-			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
-			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
-		}
 
 
-
-	
 		//Predict
 		for (auto& trk : this->trackersVector)
 		{
 			VectorXd empty = VectorXd();
 			trk->predict(empty);
-		}
-
-		cout << "--- After predict ---" << endl;
-
-		for (auto& trk : this->trackersVector)
-		{
-			cout << "Tracker: " << trk->getObjPTR()->getObservableStates() << endl;
-			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
-			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
 		}
 
 
@@ -86,15 +67,6 @@ public:
 		assList = associator.associateData(this->trackersVector, detList);
 
 		/*Debug - print AssociateList*/
-
-		cout << "Associations" << endl;
-		for (auto& ass : assList.getSuccessfulAssociations())
-		{
-			cout << ass.getTrackerPTR()->getObjPTR()->getObservableStates() << endl;
-			cout << "with" << endl;
-			cout << ass.getDetectionPTR()->getObjPTR()->getObservableStates() << endl;
-
-		}
 
 
 		//Apply the validation Gate
@@ -114,15 +86,6 @@ public:
 
 		//Manage trackers
 		trackerManager.manageTracks(assList);
-
-		cout << "Created Trackers" << endl;
-		for (auto& trk : this->trackersVector)
-		{
-			cout << "Obj: " << trk->getObjPTR()->getObservableStates() << endl;
-			cout << "Estimator pred: " << trk->positionEstimator->getStatePred() << endl;
-			cout << "Estimator post: " << trk->positionEstimator->getStatePost() << endl;
-		}
-
 	
 	}
 

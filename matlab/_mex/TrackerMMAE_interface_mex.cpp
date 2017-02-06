@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-VectorXd matlabVectorToEigen(const mxArray *vectorArray)
+VectorXd teste55(const mxArray *vectorArray)
 {
 	int vectorM = mxGetM(vectorArray);
 	int vectorN = mxGetN(vectorArray);
@@ -205,7 +205,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStatePrediction", cmd))
 	{
 
-		VectorXd statePred = Tracker_instance->positionEstimator->getStatePrediction();
+		VectorXd statePred = Tracker_instance->positionEstimator->getStatePred();
 
 		plhs[0] = eigenVectorToMatlab(statePred);
 
@@ -215,7 +215,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStateCovariancePrediction", cmd))
 	{
 
-		MatrixXd covMat = Tracker_instance->positionEstimator->getStateCovariancePrediction();
+		MatrixXd covMat = Tracker_instance->positionEstimator->getCovPred();
 		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
@@ -223,7 +223,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	if (!strcmp("getStatePosterior", cmd))
 	{
-		VectorXd statePost = Tracker_instance->positionEstimator->getStatePosterior();
+		VectorXd statePost = Tracker_instance->positionEstimator->getStatePost();
 
 		plhs[0] = eigenVectorToMatlab(statePost);
 
@@ -233,7 +233,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStateCovariancePosterior", cmd))
 	{
 
-		MatrixXd covMat = Tracker_instance->positionEstimator->getStateCovariancePosterior();
+		MatrixXd covMat = Tracker_instance->positionEstimator->getCovPost();
 		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
@@ -267,7 +267,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 		//Get the measurement vector
 		VectorXd meas = matlabVectorToEigen(prhs[2]);
-		MatrixXd covMat = Tracker_instance->positionEstimator->getStateCovariancePosterior();
+		MatrixXd covMat = Tracker_instance->positionEstimator->getCovPred();
 
 		std::shared_ptr<Person3dBVT> detPerson(new Person3dBVT(meas, VectorXd(), covMat.block(0,0, meas.size(), meas.size())));
 		Detection<Person3dBVT> detection(detPerson, "Camera");
