@@ -137,8 +137,8 @@ end
 [ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects);
 
 %%%%%%%% 
-%   Build the detections' struct array
-%   Call the mex
+%   call the CPP
+%
 %
 %%%%%%%%
 
@@ -169,7 +169,8 @@ end
 
 %% The results must be writen in the MoTChallenge res/data/[datasetname.txt] for evaluation
 
-csvwrite([ROOTDIR '\' '\res\data\' DATASET '.txt'], results);
+ EVALMODE '\' DATASET
+csvwrite([ROOTDIR '\' '\res\data/PETS09-S2L1.txt', results);
 delete(personList);
 
 %% The benchmarkDir is the train directory of the downloaded challenge, containing all the training datasets

@@ -99,6 +99,9 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\TrackerWithBVT.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\util\eigen2matlab.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -150,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\MoTBVT_interface_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\util\eigen2matlab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -173,6 +173,7 @@
     <ClInclude Include="..\..\..\..\cpp\HybridEstimator\TrackerWithBVT.hpp" />
     <ClInclude Include="..\..\BiermanKF_handle.hpp" />
     <ClInclude Include="..\..\OpenCvKF_handle.hpp" />
+    <ClInclude Include="..\..\util\eigen2matlab.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClCompile Include="..\..\MoTBVT_interface_mex.cpp" />
     <ClCompile Include="..\..\OpenCvKF_interface_mex.cpp" />
     <ClCompile Include="..\..\TrackerMMAE_interface_mex.cpp" />
+    <ClCompile Include="..\..\util\eigen2matlab.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

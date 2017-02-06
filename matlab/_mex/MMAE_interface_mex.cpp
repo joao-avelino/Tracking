@@ -5,83 +5,7 @@
 #include <vector>
 #include <deque>
 #include <iostream>
-
-
-VectorXd matlabVectorToEigen(const mxArray *vectorArray)
-{
-	int vectorM = mxGetM(vectorArray);
-	int vectorN = mxGetN(vectorArray);
-	double *vectorPTR = mxGetPr(vectorArray);
-
-	VectorXd vec;
-
-	//Column vector
-	if (vectorM >= vectorN)
-	{
-		vec = VectorXd(vectorM);
-	}//Row vector
-	else
-	{
-		vec = RowVectorXd(vectorN);
-	}
-
-	for (int m = 0; m < vec.size(); m++)
-	{
-		vec(m) = vectorPTR[m];
-	}
-
-	return vec;
-}
-
-MatrixXd matlabMatrixToEigen(const mxArray *matrixArray)
-{
-	int matrixM = mxGetM(matrixArray);
-	int matrixN = mxGetN(matrixArray);
-
-	double *matrixPTR = mxGetPr(matrixArray);
-	MatrixXd matrix(matrixM, matrixN);
-
-
-	for (int m = 0; m < matrixM; m++)
-	{
-		for (int n = 0; n < matrixN; n++)
-		{
-			matrix(m, n) = matrixPTR[m + matrixM*n];
-		}
-	}
-
-	return matrix;
-}
-
-mxArray * eigenVectorToMatlab(const VectorXd &vector)
-{
-	
-	mxArray *matlabVectorArray = mxCreateDoubleMatrix(vector.rows(), vector.cols(), mxREAL);
-
-	double *matlabVectorPTR = mxGetPr(matlabVectorArray);
-
-	for (int m = 0; m < vector.size(); m++)
-		matlabVectorPTR[m] = vector(m);
-
-	return matlabVectorArray;
-
-}
-
-mxArray * eigenMatrixToMatlab(const MatrixXd &matrix)
-{
-
-	mxArray *matlabMatrixArray = mxCreateDoubleMatrix(matrix.rows(), matrix.cols(), mxREAL);
-
-	double *matrixPTR = mxGetPr(matlabMatrixArray);
-
-
-	for (int m = 0; m < matrix.rows(); m++)
-		for (int n = 0; n < matrix.cols(); n++)
-			matrixPTR[m + matrix.rows()*n] = matrix(m, n);
-
-	return matlabMatrixArray;
-}
-
+#include "util/eigen2matlab.hpp"
 
 // The class that we are interfacing t
 
@@ -189,7 +113,7 @@ void teste10(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStatePrediction", cmd))
 	{
 
-		VectorXd statePred = MMAE_instance->getStatePrediction();
+		VectorXd statePred = MMAE_instance->getStatePred();
 
 		plhs[0] = eigenVectorToMatlab(statePred);
 
@@ -199,7 +123,7 @@ void teste10(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStateCovariancePrediction", cmd))
 	{
 
-		MatrixXd covMat = MMAE_instance->getStateCovariancePrediction();
+		MatrixXd covMat = MMAE_instance->getCovPred();
 		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
@@ -207,7 +131,7 @@ void teste10(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	if (!strcmp("getStatePosterior", cmd))
 	{
-		VectorXd statePost = MMAE_instance->getStatePosterior();
+		VectorXd statePost = MMAE_instance->getStatePost();
 
 		plhs[0] = eigenVectorToMatlab(statePost);
 
@@ -217,7 +141,7 @@ void teste10(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (!strcmp("getStateCovariancePosterior", cmd))
 	{
 
-		MatrixXd covMat = MMAE_instance->getStateCovariancePosterior();
+		MatrixXd covMat = MMAE_instance->getCovPost();
 		plhs[0] = eigenMatrixToMatlab(covMat);
 
 		return;
