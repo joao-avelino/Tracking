@@ -19,7 +19,7 @@ tic
  
 %% PARAMS
  MAXIMUM_HEIGHT = 2.9;
- MINIMUM_HEIGHT = 0.9;
+ MINIMUM_HEIGHT = 0.0;
  
  median_window = 3;
  numberOfFramesBeforeDestruction = 5;
@@ -39,12 +39,19 @@ tic
  
  %% FILES STUFF
  EVALMODE = 'test';                    %test or train
- DATASET = 'AVG-TownCentre';           %test: AVG-TownCentre | PETS09-S2L2; train: PETS09-S2L1 | TUD-Stadtmitte
+ DATASET = 'AVG-TownCentre';           %test: AVG-TownCentre , PETS09-S2L2 | train: PETS09-S2L1 ,  TUD-Stadtmitte
  ROOTDIR = 'C:\MOT_Datasets\3DMOT2015';
+ 
+  
  
  imgDir = [ROOTDIR '\' EVALMODE '\' DATASET '\img1\'];
  
- [K, RT] = readCameraParameters([ROOTDIR '\' EVALMODE '\' DATASET '\maps\View_001.xml']);
+ if strcmp(EVALMODE, 'test') && strcmp(DATASET, 'AVG-TownCentre')
+    [K, RT, ks, ps] = readCamParamsCI();
+    UNIT_CONVERSION = 1;  %for AVG-TownCentre
+ else
+    [K, RT, ks, ps] = readCameraParameters([ROOTDIR '\' EVALMODE '\' DATASET '\maps\View_001.xml']);
+ end
  
  invertedK = inv(K);
  
@@ -52,7 +59,7 @@ tic
  nfiles = length(image_files);
  
  %Load detections
- detections = csvread([ROOTDIR '\' EVALMODE '\' DATASET 'det\det.txt']);
+ detections = csvread([ROOTDIR '\' EVALMODE '\' DATASET '\det\det.txt']);
  
  %% Detection loop
  results = [];
@@ -103,6 +110,8 @@ imagePoints(toDelete, :) = [];
 bbs(toDelete,:) = [];
 rects = int32(bbs(:,1:4));
 
+pointsOnWorldHistory{frame} = pointsOnWorld;
+
 
 [linsRect colsRect] = size(rects);
 % Get Dario's color features ---------------------------
@@ -131,10 +140,17 @@ for i=1:linsRect
     
     pessoa = imagem(beginX:endX,beginY:endY,:);
     histogramList(i, :) = extractBVT_interface(pessoa, 10);
+    
 end
+
+histogramHistory{frame} = histogramList;
 % ------------------------------------------------------
 
+means = [];
+covariances = [];
+if linsRect > 0
 [ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects);
+end
 
 %%%%%%%% 
 %   Build the detections' struct array
@@ -142,15 +158,17 @@ end
 %
 %%%%%%%%
 
-trackingPoints(:,1:3) = trackingPoints(:,1:3)/UNIT_CONVERSION;
-
-boundinBoxesReprojected = reprojectPointsAndDraw(trackingPoints, imagem, RT, K);
-
-
-pause(0.01);
-
-[linsBBrep, colsBBrep] = size(boundinBoxesReprojected);
-
+% trackingPoints(:,1:3) = trackingPoints(:,1:3)/UNIT_CONVERSION;
+  trackingPoints = pointsOnWorld';
+      trackingPoints = [trackingPoints ones(size(trackingPoints,1), 1)];
+      trackingPoints(:,3) = trackingPoints(:,3)*2;
+  boundinBoxesReprojected = reprojectPointsAndDraw(trackingPoints, imagem, RT, K);
+% 
+% 
+ pause(0.01);
+% 
+ [linsBBrep, colsBBrep] = size(boundinBoxesReprojected);
+% 
 for ii=1:linsBBrep
    clear preResults;
    id = boundinBoxesReprojected(ii, 5);
@@ -167,19 +185,20 @@ for ii=1:linsBBrep
    
 end
 
-%% The results must be writen in the MoTChallenge res/data/[datasetname.txt] for evaluation
-
-csvwrite([ROOTDIR '\' '\res\data\' DATASET '.txt'], results);
-delete(personList);
-
-%% The benchmarkDir is the train directory of the downloaded challenge, containing all the training datasets
-benchmarkDir = '3DMOT2015/train/';
-
-%% The evaluation script has 3 arguments:
-%   1 - A txt that is a list of the datasets to be evaluated (file in the
-%  seqmaps folder).
-%   2 - A directory containing the results
-%   3 - The benchmark directory
-allMets = evaluateTracking('c2-train.txt', 'MoTChallenge/res/data/', benchmarkDir);
-
 end
+% %% The results must be writen in the MoTChallenge res/data/[datasetname.txt] for evaluation
+% 
+% csvwrite([ROOTDIR '\' '\res\data\' DATASET '.txt'], results);
+% 
+% 
+% %%%%%%%%%%%%%%%%%%%%% DELETE THE MOT OBJECT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% %% The benchmarkDir is the train directory of the downloaded challenge, containing all the training datasets
+% benchmarkDir = '3DMOT2015/train/';
+% 
+% %% The evaluation script has 3 arguments:
+% %   1 - A txt that is a list of the datasets to be evaluated (file in the
+% %  seqmaps folder).
+% %   2 - A directory containing the results
+% %   3 - The benchmark directory
+% allMets = evaluateTracking('c2-train.txt', 'MoTChallenge/res/data/', benchmarkDir);
