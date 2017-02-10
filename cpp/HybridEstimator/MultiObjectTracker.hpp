@@ -3,6 +3,7 @@
 #include "Detection.hpp"
 #include "BaseMoT.hpp"
 #include <vector>
+#include <Comparator.hpp>
 
 
 
@@ -71,15 +72,36 @@ public:
 
 		//Apply the validation Gate
 		/*TODO TODO TODO TODO TODO TODO TODO TODO 
-		* TODO TODO TODO TODO TODO TODO TODO TODO 
+		* It should be a different class, but I have no time for this...
 		* TODO TODO TODO TODO TODO TODO TODO TODO
 		*/
 
+		vector<Association<Obj, Trk>> succAssVect = assList.getSuccessfulAssociations();
+		vector<Association<Obj, Trk>> afterGateAssVect;
+		
+
+		for (auto& ass : succAssVect)
+		{
+			VectorXd detState = ass.getDetectionPTR()->getObjPTR()->getObservableStates();
+
+			MatrixXd trkCov = ass.getTrackerPTR()->getObjPTR()->getObervableCovariance();
+			VectorXd trkState = ass.getTrackerPTR()->getObjPTR()->getObservableStates();
+
+			double mahal = Comparator::mahalanobis(detState, trkState, trkCov);
+
+			if(mahal < 9.2103)
+			{
+				afterGateAssVect.push_back(ass);
+			}
+
+
+		}
+
 
 		//Update
-		std::vector<Association<Obj, Trk>> assVect = assList.getSuccessfulAssociations();
+		//std::vector<Association<Obj, Trk>> assVect = assList.getSuccessfulAssociations();
 
-		for (auto& ass : assVect)
+		for (auto& ass : afterGateAssVect)
 		{
 			ass.getTrackerPTR()->update(*ass.getDetectionPTR());
 		}

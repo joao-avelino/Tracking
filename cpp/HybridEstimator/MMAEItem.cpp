@@ -94,8 +94,8 @@ std::shared_ptr<MMBankItem> MMAEItem::clone()
 
 std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state)
 {
-
-    std::shared_ptr<BaseBayesianFilter> newFilter = this->filter->clone(initial_state);
+	int stateSize = this->filter->getStatePost().size();
+    std::shared_ptr<BaseBayesianFilter> newFilter = this->filter->clone(initial_state.head(stateSize));
     std::shared_ptr<MMAEItem> newItem(new MMAEItem(newFilter, this->filter->getModelName()));
 
     std::shared_ptr<MMBankItem> novo = std::static_pointer_cast<MMBankItem>(newItem);
@@ -105,5 +105,11 @@ std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state)
 
 std::shared_ptr<MMBankItem> MMAEItem::clone(VectorXd initial_state, MatrixXd measurementCov)
 {
-	return std::shared_ptr<MMBankItem>(new MMAEItem(this->filter->clone(initial_state, measurementCov), this->filter->getModelName()));
+	int stateSize = this->filter->getStatePost().size();
+	std::shared_ptr<BaseBayesianFilter> newFilter = this->filter->clone(initial_state.head(stateSize), measurementCov);
+	std::shared_ptr<MMAEItem> newItem(new MMAEItem(newFilter, this->filter->getModelName()));
+
+	std::shared_ptr<MMBankItem> novo = std::static_pointer_cast<MMBankItem>(newItem);
+
+	return novo;
 }

@@ -1,4 +1,4 @@
-function [ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects)
+function [ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects, UNIT_CONVERSION)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -36,7 +36,7 @@ for i=1:linsRect
 Eyapprox = (Qsl^2+Qscx^2)/12*((H(3,1)^2*px(2,i)-H(2,1)*H(3,1))/lambda(i)^2)...
     +(Qsl^2+Qscy^2)/12*((H(3,2)^2*px(2,i)-H(2,2)*H(3,2))/lambda(i)^2);
 
-    means(:,i) = [Exapprox; Eyapprox];
+    means(:,i) = [Exapprox; Eyapprox; 0];
     
     
 %Segundos momentos
@@ -54,7 +54,9 @@ exey= (Qsl^2+Qscx^2)/12*((H(1,1)*H(2,1)-2*H(3,1)*(H(2,1)*px(1,i)...
     +3*H(3,2)^2*px(1,i)*px(2,i))/lambda(i)^2)+2*px(1,i)*px(2,i)...
     -(Exapprox+px(1,i))*px(2,i)-px(1,i)*(Eyapprox+px(2,i));
 
-approxCov = [Ex2-Exapprox^2  exey-Exapprox*Eyapprox; exey-Exapprox*Eyapprox  Ey2-Eyapprox^2];
+approxCov = [Ex2-Exapprox^2  exey-Exapprox*Eyapprox 0;
+             exey-Exapprox*Eyapprox  Ey2-Eyapprox^2 0;
+             0 0 25000];
 
 approxCov=double(approxCov);
 
@@ -75,7 +77,7 @@ end
 covariances(:,:,i) = approxCov;
 end
 
-means = double(means)*0.001; %Converting to meters
-covariances = double(covariances)*(0.001)^2; %Converting to meters
+means = double(means)*UNIT_CONVERSION; %Converting to meters
+covariances = double(covariances)*(UNIT_CONVERSION)^2; %Converting to meters
 
 end

@@ -1,6 +1,9 @@
-function [ K, RT ] = readCameraParameters( filePath )
+function [ K, RT, ks, ps ] = readCameraParameters( filePath )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+
+ks = zeros(1,3);
+ps = zeros(1,2);
 
 xmlDoc = xmlread(filePath);
 
@@ -22,6 +25,8 @@ for i=0:children.getLength-1
        mSx = str2double(node.getAttribute('sx'));
        mCx = str2double(node.getAttribute('cx'));
        mCy = str2double(node.getAttribute('cy'));
+       ks(1) = str2double(node.getAttribute('kappa1'));
+       
     end
     
     if strcmp(nodename, 'Extrinsic')
@@ -35,6 +40,7 @@ for i=0:children.getLength-1
        mTy = str2double(node.getAttribute('ty'));
        mTz = str2double(node.getAttribute('tz'));
     end
+    
 end
 
 %Now that the parsing is complete compute the extrinsic matrix

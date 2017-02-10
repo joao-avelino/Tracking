@@ -1,4 +1,4 @@
-function [ pointsOnWorld ] = calculatePointsOnWorldFrame( imagePoints, baseLinkToCamera, K, invertedK,  bbs)
+function [ pointsOnWorld ] = calculatePointsOnWorldFrame( imagePoints, baseLinkToCamera, K, invertedK,  bbs, UNIT_CONVERSION)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -50,6 +50,8 @@ homogeneousPoints = [imagePoints; uns];
   %Compute person height
   P = K*baseLinkToCamera;
   
+  %BUG?
+  
   for i=1:linsBBS
        %Get bbcenter
       xw = homogeneousP(1, i);
@@ -58,17 +60,35 @@ homogeneousPoints = [imagePoints; uns];
       xc = bbs(i,1)+bbs(i,3)/2;
       yc = bbs(i,2)+bbs(i,4)/2;
       
-      first = xw*(xc/yc*P(2,1)-P(1,1));
-      second = yw*(xc/yc*P(2,2)-P(1,2));
-      third = xc/yc*P(2,4)-P(1,4);
+%       first = xw*(xc/yc*P(2,1)-P(1,1));
+%       second = yw*(xc/yc*P(2,2)-P(1,2));
+%       third = xc/yc*P(2,4)-P(1,4);
+%       
+%       numZ = first+second+third;
+%      denZ = P(1,3)-xc/yc*P(2,3);
+
+       numZ = P(2,4)+P(2,1)*xw+P(2,2)*yw-yc*(P(3,4)+P(3,1)*xw+P(3,2)*yw);
+      denZ = P(2,3)-P(3,3)*yc;
       
-      numZ = first+second+third;
+
+      z = -numZ/ denZ;
       
-      denZ = P(1,3)-xc/yc*P(2,3);
+      %There is a bug on the height computation. This doesnt fix it but
+      %let's me get results
+%       if xc < 300
+%       if z > 0.85/UNIT_CONVERSION
+%          z = 0.85/UNIT_CONVERSION; 
+%       end
+%       end
       
-      homogeneousP(3, i) =  numZ/ denZ;              %The heights
+      homogeneousP(3, i) =  z;              %The heights
   end
+  
+  
+  
   pointsOnWorld = homogeneousP;
+ 
+  
   return;
   
 end

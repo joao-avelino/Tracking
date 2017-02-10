@@ -18,7 +18,7 @@
 
 /**
 *  @brief KalmanFilter::MMAE
-*
+* 
 *  The contructor of the Multiple Model Adaptive Estimator
 *
 *  @param[in] kalmanBank The bank of Kalman Filters.

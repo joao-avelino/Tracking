@@ -107,7 +107,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			std::shared_ptr<BaseBayesianFilter> model(new KalmanFilter(stateTransitionModel, observationModel,
 				processNoiseCov, observationNoiseCov, initialState, initialCov));
 			
-			std::shared_ptr<MMAEItem> mmaeitem_ptr(new MMAEItem(model, nameStr));
+  			std::shared_ptr<MMAEItem> mmaeitem_ptr(new MMAEItem(model, nameStr));
 
 			filterBank.push_back(mmaeitem_ptr);
 
@@ -124,14 +124,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		MMAEpersonTracker *trackerPTR = new MMAEpersonTracker(dummy_person, estim, learningRate);
 
 		//Create an associator
-		PeopleHungarianAssociator hung(comparisonMode, metric);
+		PeopleHungarianAssociator *hung = new PeopleHungarianAssociator(comparisonMode, metric);
 
 		//Create a tracker manager
-		TrackerManager trkMgr(numFramesBeforeDelete);
+		TrackerManager *trkMgr = new TrackerManager(numFramesBeforeDelete);
 
 
 		//Create a MoT
-		MoT *multipersontracker = new MoT(trkMgr, hung, trackerPTR);
+		MoT *multipersontracker = new MoT(*trkMgr, *hung, trackerPTR);
 
 		plhs[0] = convertPtr2Mat<MoT>(multipersontracker);
 
@@ -161,7 +161,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 		//Check the number of inputs
 		if (nrhs != 3 )
-			mexErrMsgTxt("Wrong inputs. 'processData', [object handle], [histogram size]");
+			mexErrMsgTxt("Wrong inputs. 'processData', [object handle], [detectionlist structure]");
 
 
 		//Number of fields of the structures
@@ -182,6 +182,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		*
 		*-----------------------------------------------------------
 		*/
+
 
 		//Get number of detections
 		int numDetections = mxGetNumberOfElements(prhs[2]);
@@ -212,12 +213,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			covDetectionError = matlabMatrixToEigen(covDetectionError_mxArray);
 
 			//Build the detection
-			shared_ptr<Person3dBVT> det(new Person3dBVT(pointsOnWorld- meanDetectionError, bvtHistogram, covDetectionError));
+			shared_ptr<Person3dBVT> det(new Person3dBVT(pointsOnWorld-meanDetectionError, bvtHistogram, covDetectionError));
 			shared_ptr<Detection<Person3dBVT>> detection(new Detection<Person3dBVT>(det, "Camera"));
 			detectionList.push_back(detection);
 
 		}
-
 
 		mot_instance->processDetections(detectionList);
 

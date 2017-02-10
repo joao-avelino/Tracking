@@ -58,7 +58,7 @@ double Person3dBVT::compareWith(Object & otherObject, const int mode, const int 
 		break;
 	case(COMP_COLORS):
 
-
+		return euclidean(otherPerson.bvtHist, this->bvtHist);
 
 		break;
 

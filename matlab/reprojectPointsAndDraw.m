@@ -1,9 +1,17 @@
-function [ boundingBoxes] = reprojectPointsAndDraw( points, image, RT, K )
+function [ boundingBoxes] = reprojectPointsAndDraw( points, image, RT, K, ks, ps)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
+
+if size(points, 1) == 0
+   boundingBoxes = [];
+   return;
+end
+
 %points -> [x, y, z, id]
 %boundingBoxes -> [tl.x tl.y widht height id]
+ks = [0 0];
+ps = [0 0];
 
 ids = points(:, 4)';
 head = points(:, 1:3)';
@@ -14,14 +22,21 @@ headHomogeneous(1:3,:) = head;
 feetHomogeneous = headHomogeneous;
 feetHomogeneous(3,:) = 0;
 
-headOnImage = K*RT*headHomogeneous;
-feetOnImage = K*RT*feetHomogeneous;
+% headOnImage = K*RT*headHomogeneous;
+% feetOnImage = K*RT*feetHomogeneous;
+% 
+% denom1 = repmat(headOnImage(end, :), [lins, 1]);
+% headOnImage = headOnImage./denom1;
 
-denom1 = repmat(headOnImage(end, :), [lins, 1]);
-headOnImage = headOnImage./denom1;
+R = RT(1:3, 1:3);
+T = RT(1:3, 4);
 
-denom2 = repmat(feetOnImage(end, :), [lins, 1]);
-feetOnImage = feetOnImage./denom2;
+distCoefs = [ks, ps];
+
+headOnImage = cv.projectPoints(headHomogeneous(1:3, :)', R, T, K, 'DistCoeffs', distCoefs);
+feetOnImage = cv.projectPoints(feetHomogeneous(1:3, :)', R, T, K, 'DistCoeffs', distCoefs);
+headOnImage = headOnImage';
+feetOnImage = feetOnImage';
 
 heights = feetOnImage(2,:) - headOnImage(2,:);
 width = heights*48/128; %Depende do aspect ratio que queremos
