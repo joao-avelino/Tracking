@@ -41,8 +41,8 @@ UNIT_CONVERSION = 0.001;
  
  
  %% FILES STUFF
- EVALMODE = 'test';                    %test or train
- DATASET = 'AVG-TownCentre';           %test: AVG-TownCentre , PETS09-S2L2 | train: PETS09-S2L1 ,  TUD-Stadtmitte
+ EVALMODE = 'train';                    %test or train
+ DATASET = 'TUD-Stadtmitte';           %test: AVG-TownCentre , PETS09-S2L2 | train: PETS09-S2L1 ,  TUD-Stadtmitte
  ROOTDIR = 'C:\MOT_Datasets\3DMOT2015';
  
   
@@ -181,6 +181,7 @@ clear trackingPoints;
 clear probabilities;
 clear boundinBoxesReprojected;
 
+frame
 
 %Load image
 im = imread([imgDir image_files(frame).name]);
@@ -270,8 +271,8 @@ if (size(means, 2) ~= size(covariances, 3) || size(means, 2) ~= size(histogramLi
     keyboard;
     end
 end
-
-cpp(1).pointsOnWorld = [];
+clear cppDets;
+cppDets(1).pointsOnWorld = [];
 cppDets(1).bvtHistogram = [];
 cppDets(1).meanDetectionError = [];
 cppDets(1).covDetectionError = [];
@@ -315,19 +316,19 @@ for ii=1:linsBBrep
 end
 
 end
-% %% The results must be writen in the MoTChallenge res/data/[datasetname.txt] for evaluation
-% 
-% csvwrite(['res\data\' DATASET '.txt'], results);
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%% DELETE THE MOT OBJECT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %% The benchmarkDir is the train directory of the downloaded challenge, containing all the training datasets
-% benchmarkDir = 'C:\MOT_Datasets\3DMOT2015\train\';
-% 
-% %% The evaluation script has 3 arguments:
-% %   1 - A txt that is a list of the datasets to be evaluated (file in the
-% %  seqmaps folder).
-% %   2 - A directory containing the results
-% %   3 - The benchmark directory
-% allMets = evaluateTracking('c2-train.txt', 'res\data\', benchmarkDir);
+%% The results must be writen in the MoTChallenge res/data/[datasetname.txt] for evaluation
+
+csvwrite(['res\data\' DATASET '.txt'], results);
+
+
+%%%%%%%%%%%%%%%%%%%%% DELETE THE MOT OBJECT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% The benchmarkDir is the train directory of the downloaded challenge, containing all the training datasets
+benchmarkDir = 'C:\MOT_Datasets\3DMOT2015\train\';
+
+%% The evaluation script has 3 arguments:
+%   1 - A txt that is a list of the datasets to be evaluated (file in the
+%  seqmaps folder).
+%   2 - A directory containing the results
+%   3 - The benchmark directory
+allMets = evaluateTracking('c2-train.txt', 'res\data\', benchmarkDir);
