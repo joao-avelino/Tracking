@@ -94,7 +94,7 @@ public:
 				VectorXd colorDet = ass.getDetectionPTR()->getObjPTR()->getBvtHist();
 				VectorXd colorTrk = ass.getTrackerPTR()->getObjPTR()->getBvtHist();
 
-				double colorDist = Comparator::euclidean(colorDet, colorTrk);
+				double colorDist = Comparator::hellinger(colorDet, colorTrk);
 				if(colorDist < 0.6)
 					afterGateAssVect.push_back(ass);
 

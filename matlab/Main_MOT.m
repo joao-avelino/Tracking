@@ -272,10 +272,7 @@ if (size(means, 2) ~= size(covariances, 3) || size(means, 2) ~= size(histogramLi
     end
 end
 clear cppDets;
-cppDets(1).pointsOnWorld = [];
-cppDets(1).bvtHistogram = [];
-cppDets(1).meanDetectionError = [];
-cppDets(1).covDetectionError = [];
+cppDets = [];
 
 for nn = 1:size(means, 2)
     cppDets(nn).pointsOnWorld = pointsOnWorld(:, nn);

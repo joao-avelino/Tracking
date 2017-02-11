@@ -163,12 +163,17 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		if (nrhs != 3 )
 			mexErrMsgTxt("Wrong inputs. 'processData', [object handle], [detectionlist structure]");
 
+		//Get number of detections
+		int numDetections = mxGetNumberOfElements(prhs[2]);
 
+
+		
 		//Number of fields of the structures
 		int numFields = mxGetNumberOfFields(prhs[2]);
 
-		if (numFields != 4)
-			mexErrMsgTxt("Wrong detection structure. It should have 4 fields");
+		if (numDetections > 0)
+			if (numFields != 4)
+				mexErrMsgTxt("Wrong detection structure. It should have 4 fields");
 
 
 		//Get a struct array of detections
@@ -183,12 +188,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		*-----------------------------------------------------------
 		*/
 
-
-		//Get number of detections
-		int numDetections = mxGetNumberOfElements(prhs[2]);
-
 		vector<shared_ptr<Detection<Person3dBVT>>> detectionList;
 		VectorXd pointsOnWorld;
+		pointsOnWorld = VectorXd::Zero(3);
 		VectorXd bvtHistogram;
 		VectorXd meanDetectionError;
 		MatrixXd covDetectionError;

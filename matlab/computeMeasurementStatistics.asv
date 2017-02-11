@@ -36,9 +36,6 @@ for i=1:linsRect
 Eyapprox = (Qsl^2+Qscx^2)/12*((H(3,1)^2*px(2,i)-H(2,1)*H(3,1))/lambda(i)^2)...
     +(Qsl^2+Qscy^2)/12*((H(3,2)^2*px(2,i)-H(2,2)*H(3,2))/lambda(i)^2);
 
-    Exapprox = 0;
-    Eyapprox = 0;
-    
     means(:,i) = [Exapprox; Eyapprox; 0];
     
     
@@ -77,14 +74,12 @@ if det(approxCov) < 0
     
 end
 
-approxCov = [0.2011 0.0003 0;
-               0.0003 0.0013 0;
-               0 0 0.5];
-
 covariances(:,:,i) = approxCov;
 end
 
-           
+means = [0; 0; 0];
+covariances = [0.2011 0.0003 0;
+               0.0003 0.0013 0];
 means = double(means)*UNIT_CONVERSION; %Converting to meters
 covariances = double(covariances)*(UNIT_CONVERSION)^2; %Converting to meters
 
