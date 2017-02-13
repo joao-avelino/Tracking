@@ -15,8 +15,8 @@ class MultiObjectTracker : public BaseMot<Obj, Trk>
 {
 public:
 
-	MultiObjectTracker(TrkMgr &trackerManager, Assoc &associator, Trk *trackerToBeClonedPTR) : trackerToBeClonedPTR(trackerToBeClonedPTR),
-		associator(associator), trackerManager(trackerManager)
+	MultiObjectTracker(TrkMgr &trackerManager, Assoc &associator, Trk *trackerToBeClonedPTR, double rec_thr) : trackerToBeClonedPTR(trackerToBeClonedPTR),
+		associator(associator), trackerManager(trackerManager), rec_thr(rec_thr)
 	{
 	
 		//Assign the tracker pointer so that the tracker manager can add and delete tracks
@@ -63,6 +63,34 @@ public:
 		}
 
 
+		/*Get the normalized distances*/
+
+		//Get maximum distance
+		double normalizingFactor = 0.001;
+		for (auto& trk : this->trackersVector)
+		{
+			for (auto& det : detList)
+			{
+				double dist = trk->compareWith((*det), Person3dBVT::COMP_POSITION, Comparator::METRIC_EUCLIDEAN);
+				if (dist > normalizingFactor)
+					normalizingFactor = dist;
+			}
+		}
+
+		//Set the normalized observable state - THIS HAS TO CHANGE!
+		for (auto& trk : this->trackersVector)
+		{
+			VectorXd pos = trk->getObjPTR()->getObservableStates();
+			trk->getObjPTR()->setNormalizedPosition(pos.head(2) / normalizingFactor);
+		}
+
+		for (auto& det : detList)
+		{
+			VectorXd pos = det->getObjPTR()->getObservableStates();
+			det->getObjPTR()->setNormalizedPosition(pos.head(2) / normalizingFactor);
+		}
+
+
 		//Associate
 		AssociationList<Obj, Trk> assList;
 		assList = associator.associateData(this->trackersVector, detList);
@@ -95,7 +123,7 @@ public:
 				VectorXd colorTrk = ass.getTrackerPTR()->getObjPTR()->getBvtHist();
 
 				double colorDist = Comparator::hellinger(colorDet, colorTrk);
-				if(colorDist < 0.6)
+				if(colorDist < rec_thr)
 					afterGateAssVect.push_back(ass);
 
 			}
@@ -123,6 +151,7 @@ protected:
     unique_ptr<Trk> trackerToBeClonedPTR;
 	Assoc &associator;
     TrkMgr &trackerManager;
+	double rec_thr;
 };
 
 #endif // !MULTIOBJECTTRACKER_HPP

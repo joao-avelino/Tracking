@@ -1,7 +1,7 @@
 clear
 tic
 
-T = 0.1;
+T = 1/18;
 % 	//Comparison mode consts
 COMP_POSITION = 1;
 COMP_COLORS = 2;
@@ -24,25 +24,29 @@ METRIC_EARTHMOVERSDISTANCE = 6;
  MAXIMUM_HEIGHT = 2.1;
  MINIMUM_HEIGHT = 0.5;
  
- median_window = 3;
- numberOfFramesBeforeDestruction = 3;
- numberOfFramesBeforeDestructionLocked = 3;
- creation_threshold = 0.7;
+ numberOfFramesBeforeDestruction = 5;
+
  validation_gate = 9.22;
- metric_weight = 1; %How to weight colors and positions
+ metric_weight = 0.5; %How to weight colors and positions
+ 
  recognition_threshold = 0.7;
- c_learning_rate = 0.3;
- detection_confidence = 60;
- const_pos_var = 5;
- const_vel_var = 10;
- const_accel_var = 1;
+ c_learning_rate = 0.7;
+ 
+
+ detection_confidence = 40;
+ 
+ %Kalman params:
+ P0 = 1000;
+ const_pos_var = 0.01;
+ const_vel_var = 0.01;
+ const_accel_var = 0.01;
  
 UNIT_CONVERSION = 0.001;
  
  
  %% FILES STUFF
- EVALMODE = 'train';                    %test or train
- DATASET = 'TUD-Stadtmitte';           %test: AVG-TownCentre , PETS09-S2L2 | train: PETS09-S2L1 ,  TUD-Stadtmitte
+ EVALMODE = 'test';                    %test or train
+ DATASET = 'PETS09-S2L2';           %test: AVG-TownCentre , PETS09-S2L2 | train: PETS09-S2L1 ,  TUD-Stadtmitte
  ROOTDIR = 'C:\MOT_Datasets\3DMOT2015';
  
   
@@ -65,8 +69,91 @@ UNIT_CONVERSION = 0.001;
  cameraParams = cameraParameters('IntrinsicMatrix',K,...
             'RadialDistortion',ks, ...
             'TangentialDistortion', ps);
- 
         
+        
+ %% Find the best parameters loops
+ validation_gate = 9.22;
+  
+ numberOfFramesBeforeDestruction_list = [1 3 5];
+ metric_weight_list = [0.3 0.6 0.9]; %How to weight colors and positions
+ recognition_threshold_list = [0.3 0.6 0.9];
+ c_learning_rate_list = [0.3 0.6 0.9];
+ detection_confidence_list = [10 30 50];
+ P0_list = [50 500];
+ const_pos_var_list = [0.05 1 50];
+ const_vel_var_list = [0.05 1 50];
+ const_accel_var_list = [0.05 1 50];
+ 
+ heightCorrection_list = [0.8 0.9 1.1 1.2];
+ widthCorrection_list = [0.33 0.40 0.45 0.47];
+ xCorrection_list = [0.95 0.98 1.1 1.2];
+ yCorrection_list = [0.95 0.98 1.1 1.2];
+ 
+ covX_list = [0.01 0.05 0.1 0.5 1 1.5];
+ covY_list = [0.01 0.05 0.1 0.5 1 1.5];
+ covXY_list = [0.01 0.05 0.1 0.5 1 1.5];
+ 
+ BestMoTa = -100000;
+ BestIDS = 100000;
+ BestParamsIDS = [numberOfFramesBeforeDestruction...
+     metric_weight recognition_threshold c_learning_rate...
+     detection_confidence P0 const_pos_var const_vel_var const_accel_var];
+ 
+ BestParams = [numberOfFramesBeforeDestruction...
+     metric_weight recognition_threshold c_learning_rate...
+     detection_confidence P0 const_pos_var const_vel_var const_accel_var];
+
+%  for pp=1:size(P0_list, 2) 
+%  for ww=1:size(metric_weight_list, 2)
+%  for rec=1:size(recognition_threshold_list, 2)
+%  for lr=1:size(c_learning_rate_list, 2)
+%  for conf=1:size(detection_confidence_list, 2)
+%  for ff=1:size(numberOfFramesBeforeDestruction_list, 2)
+%  for cpv=1:size(const_pos_var_list, 2)
+%  for cvv=1:size(const_vel_var_list, 2)
+%  for cva=1:size(const_accel_var_list, 2)
+% for cx=1:size(covX_list, 2)
+% for cy=1:size(covY_list, 2)
+% for cxy=1:size(covXY_list, 2)
+
+%     covX = covX_list(cx);
+%     covY = covY_list(cy);
+%     covXY = covXY_list(cxy);
+
+covX = 0.75;
+covY = 0.622;
+covXY = 0.2575;
+
+
+%  numberOfFramesBeforeDestruction = numberOfFramesBeforeDestruction_list(ff);
+%  metric_weight = metric_weight_list(ww);
+%  recognition_threshold = recognition_threshold_list(rec);
+%  c_learning_rate = c_learning_rate_list(lr);
+%  detection_confidence = detection_confidence_list(conf);
+%  P0 = P0_list(pp);
+%  
+ disp('params');
+%  [numberOfFramesBeforeDestruction, metric_weight, recognition_threshold, c_learning_rate, detection_confidence, P0];
+%  const_pos_var = const_pos_var_list(cpv);
+%  const_vel_var = const_vel_var_list(cpv);
+%  const_accel_var = const_accel_var_list(cpv);
+
+ numberOfFramesBeforeDestruction = 2;
+ metric_weight = 0.3;
+ recognition_threshold = 0.9;
+ c_learning_rate = 0.9;
+ detection_confidence = 30;
+ P0 = 500;
+ const_pos_var = 0.05;
+ const_vel_var = 0.05;
+ const_accel_var = 0.05;
+ 
+ heightCorrection  = 1;
+ widthCorrection = 0.44;
+ xCorrection = 1;
+ yCorrection = 1;
+     
+  
  %Build the estimator structure
  
  %% Constant position model - and constant position height
@@ -84,7 +171,7 @@ filterBank(1).observationModel = [1 0 0;
 
 filterBank(1).processNoiseCov = [T^2 0 0;
                                  0 T^2 0;
-                                 0 0 T^2];
+                                 0 0 T^2]*const_pos_var;
 
 
 filterBank(1).observationNoiseCov = [0.9299 0 0;
@@ -95,7 +182,7 @@ filterBank(1).observationNoiseCov = [0.9299 0 0;
 filterBank(1).initialState = [1; 1; 1.7];
 
 
-filterBank(1).initialCov = 2*eye(3);
+filterBank(1).initialCov = P0*eye(3);
 
 
 %% Constant velocity model with constant height
@@ -116,7 +203,7 @@ filterBank(2).processNoiseCov = [T^4/4 0 0 T^3/2 0;
                                  0 T^4/4 0 0 T^3/2; 
                                  0 0 T^2 0 0;
                                  T^3/2 0 0 T^2 0; 
-                                 0 T^3/2 0 0 T^2];
+                                 0 T^3/2 0 0 T^2]*const_vel_var;
 
 
 filterBank(2).observationNoiseCov = [0.9299 0 0;
@@ -126,7 +213,7 @@ filterBank(2).observationNoiseCov = [0.9299 0 0;
 filterBank(2).initialState = [1; 1; 1.7; 0; 0];
 
 
-filterBank(2).initialCov = 2*eye(5);
+filterBank(2).initialCov = P0*eye(5);
 
 
 
@@ -151,21 +238,23 @@ filterBank(3).processNoiseCov = [T^5/20 0 0 T^4/8 0 T^3/6 0;
                                 T^4/8 0 0 T^3/3 0 T^2/2 0;
                                 0 T^4/8 0 0 T^3/3 0 T^2/2;
                                 T^3/6 0 0 T^2/2 0 T 0;
-                                0 T^3/6 0 0 T^2/2 0 T];
+                                0 T^3/6 0 0 T^2/2 0 T]*const_accel_var;
                             
 filterBank(3).observationNoiseCov = [0.9299 0 0;
                                      0 0.9299 0;
                                      0 0 0.5];
                                  
 filterBank(3).initialState = [1; 1; 1.7; 0; 0; 1; 2];
-filterBank(3).initialCov = 2*eye(7);
+filterBank(3).initialCov = P0*eye(7);
 
  %Build the MoT object
- mot = MoT('new', filterBank, 444, 0.6, COMP_COLORS, METRIC_EUCLIDEAN, 5);
+ mot = MoT('new', filterBank, 444, c_learning_rate, recognition_threshold, COMP_COLORSANDPOSITION, METRIC_HELLINGER,...
+     numberOfFramesBeforeDestruction, metric_weight);
 
  
  %Load detections
  detections = csvread([ROOTDIR '\' EVALMODE '\' DATASET '\det\det.txt']);
+ 
  
  %% Detection loop
  results = [];
@@ -181,7 +270,7 @@ clear trackingPoints;
 clear probabilities;
 clear boundinBoxesReprojected;
 
-frame
+frame;
 
 %Load image
 im = imread([imgDir image_files(frame).name]);
@@ -257,7 +346,7 @@ histogramHistory{frame} = histogramList;
 means = [];
 covariances = [];
 if linsRect > 0
-[ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects, UNIT_CONVERSION);
+[ means, covariances ] = computeMeasurementStatistics( K, RT, imagePoints, rects, UNIT_CONVERSION, covX, covY, covXY);
 end
 
 %%%%%%%% 
@@ -289,7 +378,7 @@ trackingPoints = MoT('processData', mot, cppDets);
       
       trpts = trackingPoints;
       trpts(:, 1:3) = trpts(:, 1:3)/UNIT_CONVERSION;
-  boundinBoxesReprojected = reprojectPointsAndDraw(trpts, im, RT, K, ks, ps);
+  boundinBoxesReprojected = reprojectPointsAndDraw(trpts, im, RT, K, ks, ps, heightCorrection, widthCorrection, xCorrection, yCorrection);
 % 
 % 
  pause(0.01);
@@ -304,8 +393,8 @@ for ii=1:linsBBrep
    bb_width = boundinBoxesReprojected(ii, 3);
    bb_height = boundinBoxesReprojected(ii, 4);
    conf = 1;
-   x = trackingPoints(ii, 1)/UNIT_CONVERSION;
-   y = trackingPoints(ii, 2)/UNIT_CONVERSION;
+   x = trackingPoints(ii, 1);
+   y = trackingPoints(ii, 2);
    z = 0;
    preResults = [frame, id, bb_left, bb_top, bb_width, bb_height, conf, x, y, z];
    results = [results; preResults];
@@ -329,3 +418,34 @@ benchmarkDir = 'C:\MOT_Datasets\3DMOT2015\train\';
 %   2 - A directory containing the results
 %   3 - The benchmark directory
 allMets = evaluateTracking('c2-train.txt', 'res\data\', benchmarkDir);
+
+mota = allMets.bmark2d(12);
+ids = allMets.bmark2d(10);
+
+if mota > BestMoTa
+    BestMoTa = mota;
+    BestParams = [numberOfFramesBeforeDestruction...
+     metric_weight recognition_threshold c_learning_rate...
+     detection_confidence P0 const_pos_var const_vel_var const_accel_var];
+ 
+    ExtraParams = [ heightCorrection, widthCorrection, xCorrection, yCorrection];
+    BestCovs = [covX, covY, covXY]
+end
+
+% if ids < BestIDS
+%     BestIDS = ids;
+%     BestParamsIDS = [numberOfFramesBeforeDestruction...
+%      metric_weight recognition_threshold c_learning_rate...
+%      detection_confidence P0 const_pos_var const_vel_var const_accel_var];
+% end
+% end
+% end
+%  end
+%  end
+%  end
+%  end
+%  end
+%  end
+%  end
+%  end
+toc

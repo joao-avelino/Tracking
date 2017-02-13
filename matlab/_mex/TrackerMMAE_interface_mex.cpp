@@ -95,7 +95,7 @@ void mex55(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		int sizeObs = observationModel.rows();
 		
 		std::shared_ptr<Person3dBVT> person(new Person3dBVT(initialState.head(sizeObs), VectorXd(),
-			initialCov.block(0, 0, sizeObs, sizeObs)));
+			initialCov.block(0, 0, sizeObs, sizeObs), 0.5));
 
 		std::shared_ptr<MMAE> estim(new MMAE(filterBank));
 
@@ -194,7 +194,7 @@ void mex55(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		VectorXd meas = matlabVectorToEigen(prhs[2]);
 		MatrixXd covMat = Tracker_instance->positionEstimator->getCovPred();
 
-		std::shared_ptr<Person3dBVT> detPerson(new Person3dBVT(meas, VectorXd(), covMat.block(0,0, meas.size(), meas.size())));
+		std::shared_ptr<Person3dBVT> detPerson(new Person3dBVT(meas, VectorXd(), covMat.block(0,0, meas.size(), meas.size()), 0.5));
 		Detection<Person3dBVT> detection(detPerson, "Camera");
 
 		Tracker_instance->update(detection);

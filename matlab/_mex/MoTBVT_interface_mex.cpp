@@ -20,6 +20,8 @@ typedef MultiObjectTracker<MMAEpersonTracker, TrackerManager, PeopleHungarianAss
 typedef AssociationList<Person3dBVT, MMAEpersonTracker> PeopleAssociations;
 typedef Association<Person3dBVT, MMAEpersonTracker> PersonTrackerAssociation;
 
+static double colorPosWeight;
+
 
 // The class that we are interfacing t
 
@@ -36,8 +38,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		if (nlhs != 1)
 			mexErrMsgTxt("New: One output expected.");
 		// Return a handle to a new C++ instance
-		if (nrhs != 7)
-			mexErrMsgTxt("Wrong inputs. 'new', [estimator structure], [histogram size], [color learning rate], [comparison mode], [metric], [numFramesBeforeDelete]");
+		if (nrhs != 9)
+			mexErrMsgTxt("Wrong inputs. 'new', [estimator structure], [histogram size], [color learning rate], [comparison mode], [metric], [numFramesBeforeDelete], [colorPosWeight]");
 
 		//Number of fields of the structures
 		int numFields = mxGetNumberOfFields(prhs[1]);
@@ -54,11 +56,16 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		//Get the color learning rate
 		double learningRate = *mxGetPr(prhs[3]);
 
-		//Get the comparison mode and metric
-		int comparisonMode = *mxGetPr(prhs[4]);
-		int metric = *mxGetPr(prhs[5]);
+		//Get the recognition threshold
+		double rec_thr = *mxGetPr(prhs[4]);
 
-		int numFramesBeforeDelete = *mxGetPr(prhs[6]);
+		//Get the comparison mode and metric
+		int comparisonMode = *mxGetPr(prhs[5]);
+		int metric = *mxGetPr(prhs[6]);
+
+		int numFramesBeforeDelete = *mxGetPr(prhs[7]);
+
+		colorPosWeight = *mxGetPr(prhs[8]);
 
 
 		//Let's create an  MMAEItem for each received model and add it
@@ -117,7 +124,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		int sizeObs = observationModel.rows();
 
 		//Create an object
-		shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(sizeObs), VectorXd::Zero(bvtSize), MatrixXd::Zero(sizeObs, sizeObs)));
+		shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(sizeObs), VectorXd::Zero(bvtSize), MatrixXd::Zero(sizeObs, sizeObs), colorPosWeight));
 		std::shared_ptr<MMAE> estim(new MMAE(filterBank));
 
 		//Create a Tracker
@@ -131,7 +138,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 
 		//Create a MoT
-		MoT *multipersontracker = new MoT(*trkMgr, *hung, trackerPTR);
+		MoT *multipersontracker = new MoT(*trkMgr, *hung, trackerPTR, rec_thr);
 
 		plhs[0] = convertPtr2Mat<MoT>(multipersontracker);
 
@@ -215,7 +222,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			covDetectionError = matlabMatrixToEigen(covDetectionError_mxArray);
 
 			//Build the detection
-			shared_ptr<Person3dBVT> det(new Person3dBVT(pointsOnWorld-meanDetectionError, bvtHistogram, covDetectionError));
+			shared_ptr<Person3dBVT> det(new Person3dBVT(pointsOnWorld-meanDetectionError, bvtHistogram, covDetectionError, colorPosWeight));
 			shared_ptr<Detection<Person3dBVT>> detection(new Detection<Person3dBVT>(det, "Camera"));
 			detectionList.push_back(detection);
 

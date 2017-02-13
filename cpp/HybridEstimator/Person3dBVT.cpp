@@ -2,11 +2,12 @@
 
 using namespace Comparator;
 
-Person3dBVT::Person3dBVT(VectorXd observableStates, VectorXd bvtHist, MatrixXd observableCovariance)
+Person3dBVT::Person3dBVT(VectorXd observableStates, VectorXd bvtHist, MatrixXd observableCovariance, double colorPosWeight)
 {
 	this->observableStates = observableStates;
 	this->bvtHist = bvtHist;
 	this->observableCovariance = observableCovariance;
+	this->colorPosWeight = colorPosWeight;
 	this->objectType = TYPE_PERSON;
 }
 
@@ -29,12 +30,20 @@ void Person3dBVT::setObservableCovariance(MatrixXd posErrorCov)
 	this->observableCovariance = posErrorCov;
 }
 
+void Person3dBVT::setNormalizedPosition(VectorXd normPos)
+{
+	normalizedPosition = normPos;
+}
+
 double Person3dBVT::compareWith(Object & otherObject, const int mode, const int metric)
 {
 
 	assert(this->getObjectType() == otherObject.getObjectType() && "Objects should have the same type if you wish to compare them. Check the types of detections and tracks if you are using them.");
 
 	Person3dBVT &otherPerson = dynamic_cast<Person3dBVT&>(otherObject);
+
+	double normalized_euclidean = 0;
+	double colors = 0;
 
 	switch (mode)
 	{
@@ -63,8 +72,9 @@ double Person3dBVT::compareWith(Object & otherObject, const int mode, const int 
 		break;
 
 	case(COMP_COLORSANDPOSITION):
-
-		//IMPLEMENTAR
+		normalized_euclidean = euclidean(otherPerson.normalizedPosition, this->normalizedPosition);
+		colors = hellinger(otherPerson.bvtHist, this->bvtHist);
+		return (1- colorPosWeight)*normalized_euclidean + colorPosWeight*colors;
 
 		break;
 	case(COMP_FORMFEATURES):
@@ -97,4 +107,9 @@ VectorXd Person3dBVT::getBvtHist()
 MatrixXd Person3dBVT::getObervableCovariance()
 {
 	return observableCovariance;
+}
+
+VectorXd Person3dBVT::getNormalizedPosition()
+{
+	return normalizedPosition;
 }

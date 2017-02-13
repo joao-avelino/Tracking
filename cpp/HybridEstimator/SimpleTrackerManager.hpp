@@ -58,13 +58,33 @@ public:
 
 		//Create new tracks for each unassociated detection
 		vector<shared_ptr<Detection<Obj>>> unassocDetsList = assocList.getUnassociatedDetections();
+		vector<shared_ptr<Trk>> tracks = this->multiObjectTrackerPTR->getTrackersVector();
 
 		for (auto& unassoc : unassocDetsList)
 		{
 			
-            this->multiObjectTrackerPTR->createTracker(*unassoc, numOfIds);
-			notAssocVect.push_back(0);
-			numOfIds++;
+			double minDistToOtherTracks = 1000;
+
+			VectorXd det = unassoc->getObjPTR()->getObservableStates();
+			for (auto& trk : tracks)
+			{
+				VectorXd tra = trk->getObjPTR()->getObservableStates();
+				
+				double dist = Comparator::euclidean(det, tra);
+
+				if (dist < minDistToOtherTracks)
+				{
+					minDistToOtherTracks = dist;
+				}
+			}
+
+			if (minDistToOtherTracks > 0.7)
+			{
+				this->multiObjectTrackerPTR->createTracker(*unassoc, numOfIds);
+				notAssocVect.push_back(0);
+				numOfIds++;
+			}
+
 		}
 
 	}

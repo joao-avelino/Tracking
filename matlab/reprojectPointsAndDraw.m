@@ -1,4 +1,4 @@
-function [ boundingBoxes] = reprojectPointsAndDraw( points, image, RT, K, ks, ps)
+function [ boundingBoxes] = reprojectPointsAndDraw( points, image, RT, K, ks, ps, heightCorrection, widthCorrection, xCorrection, yCorrection)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -38,8 +38,8 @@ feetOnImage = cv.projectPoints(feetHomogeneous(1:3, :)', R, T, K, 'DistCoeffs', 
 headOnImage = headOnImage';
 feetOnImage = feetOnImage';
 
-heights = feetOnImage(2,:) - headOnImage(2,:);
-width = heights*48/128; %Depende do aspect ratio que queremos
+heights = (feetOnImage(2,:) - headOnImage(2,:))*heightCorrection;
+width = heights*widthCorrection; %Depende do aspect ratio que queremos
 topLeftX = headOnImage(1,:) - width/2;
 topLeftY = headOnImage(2,:);
 
