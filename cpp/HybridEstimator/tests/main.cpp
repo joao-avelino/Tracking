@@ -138,7 +138,8 @@ int main()
 
 	VectorXd testePerson(2);
 	testePerson << 1, 5;
-	shared_ptr<Person3dBVT> testeP1(new Person3dBVT(testePerson, VectorXd(), MatrixXd()));
+
+	shared_ptr<Person3dBVT> testeP1(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2), 0.5));
 
 	shared_ptr<Person3dBVT> testeP2 = static_pointer_cast<Person3dBVT>(testeP1->clone());
 
@@ -303,7 +304,7 @@ int main()
     typedef Association<Person3dBVT, MMAEpersonTracker> PersonTrackerAssociation;
 
 	//Create an object
-	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2)));
+	shared_ptr<Person3dBVT> dummy_person(new Person3dBVT(VectorXd::Zero(2), VectorXd::Zero(10), MatrixXd::Zero(2, 2), 0.5));
 
 	//Create a observableStates estimator
 	std::vector<std::shared_ptr<MMAEItem> > filterBank;
@@ -325,7 +326,7 @@ int main()
 	TrackerManager trkMgr(5);
 
 	//Create a MoT
-	MoT multipersontracker(trkMgr, hung, trackerPTR);
+	MoT multipersontracker(trkMgr, hung, trackerPTR, 0.5);
 
 
 	//Make up 5 associations and give them to the tracker manager
@@ -339,28 +340,28 @@ int main()
 	//Detect 1
 	VectorXd pdet1(2);
 	pdet1 << 1.5, 1.5;
-	shared_ptr<Person3dBVT> det1(new Person3dBVT(pdet1, VectorXd(), MatrixXd()));
+	shared_ptr<Person3dBVT> det1(new Person3dBVT(pdet1, VectorXd(), MatrixXd(), 0.5));
 	shared_ptr<Detection<Person3dBVT>> detection1(new Detection<Person3dBVT>(det1, "Camera"));
 	detectionList.push_back(detection1);
 
 	//Detect 2
 	VectorXd pdet2(2);
 	pdet2 << 3.5, 1.5;
-	shared_ptr<Person3dBVT> det2(new Person3dBVT(pdet2, VectorXd(), MatrixXd()));
+	shared_ptr<Person3dBVT> det2(new Person3dBVT(pdet2, VectorXd(), MatrixXd(), 0.5));
 	shared_ptr<Detection<Person3dBVT>> detection2(new Detection<Person3dBVT>(det2, "Camera"));
 	detectionList.push_back(detection2);
 
 	//Detec 3
 	VectorXd pdet3(2);
 	pdet3 << 4.5, 5.5;
-	shared_ptr<Person3dBVT> det3(new Person3dBVT(pdet3, VectorXd(), MatrixXd()));
+	shared_ptr<Person3dBVT> det3(new Person3dBVT(pdet3, VectorXd(), MatrixXd(), 0.5));
 	shared_ptr<Detection<Person3dBVT>> detection3(new Detection<Person3dBVT>(det3, "Camera"));
 	detectionList.push_back(detection3);
 
 	//Detec 4
 	VectorXd pdet4(2);
 	pdet4 << 1.5, 5.5;
-	shared_ptr<Person3dBVT> det4(new Person3dBVT(pdet4, VectorXd(), MatrixXd()));
+	shared_ptr<Person3dBVT> det4(new Person3dBVT(pdet4, VectorXd(), MatrixXd(), 0.5));
 	shared_ptr<Detection<Person3dBVT>> detection4(new Detection<Person3dBVT>(det4, "Camera"));
 	detectionList.push_back(detection4);
 
